@@ -2,51 +2,39 @@
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
 * Author: [Haxe Developer](https://github.com/haxedev)
-* Status: **Awaiting review**
 
 ## Introduction
 
-A short description of what the feature is. Try to keep it to a
-single-paragraph "elevator pitch" so the reader understands what
-problem this proposal is addressing.
+Short description of the proposed feature. Keep it short, so the reader
+can quickly get what's it all about.
 
 ## Motivation
 
-Describe the problems that this proposal seeks to address. If the
-problem is that some common pattern is currently hard to express, show
-how one can currently get a similar effect and describe its
-drawbacks. If it's completely new functionality that cannot be
-emulated, motivate why this new functionality would help Haxe
-developers create better Haxe code, or how it could improve target
-language generation by the Haxe compiler.
-
-## Proposed solution
-
-Describe your solution to the problem. Provide examples and describe
-how they work. Show how your solution is better than current
-workarounds: is it cleaner, safer, or more efficient?
+Describe the problems adressed by this feature. If a similar effect
+can be achieved without it with some workarounds, describe the drawbacks
+of the workaround. If it's something completely new, show how it will
+help developers write better Haxe code or how it will improve the generation
+of target code by the compiler.
 
 ## Detailed design
 
-Describe the design of the solution in detail. If it involves new
-syntax in the language, show the additions and changes to the Haxe
-grammar. If it's a new API, show the full API and its documentation
-comments detailing what it does. The detail in this section should be
-sufficient for someone who is *not* one of the authors to be able to
-reasonably implement the feature.
+Describe the proposed design in details the way language user can understand
+and compiler developer can implement. Show corner cases, provide usage examples,
+describe how this solution is better than current workarounds.
 
 ## Impact on existing code
 
-Describe the impact that this change will have on existing code. Will some
-Haxe applications stop compiling due to this change? Will applications still
-compile but produce different behavior than they used to? Is it
-possible to migrate existing Haxe code to use a new feature or API
-automatically?
+What impact this change will have on existing code? Will it break compilation?
+Will it compile, but break in run-time? How easy it is to migrate existing Haxe code?
 
-## Alternatives considered
+## Drawbacks
 
-Describe alternative approaches to addressing the same problem, and
-why you chose this approach instead.
+Describe the drawbacks of the proposed design worth consideration. This doesn't include
+breaking changes, since that's described in the previous section.
+
+## Alternatives
+
+What alternatives have you considered to adress the same problem, why the proposed solution is better?
 
 ## Unresolved questions
 
