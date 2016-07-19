@@ -34,7 +34,7 @@ breaking changes, since that's described in the previous section.
 
 ## Alternatives
 
-What alternatives have you considered to adress the same problem, why the proposed solution is better?
+What alternatives have you considered to address the same problem, why the proposed solution is better?
 
 ## Unresolved questions
 
