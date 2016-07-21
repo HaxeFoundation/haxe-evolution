@@ -20,7 +20,7 @@ Basically, everything that needs some design process and consensus among the dev
 
 ## The process (NOT YET FINALIZED)
 
- 1. Fork the repo, copy the `proposals/0000-template.md` to `proposals/0000-short-name.md`,
+ 1. Fork the repo, copy the `0000-template.md` to `proposals/0000-short-name.md`,
     where `short-name` is a descriptive filename for the proposal document. Don't assign the number yet.
  2. Carefully fill in the proposal, pay attention to details: it should show your understanding
     of the issue and the impact of the proposed design.
