@@ -4,9 +4,9 @@ This project is for maintaining formal change proposals for Haxe language.
 
 ## About proposals
 
-Haxe Proposals (HXP) can be submit by any Haxe team developer or community member, as long as it's complete and well explained.
+Haxe Proposals (HXP) can be submitted by any Haxe team developer or community member, as long as it's complete and well explained.
 
-Once an HXP has been submit, it can be discussed and modified. Anybody can also submit a PR against an existing HXP to have it amended.
+Once a HXP has been submitted, it can be discussed and modified. Anybody can also submit a PR against an existing HXP to have it amended.
 
 After the HXP has been discussed, a formal vote can take place to accept it. Only Haxe Core Team members are allowed to vote:
  - Nicolas Cannasse (Haxe creator)
@@ -18,7 +18,7 @@ After the HXP has been discussed, a formal vote can take place to accept it. Onl
 
 To be accepted the HXP needs half + 1 votes in favor of it.
 
-In order to keep the long term goals and vision of Haxe, Nicolas can veto any accepted proposal after the vote, but will details his reason for doing so and agree to use this power with care.
+In order to keep the long term goals and vision of Haxe, Nicolas can veto any accepted proposal after the vote, but will explain his reasoning for doing so in details and agrees to use this power with care.
 
 Once the HXP is accepted, the core team will work on implementing it.
 
