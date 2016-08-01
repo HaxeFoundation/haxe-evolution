@@ -36,6 +36,11 @@ breaking changes, since that's described in the previous section.
 
 What alternatives have you considered to address the same problem, why the proposed solution is better?
 
+## Opening possibilities
+
+Does this change make other future changes possible or easier? Leave this section out if the proposed change
+is completely self-contained.
+
 ## Unresolved questions
 
 Which parts of the design in question is still to be determined?
