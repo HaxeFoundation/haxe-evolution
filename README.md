@@ -2,6 +2,28 @@
 
 This project is for maintaining formal change proposals for Haxe language.
 
+## About proposals
+
+Haxe Proposals (HXP) can be submit by any Haxe team developer or community member, as long as it's complete and well explained.
+
+Once an HXP has been submit, it can be discussed and modified. Anybody can also submit a PR against an existing HXP to have it amended.
+
+After the HXP has been discussed, a formal vote can take place to accept it. Only Haxe Core Team members are allowed to vote:
+ - Nicolas Cannasse (Haxe creator)
+ - Simon Krajewski (Compiler Maintainer)
+ - Hugh Sanderson (Haxe C++ backend)
+ - Caue Waneck (Haxe C# and Java backends)
+ - Andy Li (tools and infrastructure)
+ - Dan Korostelev (compiler contributor)
+
+To be accepted the HXP needs half + 1 votes in favor of it.
+
+In order to keep the long term goals and vision of Haxe, Nicolas can veto any accepted proposal after the vote, but will details his reason for doing so and agree to use this power with care.
+
+Once the HXP is accepted, the core team will work on implementing it.
+
+## What needs a proposal?
+
 Stuff that don't need a formal proposal (unless it's something fundamental):
 
  * bugfixes
@@ -18,7 +40,7 @@ Stuff that most probably need a formal proposal:
 
 Basically, everything that needs some design process and consensus among the developers is a candidate for a proposal.
 
-## The process (NOT YET FINALIZED)
+## How to submit an HXP
 
  1. Fork the repo, copy the `0000-template.md` to `proposals/0000-short-name.md`,
     where `short-name` is a descriptive filename for the proposal document. Don't assign the number yet.
@@ -26,7 +48,7 @@ Basically, everything that needs some design process and consensus among the dev
     of the issue and the impact of the proposed design.
  3. Submit a pull request with the proposal. In this PR, Haxe team and the community can provide
     feedback for it. Be prepared to react accordingly and revise the proposal document.
- 4. After reaching general consensus, the PR is merged by someone from the Haxe developer team,
+ 4. After reaching general consensus or voting takes place, the PR is merged by someone from the Haxe developer team,
     and the proposal becomes "active". When merged, the proposal will receive its number from the
     corresponding pull request. If the proposal is rejected, the PR is closed with a comment explaining the reasons.
  5. Active proposals are to be further discussed in details by the Haxe developer team
