@@ -1,6 +1,6 @@
 # Any type
 
-* Proposal: [HXP-0002](0002-any.proper-#if-statements)
+* Proposal: [HXP-0002](0002-proper-compile-time-if-statements.md)
 * Author: [Laurence Taylor](https://github.com/0b1kn00b)
 
 ## Introduction
