@@ -10,7 +10,7 @@ can quickly get what's it all about.
 
 ## Motivation
 
-Describe the problems adressed by this feature. If a similar effect
+Describe the problems addressed by this feature. If a similar effect
 can be achieved without it with some workarounds, describe the drawbacks
 of the workaround. If it's something completely new, show how it will
 help developers write better Haxe code or how it will improve the generation
