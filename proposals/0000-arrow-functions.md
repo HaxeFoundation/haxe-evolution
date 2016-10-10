@@ -37,7 +37,7 @@ Provide better syntax for anonymous functions declaration.
     This factor has negative impact on growth of Haxe community.  
 
 * Current syntax of anonymous functions in Haxe is quite verbose compared to other languages.
-    ```
+    ```haxe
     //Haxe
     function() return expr
     function(arg) return expr
