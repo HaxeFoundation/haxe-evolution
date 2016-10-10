@@ -1,0 +1,134 @@
+# Arrow functions
+
+* Proposal: [HXP-0000](0000-arrow-functions.md)
+* Author: [Haxe Developer](https://github.com/RealyUniqueName)
+
+## Introduction
+
+Provide better syntax for anonymous functions declaration. 
+
+## Motivation
+
+* Even simple closures encourages splitting expressions into multiple expressions, which makes code too bloated.
+    It's hard to read and maintain code that heavily relies on anonymous functions.
+    ```haxe
+    //hard to read
+    var names = users.map(function(u) return u.getProfile()).filter(function(p) return p.inCountry('USA')).map(function(p) return p.getName());
+    
+    //a little better
+    var profiles = users.map(function(u) return u.getProfile());
+    profiles = profiles.filter(function(p) return p.inCountry('USA'));    
+    var names = profile.map(function(p) return p.getName());
+
+    //best
+    var names = users.map(u => u.getProfile()).filter(p => p.inCountry('USA')).map(p => p.getName());
+    ```
+
+* In some cases total length of boilerplate code may be two times bigger than useful code size.
+    ```haxe
+    array.map(function(a) return a.toInt()).sort(function(a, b) return a - b);
+    //vs
+    array.map(a => a.toInt()).sort((a, b) => a - b);
+    ```
+    Required boilerplate reduced from 28 chars to 6. 
+
+* Nowadays arrow functions largely adopted by programmers community. 
+    Lack of such functions in Haxe raises questions for newcomers that Haxe suffers stagnation in development.
+    This factor has negative impact on growth of Haxe community.  
+
+* Current syntax of anonymous functions in Haxe is quite verbose compared to other languages.
+    ```
+    //Haxe
+    function() return expr
+    function(arg) return expr
+    
+    //TypeScript
+    () => expr
+    arg => expr
+
+    //JavaScript
+    () => expr
+    arg => expr
+
+    //C#
+    () => expr
+    arg => expr
+
+    //Scala
+    () => expr
+    (arg) => expr
+
+    //Swift
+    { expr }
+    { arg1 in expr }
+
+    //Java
+    () -> expr
+    (arg) -> expr
+
+    //Ruby
+    ->() {expr}
+    ->(arg) {expr}
+
+    //And so on...
+    ```
+
+## Detailed design
+
+Following syntax is proposed for arrow functions in Haxe: 
+
+* No arguments:
+    ```haxe
+    () => expr
+    //equivalent for (depending on context)
+    function() expr; //for Void->Void
+    function() return expr;
+    ```
+* Single argument:
+    ```haxe
+    arg => expr
+    //equivalent for
+    function(arg) expr;
+    function(arg) return expr;
+    ```
+* Multiple arguments:
+    ```haxe
+    (arg1, arg2) => expr
+    //equivalent for
+    function(arg1, arg2) expr;
+    function(arg1, arg2) return expr;
+    ```
+* Multiple exprs in function body:
+    ```haxe
+    (arg1, arg2) => { exprs }
+    //equivalent for
+    function(arg1, arg2) { exprs };
+    ```
+* Add brackets to closure body if it consists of a single expression which is anonymous object declaration:
+    ```haxe
+    (arg1, arg2) => ({})
+    ```
+* Add brackets if `=>` operator can interfer map declaration:
+    ```haxe
+    [
+        'hello' => (() => 'world')
+    ]
+    ```
+
+Whether function returns something or has `Void` return type, should be decided by type inference system. 
+
+## Impact on existing code
+
+Arrow functions will have no impact on existing code.
+
+It's a compile-time feature so it will not affect runtime.
+
+## Drawbacks
+
+Can't think of any drawbacks.
+
+## Alternatives
+
+Since users got used to use arrow functions in other languages, various implementations were created with macros: at least two librarys on haxelib
+and few more projects in outher sources.
+However such implementations impact compilation time, introduce non-standart (and different) syntax and should be avoided inside of other macros (breaks compiler cache)  
