@@ -1,7 +1,7 @@
 # Arrow functions
 
 * Proposal: [HXP-0000](0000-arrow-functions.md)
-* Author: [Haxe Developer](https://github.com/RealyUniqueName)
+* Author: [Alexander Kuzmenko](https://github.com/RealyUniqueName)
 
 ## Introduction
 
