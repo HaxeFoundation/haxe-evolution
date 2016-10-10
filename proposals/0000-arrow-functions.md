@@ -9,7 +9,7 @@ Provide better syntax for anonymous functions declaration.
 
 ## Motivation
 
-* Even simple closures encourages splitting expressions into multiple expressions, which makes code too bloated.
+* Even simple closures encourage splitting expressions into multiple expressions, which makes code too bloated.
     It's hard to read and maintain code that heavily relies on anonymous functions.
     ```haxe
     //hard to read
@@ -18,7 +18,7 @@ Provide better syntax for anonymous functions declaration.
     //a little better
     var profiles = users.map(function(u) return u.getProfile());
     profiles = profiles.filter(function(p) return p.inCountry('USA'));    
-    var names = profile.map(function(p) return p.getName());
+    var names = profiles.map(function(p) return p.getName());
 
     //best
     var names = users.map(u => u.getProfile()).filter(p => p.inCountry('USA')).map(p => p.getName());
@@ -30,9 +30,9 @@ Provide better syntax for anonymous functions declaration.
     //vs
     array.map(a => a.toInt()).sort((a, b) => a - b);
     ```
-    Required boilerplate reduced from 28 chars to 6. 
+    Required boilerplate reduced from 32 chars to 4. 
 
-* Nowadays arrow functions largely adopted by programmers community. 
+* Nowadays arrow functions are largely adopted by programmers community. 
     Lack of such functions in Haxe raises questions for newcomers that Haxe suffers stagnation in development.
     This factor has negative impact on growth of Haxe community.  
 
@@ -57,14 +57,14 @@ Provide better syntax for anonymous functions declaration.
     //Scala
     () => expr
     (arg) => expr
-
-    //Swift
-    { expr }
-    { arg1 in expr }
-
+        
     //Java
     () -> expr
     (arg) -> expr
+    
+    //Swift
+    { expr }
+    { arg1 in expr }
 
     //Ruby
     ->() {expr}
@@ -104,7 +104,7 @@ Following syntax is proposed for arrow functions in Haxe:
     function(arg1, arg2) return expr;
     ```
 
-* Multiple exprs in function body:
+* Multiple expressions in function body:
 
     ```haxe
     (arg1, arg2) => { exprs }
