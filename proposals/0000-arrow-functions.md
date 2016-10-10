@@ -78,37 +78,48 @@ Provide better syntax for anonymous functions declaration.
 Following syntax is proposed for arrow functions in Haxe: 
 
 * No arguments:
+
     ```haxe
     () => expr
     //equivalent for (depending on context)
     function() expr; //for Void->Void
     function() return expr;
     ```
+    
 * Single argument:
+
     ```haxe
     arg => expr
     //equivalent for
     function(arg) expr;
     function(arg) return expr;
     ```
+
 * Multiple arguments:
+
     ```haxe
     (arg1, arg2) => expr
     //equivalent for
     function(arg1, arg2) expr;
     function(arg1, arg2) return expr;
     ```
+
 * Multiple exprs in function body:
+
     ```haxe
     (arg1, arg2) => { exprs }
     //equivalent for
     function(arg1, arg2) { exprs };
     ```
+
 * Add brackets to closure body if it consists of a single expression which is anonymous object declaration:
+
     ```haxe
     (arg1, arg2) => ({})
     ```
+
 * Add brackets if `=>` operator can interfer map declaration:
+
     ```haxe
     [
         'hello' => (() => 'world')
