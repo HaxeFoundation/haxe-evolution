@@ -131,7 +131,7 @@ It's a compile-time feature so it will not affect runtime.
 
 ## Drawbacks
 
-Since macros are being executed before typing, it can be hard to transform arrow functions via build macro if it needs to handle `return` expression or to insert something at the end of closure body.
+Since macros are being executed before typing, it can be hard to find out in macros whether arrow function should return something or not.  This can complicate transformations of arrow function by build macro if it needs to handle `return` expression or to insert something at the end of closure body.
 
 ## Alternatives
 
