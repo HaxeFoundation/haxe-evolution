@@ -1,4 +1,4 @@
-# Feature name
+# ::enter feature name here::
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
 * Author: [Haxe Developer](https://github.com/haxedev)
