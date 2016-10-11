@@ -104,18 +104,12 @@ Following syntax is proposed for arrow functions in Haxe:
     function(arg1, arg2) return expr;
     ```
 
-* Multiple expressions in function body:
+* Implicit typing:
 
     ```haxe
-    (arg1, arg2) => { exprs }
+    (arg1:Int, arg2:String):Void => expr
     //equivalent for
-    function(arg1, arg2) { exprs };
-    ```
-
-* Add brackets to closure body if it consists of a single expression which is anonymous object declaration:
-
-    ```haxe
-    (arg1, arg2) => ({})
+    function(arg1:Int, arg2:String):Void expr;
     ```
 
 * Add brackets if `=>` operator can interfer map declaration:
@@ -126,7 +120,7 @@ Following syntax is proposed for arrow functions in Haxe:
     ]
     ```
 
-Whether function returns something or has `Void` return type, should be decided by type inference system. 
+If return type is not specified, then whether function returns something or has `Void` return type, should be decided by type inference system. 
 
 ## Impact on existing code
 
@@ -136,7 +130,7 @@ It's a compile-time feature so it will not affect runtime.
 
 ## Drawbacks
 
-Can't think of any drawbacks.
+Since macros are being executed before typing, it can be hard to transform arrow functions via build macro if it needs to handle `return` expression or to insert something at the end of closure body.
 
 ## Alternatives
 
