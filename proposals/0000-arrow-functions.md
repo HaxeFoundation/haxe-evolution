@@ -107,9 +107,10 @@ Following syntax is proposed for arrow functions in Haxe:
 * Implicit typing:
 
     ```haxe
-    (arg1:Int, arg2:String):Void => expr
+    (arg1:Int, arg2:String):Int => expr
     //equivalent for
-    function(arg1:Int, arg2:String):Void expr;
+    function(arg1:Int, arg2:String):Int return expr;
+    
     ```
 
 * Add brackets if `=>` operator can interfer map declaration:
