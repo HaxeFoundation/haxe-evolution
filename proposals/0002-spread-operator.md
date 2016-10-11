@@ -68,16 +68,17 @@ trace(myNewObj); // { a: 3, b: 7, c: 88 }
 
 ## Detailed design
 
-* We need to introduce a new unary operator e.g. OpSpread that's parsed from ...<expr> (which is actually a breaking change for macros, since adding new enum constructor will affect exhaustiveness checks).
+* We need to introduce a new unary operator e.g. OpSpread that's parsed from `...<expr>` (which is actually a breaking change for macros, since adding new enum constructor will affect exhaustiveness checks).
 
 * `{ ...obj, field2: 42 }` could translate (depending on the targetted platform) to: 
+By default:
 ```
-// by default
 { field1: obj.field1, field2: 42 } // one thing I wonder here is how to avoid duplication of optional 
                                    // undefined fields. Do you see any way to avoid it ?
+```
 
-// for the js target, we could do the following (it's what babel do)
-
+For the js target, we could do the following (it's what babel do):
+```
 // 1: define a global _extends function that has the same API as Object.assign
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -86,18 +87,23 @@ _extends(obj, { field2: 42 });)
 ```
 
 * `[ 1, 2, ...arr, 42, ...arr2, 1 ]` could translate to:
+By default:
 ```
-// by default
 var tmp = [1,2];
 for (v in arr) tmp.push(v);
 tmp.push(42);
 for (v in arr2) tmp.push(v);
 tmp.push(1);
+```
 
-// or (depending on what is more performant)
+Or: (depending on what is more performant)
+```
 [ 1, 2 ].concat(arr).concat([ 42 ]).concat(arr2).concat(1);
+```
 
-// for the js target, we could also probably output directly this:
+
+For the js target, we could also probably output directly this:
+```
 [ 1, 2 ].concat(arr, [ 42 ], arr2, [ 1 ]) // concat method of js array allows 1+ arguments
 ```
 
