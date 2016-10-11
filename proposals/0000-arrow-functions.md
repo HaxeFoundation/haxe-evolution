@@ -9,7 +9,7 @@ Provide better syntax for anonymous functions declaration.
 
 ## Motivation
 
-* Even simple closures encourage splitting expressions into multiple expressions, which makes code too bloated.
+* Even simple closures encourage splitting expressions into multiple lines, which makes code too bloated.
     It's hard to read and maintain code that heavily relies on anonymous functions.
     ```haxe
     //hard to read
