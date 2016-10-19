@@ -28,7 +28,7 @@ Provide better syntax for anonymous functions declaration.
     ```haxe
     array.map(function(a) return a.toInt()).sort(function(a, b) return a - b);
     //vs
-    array.map(a -> a.toInt()).sort((a, b) => a - b);
+    array.map(a -> a.toInt()).sort((a, b) -> a - b);
     ```
     Required boilerplate reduced from 32 chars to 4. 
 
