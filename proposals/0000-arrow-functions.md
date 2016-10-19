@@ -21,14 +21,14 @@ Provide better syntax for anonymous functions declaration.
     var names = profiles.map(function(p) return p.getName());
 
     //best
-    var names = users.map(u => u.getProfile()).filter(p => p.inCountry('USA')).map(p => p.getName());
+    var names = users.map(u -> u.getProfile()).filter(p -> p.inCountry('USA')).map(p -> p.getName());
     ```
 
 * In some cases total length of boilerplate code may be two times bigger than useful code size.
     ```haxe
     array.map(function(a) return a.toInt()).sort(function(a, b) return a - b);
     //vs
-    array.map(a => a.toInt()).sort((a, b) => a - b);
+    array.map(a -> a.toInt()).sort((a, b) => a - b);
     ```
     Required boilerplate reduced from 32 chars to 4. 
 
@@ -82,7 +82,7 @@ Following syntax is proposed for arrow functions in Haxe:
 * No arguments:
 
     ```haxe
-    () => expr
+    () -> expr
     //equivalent for (depending on context)
     function() expr; //for Void->Void
     function() return expr;
@@ -91,7 +91,7 @@ Following syntax is proposed for arrow functions in Haxe:
 * Single argument:
 
     ```haxe
-    arg => expr
+    arg -> expr
     //equivalent for
     function(arg) expr;
     function(arg) return expr;
@@ -100,7 +100,7 @@ Following syntax is proposed for arrow functions in Haxe:
 * Multiple arguments:
 
     ```haxe
-    (arg1, arg2) => expr
+    (arg1, arg2) -> expr
     //equivalent for
     function(arg1, arg2) expr;
     function(arg1, arg2) return expr;
@@ -109,18 +109,9 @@ Following syntax is proposed for arrow functions in Haxe:
 * Implicit typing:
 
     ```haxe
-    (arg1:Int, arg2:String):Int => expr
+    (arg1:Int, arg2:String):Int -> expr
     //equivalent for
     function(arg1:Int, arg2:String):Int return expr;
-    
-    ```
-
-* Add brackets if `=>` operator can interfer map declaration:
-
-    ```haxe
-    [
-        'hello' => (() => 'world')
-    ]
     ```
 
 If return type is not specified, then whether function returns something or has `Void` return type, should be decided by type inference system. 
