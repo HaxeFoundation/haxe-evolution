@@ -75,6 +75,8 @@ Provide better syntax for anonymous functions declaration.
 
 ## Detailed design
 
+### Syntax 
+
 Following syntax is proposed for arrow functions in Haxe: 
 
 * No arguments:
@@ -122,6 +124,13 @@ Following syntax is proposed for arrow functions in Haxe:
     ```
 
 If return type is not specified, then whether function returns something or has `Void` return type, should be decided by type inference system. 
+
+### AST
+
+Following constructor is proposed for expression definition of arrow functions:
+```haxe
+ELambda(args:Array<FunctionArg>, ret:Null<ComplexType>, expr:Expr)
+```
 
 ## Impact on existing code
 
