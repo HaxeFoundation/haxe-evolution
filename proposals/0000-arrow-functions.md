@@ -5,7 +5,7 @@
 
 ## Introduction
 
-Provide better syntax for anonymous functions declaration. 
+Provide better syntax for anonymous functions declaration.
 
 ## Motivation
 
@@ -14,10 +14,10 @@ Provide better syntax for anonymous functions declaration.
     ```haxe
     //hard to read
     var names = users.map(function(u) return u.getProfile()).filter(function(p) return p.inCountry('USA')).map(function(p) return p.getName());
-    
+
     //a little better
     var profiles = users.map(function(u) return u.getProfile());
-    profiles = profiles.filter(function(p) return p.inCountry('USA'));    
+    profiles = profiles.filter(function(p) return p.inCountry('USA'));
     var names = profiles.map(function(p) return p.getName());
 
     //best
@@ -30,18 +30,18 @@ Provide better syntax for anonymous functions declaration.
     //vs
     array.map(a -> a.toInt()).sort((a, b) -> a - b);
     ```
-    Required boilerplate reduced from 32 chars to 4. 
+    Required boilerplate reduced from 32 chars to 4.
 
-* Nowadays arrow functions are largely adopted by programmers community. 
+* Nowadays arrow functions are largely adopted by programmers community.
     Lack of such functions in Haxe raises questions for newcomers that Haxe suffers stagnation in development.
-    This factor has negative impact on growth of Haxe community.  
+    This factor has negative impact on growth of Haxe community.
 
 * Current syntax of anonymous functions in Haxe is quite verbose compared to other languages.
     ```haxe
     //Haxe
     function() return expr
     function(arg) return expr
-    
+
     //TypeScript
     () => expr
     arg => expr
@@ -57,11 +57,11 @@ Provide better syntax for anonymous functions declaration.
     //Scala
     () => expr
     (arg) => expr
-        
+
     //Java
     () -> expr
     (arg) -> expr
-    
+
     //Swift
     { expr }
     { arg1 in expr }
@@ -75,9 +75,9 @@ Provide better syntax for anonymous functions declaration.
 
 ## Detailed design
 
-### Syntax 
+### Syntax
 
-Following syntax is proposed for arrow functions in Haxe: 
+Following syntax is proposed for arrow functions in Haxe:
 
 * No arguments:
 
@@ -87,7 +87,7 @@ Following syntax is proposed for arrow functions in Haxe:
     function() expr; //for Void->Void
     function() return expr;
     ```
-    
+
 * Single argument:
 
     ```haxe
@@ -109,19 +109,22 @@ Following syntax is proposed for arrow functions in Haxe:
 * Implicit typing:
 
     ```haxe
-    (arg1:Int, arg2:String):Int -> expr
+    (arg1:Int, arg2:String) -> expr
     //equivalent for
-    function(arg1:Int, arg2:String):Int return expr;
+    function(arg1:Int, arg2:String) return expr;
+    function(arg1:Int, arg2:String) expr;
     ```
+    Implicit return type for arrow functions should not be allowed to not interfer with existing syntax of function type.
 
-If return type is not specified, then whether function returns something or has `Void` return type, should be decided by type inference system. 
+    Whether function returns something or has `Void` return type, should be decided by type inference system.
 
 ### AST
 
 Following constructor is proposed for expression definition of arrow functions:
 ```haxe
-ELambda(args:Array<FunctionArg>, ret:Null<ComplexType>, expr:Expr)
+ELambda(args:Array<FunctionArg>, expr:Expr)
 ```
+Notice an abscense of return type.
 
 ## Impact on existing code
 
@@ -137,4 +140,4 @@ Since macros are being executed before typing, it can be hard to find out in mac
 
 Since users got used to use arrow functions in other languages, various implementations were created with macros: at least two librarys on haxelib
 and few more projects in outher sources.
-However such implementations impact compilation time, introduce non-standart (and different) syntax and should be avoided inside of other macros (breaks compiler cache)  
+However such implementations impact compilation time, introduce non-standart (and different) syntax and should be avoided inside of other macros (breaks compiler cache)
