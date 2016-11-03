@@ -103,14 +103,14 @@ Following syntax is proposed for arrow functions in Haxe:
     function(arg1, arg2) return expr;
     ```
 
-* Implicit typing:
+* Explicit typing:
 
     ```haxe
     (arg1:Int, arg2:String) -> expr
     //equivalent for
     function(arg1:Int, arg2:String) return expr;
     ```
-    Implicit return type for arrow functions should not be allowed to not interfer with existing syntax of function type.
+    Explicit return type for arrow functions should not be allowed to not interfer with existing syntax of function type.
 
 ### AST
 
