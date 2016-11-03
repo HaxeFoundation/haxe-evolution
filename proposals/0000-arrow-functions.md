@@ -83,7 +83,7 @@ Following syntax is proposed for arrow functions in Haxe:
 
     ```haxe
     () -> expr
-    //equivalent for (depending on context)
+    //equivalent for
     function() return expr;
     ```
 
