@@ -118,7 +118,7 @@ Following constructor is proposed for expression definition of arrow functions:
 ```haxe
 ELambda(args:Array<FunctionArg>, expr:Expr)
 ```
-Notice an abscense of return type.
+Notice an absence of return type.
 
 ## Impact on existing code
 
