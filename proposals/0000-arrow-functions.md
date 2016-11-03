@@ -84,7 +84,6 @@ Following syntax is proposed for arrow functions in Haxe:
     ```haxe
     () -> expr
     //equivalent for (depending on context)
-    function() expr; //for Void->Void
     function() return expr;
     ```
 
@@ -93,7 +92,6 @@ Following syntax is proposed for arrow functions in Haxe:
     ```haxe
     arg -> expr
     //equivalent for
-    function(arg) expr;
     function(arg) return expr;
     ```
 
@@ -102,7 +100,6 @@ Following syntax is proposed for arrow functions in Haxe:
     ```haxe
     (arg1, arg2) -> expr
     //equivalent for
-    function(arg1, arg2) expr;
     function(arg1, arg2) return expr;
     ```
 
@@ -112,11 +109,8 @@ Following syntax is proposed for arrow functions in Haxe:
     (arg1:Int, arg2:String) -> expr
     //equivalent for
     function(arg1:Int, arg2:String) return expr;
-    function(arg1:Int, arg2:String) expr;
     ```
     Implicit return type for arrow functions should not be allowed to not interfer with existing syntax of function type.
-
-    Whether function returns something or has `Void` return type, should be decided by type inference system.
 
 ### AST
 
