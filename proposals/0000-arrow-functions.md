@@ -114,11 +114,7 @@ Following syntax is proposed for arrow functions in Haxe:
 
 ### AST
 
-Following constructor is proposed for expression definition of arrow functions:
-```haxe
-ELambda(args:Array<FunctionArg>, expr:Expr)
-```
-Notice an absence of return type.
+To distinct normal and arrow function syntaxes in AST new field `@:optional isLambda:Bool` is proposed to be added to [haxe.macro.Function](http://api.haxe.org/haxe/macro/Function.html) structure. Such change will have minimal impact on existing macros.
 
 ## Impact on existing code
 
