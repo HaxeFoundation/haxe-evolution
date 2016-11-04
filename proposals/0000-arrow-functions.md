@@ -114,7 +114,9 @@ Following syntax is proposed for arrow functions in Haxe:
 
 ### AST
 
-To distinct normal and arrow function syntaxes in AST new field `@:optional isLambda:Bool` is proposed to be added to [haxe.macro.Function](http://api.haxe.org/haxe/macro/Function.html) structure. Such change will have minimal impact on existing macros.
+Since proposed syntax is just another way to express function declaration, no AST changes required.
+
+But in Haxe 4.0 new field `@:optional isLambda:Bool` could be added to [haxe.macro.Function](http://api.haxe.org/haxe/macro/Function.html) structure to distinct normal and arrow function syntaxes in AST.
 
 ## Impact on existing code
 
