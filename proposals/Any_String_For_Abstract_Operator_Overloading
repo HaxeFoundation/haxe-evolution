@@ -16,8 +16,6 @@ But with only a few symbol Operators it is hard to create expressive abstracts t
 For instance you may want a library that provides a cross product operator "X".
 My suggestion is to couch any operator string that a user wants within ``
 
-## Motivation
-
 To allow abstracts operators to be more expressive, and thus attract more University type interest.
 
 ## Detailed design
@@ -26,7 +24,7 @@ I propose the use of ` to couch operators so that any string could be used, so f
 
 Usage:
 ```haxe
-abstract MyAbstract(String) {
+abstract MyAbstract(String) from String to String {
   public inline function new(s:String) {
     this = s;
   }
@@ -43,6 +41,13 @@ class Main {
     trace( operator `add` ' flexibility' );
   }
 }
+```
+
+This should be implemented to work with binary, unary, and comparisom opperators.
+So users could use suitable abstracts with unary and comparisom to create more natural code.
+``` haxe
+var next = `inc` stepper;
+var value = ( fred `faster than` tom );
 ```
 
 ## Impact on existing code
