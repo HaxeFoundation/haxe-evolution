@@ -1,6 +1,6 @@
 # Any Operator Overloading, by use of couching ``
 
-* Proposal: [Any Operatator ( Any String For Abstract Operators ) ](Any Operators.md)
+* Proposal: [Any Operator ( Any String For Abstract Operators ) ](Any Operators.md)
 * Author: [Justinfront](https://github.com/justinfront)
 
 ## Introduction
