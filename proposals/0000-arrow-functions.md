@@ -87,10 +87,11 @@ Following syntax is proposed for arrow functions in Haxe:
     function() return expr;
     ```
 
-* Single argument:
+* Single argument (parentheses are optional):
 
     ```haxe
     arg -> expr
+    (arg) -> expr
     //equivalent for
     function(arg) return expr;
     ```
