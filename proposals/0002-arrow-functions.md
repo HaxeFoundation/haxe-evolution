@@ -1,6 +1,6 @@
 # Arrow functions
 
-* Proposal: [HXP-0000](0000-arrow-functions.md)
+* Proposal: [HXP-0002](0002-arrow-functions.md)
 * Author: [Alexander Kuzmenko](https://github.com/RealyUniqueName)
 
 ## Introduction
