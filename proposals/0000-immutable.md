@@ -35,6 +35,7 @@ some of them:
    One can use macro to automate that, but some issues can't be solved by it, as well as new issues are being introduced.
    Here I'll just copy my [comment](https://github.com/HaxeFoundation/haxe-evolution/issues/17#issuecomment-275680691)
    from the other immutability discussion:
+   
    >> Would not a haxe.Immutable<{ field : Int }> be enough? (we can use a macro to implement it)
    >
    > I'm using such a macro (`@:genericBuild(...) class Const<T>`) in my work project, which seemed to be a great idea at first, but it has quite a list of problems, some of them are (in no particular order):
