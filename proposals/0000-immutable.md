@@ -110,7 +110,7 @@ Unification rules are the following:
 
 It should also work for enum instances by adding `const` to the constructor arguments, for example:
 
-```
+```haxe
 enum E {
   A;
   B(obj:{f:Int});
