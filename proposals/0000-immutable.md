@@ -61,7 +61,7 @@ this usage of a type should be treated as immutable. This keyword will also be u
 access modifier to specify that `this` is typed as immutable within the method, also meaning that
 this method is safe to call on immutable versions of a class.
 
-Let's look at the example of how code using this fature would look like:
+Let's look at the example of how code using this feature would look like:
 
 ```haxe
 class User {
@@ -125,6 +125,37 @@ function f(e: const E) {
 }
 ```
 
+### Example: Array<T>
+
+Let's see how a core standard class like Array would behave wrt constness. Its definition would have several
+non-mutating methods marked with `const`, e.g.:
+
+```haxe
+extern class Array<T> {
+  function new();
+  const function concat(a:const Array<T>):Array<T>; // TODO: type hole here???
+  function push(x:T):Int;
+}
+```
+
+```haxe
+var a:Array<{f:Int}> = [];
+
+```
+
+
+
+### Implementation details
+
+Within the compiler, there are two ways to store the "constness" of a type instance:
+ 
+ * a new constructor for `Type.t`, e.g. `TConst of t` that would wrap the original type.
+ * a flag (bool or some other marker) in current `TInst/TEnum/TAbstract/TAnon/TType` constructors.
+
+Both would need to be handled specifically in different parts of the compiler, but mostly it would affect
+unification checks and field assign/call typing.
+
+Methods marked with `const` would also need a flag like `cf_const` added to the `tclass_field` type.
 
 ## Impact on existing code
 
@@ -148,9 +179,23 @@ which is more FP-friendly, but is too breaking and not in the line with Haxe's g
 
 ## Opening possibilities
 
+I'm not sure, but I imagine that the additonal information about immutability would help with static analysis
+to provide better purity checks and optimizations relying on it.
+
 Introducing `const` keyword would also allow to use it for defining immutable local name (as opposed to `var`),
 but that's out of the scope of this proposal.
 
 ## Unresolved questions
 
-Which parts of the design in question is still to be determined?
+The exact syntax for constant types. The most obvious and least breaking solution would be to have something
+like `Const<T>`, but I really don't like magic types like this and it also brings up the type parameter variance
+question, so it's hacky and I wouldn't recommend doing that.
+
+The `const T`, while a new syntax looks much more clear and definitive. However I'm not sure if it looks good enough
+within other syntax, e.g. `var a:const Array<String>`, or `function f(a:const SomeType, b:OtherType)` - that space
+separation feels a bit uneasy to me.
+
+So, other option is to have type modifiers using function call syntax (i.e. `const(T)`). This way IMO it reads in a bit
+more consistent flow: `var a:const(Array<String>)`, `function f(a:const(SomeType), b:OtherType)`.
+
+Anyway, this is yet to be discussed.
