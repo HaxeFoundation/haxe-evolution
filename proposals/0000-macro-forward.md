@@ -5,7 +5,7 @@
 
 ## Introduction
 
-Provide a way have macro functions inside a class without typing that whole class
+Provide a way to have macro functions inside a class without typing that whole class
 in macro context.
 
 ## Motivation
