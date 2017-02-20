@@ -61,7 +61,7 @@ for that metadata and extract the path to a real method to be evaluated. So if t
 real method is in another module, the current one doesn't need to be typed in macro
 context at all.
 
-In additional to per-method macro we could have class-level `@:forwardMacro(MyMacroClass)`
+In addition to per-method macro we could have class-level `@:forwardMacro(MyMacroClass)`
 metadata that will forward all bodyless macro methods from this class to the specified `MyMacroClass`.
 
 ## Impact on existing code
