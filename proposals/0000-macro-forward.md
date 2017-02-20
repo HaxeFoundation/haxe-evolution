@@ -1,11 +1,11 @@
-# Macro method forwarding
+# Expression macro method forwarding
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
 
 ## Introduction
 
-Provide a way to have macro functions inside a class without typing that whole class
+Provide a way to have expression macro functions inside a class without typing that whole class
 in macro context.
 
 ## Motivation
