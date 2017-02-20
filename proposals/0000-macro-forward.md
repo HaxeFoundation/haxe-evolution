@@ -1,4 +1,4 @@
-# Forwarding macro calls
+# Macro method forwarding
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
