@@ -92,7 +92,7 @@ indie.createGame(); //Error: unknown identifier "indie"
 
 ### Type matching as a condition or a guard for `case` in `switch`
 
-If type matching is used in `case` condition then left hand operator of `is` becomes a declared variable of checked type.
+If type matching is used in `case` condition then left hand operand of `is` becomes a declared variable of checked type.
 Variables introduced by type matching in `case` or in a guard are only available in a body or a guard of that `case`:
 
 ```haxe
