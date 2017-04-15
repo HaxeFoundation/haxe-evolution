@@ -20,13 +20,13 @@ There are already two ways to do it in Haxe.
 #### `Std.is()` and typed cast
 
 ```haxe
-if(Std.is(developer, Indie)) {
+if(Std.is(developer, Indie) && (cast developer:Indie).hasMotivation()) {
 	crowd.throwMoneyAt(cast(developer, Indie));
 	cast(developer, Indie).createGameEngine();
 }
 ```
 Drawbacks: 
-* Performance penalty because both `Std.is()` and typed cast perform the same type checks at runtime twice.
+* Performance penalty because both `Std.is()` and typed cast perform the same type checks every time.
 * Verbose syntax.
 
 #### `Std.is()` and untyped cast
