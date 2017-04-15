@@ -32,9 +32,9 @@ Drawbacks:
 #### `Std.is()` and untyped cast
 
 ```haxe
-if(Std.is(developer, Indie) && (cast developer:Indie).hasMotivation()) {
+if(Std.is(developer, Indie) && (cast developer:Indie).hasMotivation()) {	
+	crowd.throwMoneyAt(cast indie);
 	var indie:Indie = cast developer;
-	crowd.throwMoneyAt(indie);
 	indie.createGameEngine();
 }
 ```
