@@ -74,7 +74,7 @@ if(developer is indie:Indie || indie.hasMotivation()) {	//Error: unknown identif
 }
 ```
 The same rules apply to `while` syntax:
-```
+```haxe
 while(developers[0] is indie:Indie && indie.hasMotivation()) {
 	indie.createGameEngine();
 	developers.shift();
@@ -82,7 +82,7 @@ while(developers[0] is indie:Indie && indie.hasMotivation()) {
 indie.createGame(); //Error: unknown identifier "indie"
 ```
 Except for `do...while` declared variable is not available in a loop body.
-```
+```haxe
 do {
 	indie.createGameEngine(); //Error: unknown identifier "indie"
 	developers.shift();
