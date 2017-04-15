@@ -45,7 +45,7 @@ Drawbacks:
 ### Proposed method
 
 ```haxe
-if((developer is indie:Indie) && indie.hasMotivation()) {
+if(developer is indie:Indie && indie.hasMotivation()) {
 	crowd.throwMoneyAt(indie);
 	indie.createGameEngine();
 }
