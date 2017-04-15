@@ -113,7 +113,7 @@ switch(developer) {
 
 ### Type matching in other places
 
-In any other places except `if`, `while` conditions and `switch` cases and guards type matching should not be allowed.
+Type matching should not be allowed in any other places except `if`, `while` conditions and `switch` cases and guards.
 ```haxe
 var isIndie = developer is Indie;       //Simple `is` allowed.
 var isIndie = developer is indie:Indie; //Error: type matching is not allowed here.
