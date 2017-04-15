@@ -86,7 +86,7 @@ Except for `do...while` declared variable is not available in a loop body.
 do {
 	indie.createGameEngine(); //Error: unknown identifier "indie"
 	developers.shift();
-} while(developers[0] is indie:Indie && indie.hasMotivation())
+} while(developers[0] is indie:Indie && indie.hasMotivation());
 indie.createGame(); //Error: unknown identifier "indie"
 ```
 
