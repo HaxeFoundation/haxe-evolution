@@ -59,7 +59,7 @@ Benefits:
 
 ### Type matching as a condition for `if` and `while`
 
-Type matching declares a new variable of checked type. This variable is available inside of `if` condition and block only if type check evaluated to `true`:
+Type matching declares a new variable of checked type. This variable is available inside of `if` and condition and `if` block only if type check evaluated to `true`:
 ```haxe
 if(developer is indie:Indie && indie.hasMotivation()) {
 	indie.createGameEngine();
