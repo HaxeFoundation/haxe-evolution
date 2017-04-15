@@ -59,31 +59,87 @@ Benefits:
 
 ### Type matching as a condition for `if` and `while`
 
+Type matching declares a new variable of checked type. This variable is available inside of `if` condition and block only if type check evaluated to `true`:
+```haxe
+if(developer is indie:Indie && indie.hasMotivation()) {
+	indie.createGameEngine();
+} else {
+	indie.procrastinate(); //Error: unknown identifier "indie"
+}
+indie.createGame(); //Error: unknown identifier "indie"
+```
+This variable also should not be available in branches of condition which get executed if type matching evaluated to `false`
+```haxe
+if(developer is indie:Indie || indie.hasMotivation()) {	//Error: unknown identifier "indie"
+}
+```
+The same rules apply to `while` syntax:
+```
+while(developers[0] is indie:Indie && indie.hasMotivation()) {
+	indie.createGameEngine();
+	developers.shift();
+}
+indie.createGame(); //Error: unknown identifier "indie"
+```
+Except for `do...while` declared variable is not available in a loop body.
+```
+do {
+	indie.createGameEngine(); //Error: unknown identifier "indie"
+	developers.shift();
+} while(developers[0] is indie:Indie && indie.hasMotivation())
+indie.createGame(); //Error: unknown identifier "indie"
+```
 
+### Type matching as a condition or a guard for `case` in `switch`
 
-Describe the proposed design in details the way language user can understand
-and compiler developer can implement. Show corner cases, provide usage examples,
-describe how this solution is better than current workarounds.
+If type matching is used in `case` condition then left hand operator of `is` becomes a declared variable of checked type.
+Variables introduced by type matching in `case` or in a guard are only available in a body or a guard of that `case`:
+
+```haxe
+switch(developer) {
+	case newbie is Indie if(newbie.hasMotivation() && developer is student:Student):
+		student.learnToCode();
+		newbie.createGameEngine();
+		//`indie` and `hired` are not available here
+	case indie is Indie:
+		indie.createGameEngine();
+		//`student`, `newbie` and `hired` are not available here
+	case hired is Hired:
+		hired.resolveTask();
+		//`student`, `newbie` and `indie` are not available here
+}
+//`student`, `newbie`, `indie` and `hired` are not available here
+```
+
+### Type matching in other places
+
+In any other places except `if`, `while` conditions and `switch` `case`s and guards type matching should not be allowed.
+```haxe
+var isIndie = developer is Indie;		//Simple `is` allowed.
+var isIndie = developer is indie:Indie;	//Error: type matching is not allowed here.
+indie.createGameEngine();				//Error: unknown identifier "indie".
+```
+
+### Expression definition for `is` keyword.
+
+```haxe
+EIs(type:ComplexType, ?checked:Expr, ?declared:String);
+```
+Depending on a place where `is` keyword is used either `checked` or `declared` may be `null`.
 
 ## Impact on existing code
 
-What impact this change will have on existing code? Will it break compilation?
-Will it compile, but break in run-time? How easy it is to migrate existing Haxe code?
+This proposal introduces new syntax without breaking old one. So it can only impact some rare macro code which tries to handle all kinds of expressions.
 
 ## Drawbacks
 
-Describe the drawbacks of the proposed design worth consideration. This doesn't include
-breaking changes, since that's described in the previous section.
+Can't imagine any drawbacks.
 
 ## Alternatives
 
-What alternatives have you considered to address the same problem, why the proposed solution is better?
-
-## Opening possibilities
-
-Does this change make other future changes possible or easier? Leave this section out if the proposed change
-is completely self-contained.
+The only alternatives that have meaning are described in [Motivation](#Motivation) section.
+Trying to implement such behavior with macros looks like too complex task.
 
 ## Unresolved questions
 
-Which parts of the design in question is still to be determined?
+* Is it allowed to mix type matching and structure matching in a single `switch`?
