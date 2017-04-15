@@ -115,9 +115,9 @@ switch(developer) {
 
 In any other places except `if`, `while` conditions and `switch` cases and guards type matching should not be allowed.
 ```haxe
-var isIndie = developer is Indie;		//Simple `is` allowed.
-var isIndie = developer is indie:Indie;	//Error: type matching is not allowed here.
-indie.createGameEngine();				//Error: unknown identifier "indie".
+var isIndie = developer is Indie;       //Simple `is` allowed.
+var isIndie = developer is indie:Indie; //Error: type matching is not allowed here.
+indie.createGameEngine();               //Error: unknown identifier "indie".
 ```
 
 ### Expression definition for `is` keyword.
