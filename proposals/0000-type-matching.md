@@ -20,7 +20,7 @@ There are two ways to do it in Haxe.
 #### `Std.is()` and typed cast
 
 ```haxe
-if(Std.is(developer, Indie) && (cast developer:Indie).hasMotivation()) {
+if(Std.is(developer, Indie) && cast(developer, Indie).hasMotivation()) {
 	crowd.throwMoneyAt(cast(developer, Indie));
 	cast(developer, Indie).createGameEngine();
 }
