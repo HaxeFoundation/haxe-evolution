@@ -5,11 +5,12 @@
 
 ## Introduction
 
-This proposal is an attempt to simplify checking and casting a variable to another type.
+This proposal is an attempt to improve checking and casting a variable to another type.
 
 ## Motivation
 
-It's a common case to check if a variable is of some type and cast it to that type. 
+It's a common case to check if a variable is of some type and cast it to that type.
+
 <sub>This section of proposal showcases `if` examples only. See [Detailed design](#Detailed-design) section for `switch` examples.</sub>
 
 ### Existing methods
@@ -20,35 +21,32 @@ There are already two ways to do it in Haxe.
 
 ```haxe
 if(Std.is(developer, Indie)) {
-	crowd.throwMoneyAt(cast(developer, Indie));	
-	//or
-	cast(developer, Indie).createGameEngine();	
+	crowd.throwMoneyAt(cast(developer, Indie));
+	cast(developer, Indie).createGameEngine();
 }
 ```
 Drawbacks: 
-* Performance penalty because both `Std.is()` and typed cast performing the same type checks at runtime twice.
+* Performance penalty because both `Std.is()` and typed cast perform the same type checks at runtime twice.
 * Verbose syntax.
 
 #### `Std.is()` and untyped cast
 
 ```haxe
-if(Std.is(developer, Indie)) {
-	crowd.throwMoneyAt(cast developer);
-	//or
+if(Std.is(developer, Indie) && (cast developer:Indie).hasMotivation()) {
 	var indie:Indie = cast developer;
+	crowd.throwMoneyAt(indie);
 	indie.createGameEngine();
 }
 ```
 Drawbacks: 
-* Brings `Dynamic` because of untyped cast. Which can lead to all kinds of runtime errors when it comes to refactoring.
+* Brings `Dynamic` because of untyped cast. Which can lead to all kinds of runtime errors, especially when it comes to refactoring.
 * Verbose syntax if you need to use an API of checked type.
 
 ### Proposed method
 
 ```haxe
-if(developer is indie:Indie) {
+if((developer is indie:Indie) && indie.hasMotivation()) {
 	crowd.throwMoneyAt(indie);
-	//or
 	indie.createGameEngine();
 }
 ```
@@ -58,6 +56,10 @@ Benefits:
 * Clean syntax.
 
 ## Detailed design
+
+### Type matching as a condition for `if` and `while`
+
+
 
 Describe the proposed design in details the way language user can understand
 and compiler developer can implement. Show corner cases, provide usage examples,
