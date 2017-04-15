@@ -11,11 +11,11 @@ This proposal is an attempt to improve checking and casting a variable to anothe
 
 It's a common case to check if a variable is of some type and cast it to that type.
 
-<sub>This section of proposal showcases `if` examples only. See [Detailed design](#Detailed-design) section for `switch` examples.</sub>
+<sub>This section of proposal showcases `if` examples only. See [Detailed design](#Detailed-design) section for other cases.</sub>
 
 ### Existing methods
 
-There are already two ways to do it in Haxe.
+There are two ways to do it in Haxe.
 
 #### `Std.is()` and typed cast
 
