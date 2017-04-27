@@ -25,20 +25,20 @@ if(Std.is(developer, Indie) && cast(developer, Indie).hasMotivation()) {
 	cast(developer, Indie).createGameEngine();
 }
 ```
-Drawbacks: 
+Drawbacks:
 * Performance penalty because both `Std.is()` and typed cast perform the same type checks every time.
 * Verbose syntax.
 
 #### `Std.is()` and untyped cast
 
 ```haxe
-if(Std.is(developer, Indie) && (cast developer:Indie).hasMotivation()) {	
+if(Std.is(developer, Indie) && (cast developer:Indie).hasMotivation()) {
 	crowd.throwMoneyAt(cast indie);
 	var indie:Indie = cast developer;
 	indie.createGameEngine();
 }
 ```
-Drawbacks: 
+Drawbacks:
 * Brings `Dynamic` because of untyped cast. Which can lead to all kinds of runtime errors, especially when it comes to refactoring.
 * Verbose syntax if you need to use an API of checked type.
 
@@ -50,16 +50,25 @@ if(developer is indie:Indie && indie.hasMotivation()) {
 	indie.createGameEngine();
 }
 ```
-Benefits: 
+Benefits:
 * Better performance thanks to only one runtime type check.
 * Completely type safe.
 * Clean syntax.
 
 ## Detailed design
 
+Type matching declares a new variable of checked type. This variable should only be available in branches of code which get executed if type matching evaluated to true.
+```haxe
+var isMotivatedIndie = developer is indie:Indie && indie.hasMotivation();
+indie.createGameEngine(); //Error: unknown identifier "indie".
+
+var isMotivatedIndie = !(developer is indie:Indie) && indie.hasMotivation(); // Error: unknown identifier "indie"
+var isStudent = developer is student:Student || student.hasMotivation();     // Error: unknown identifier "student"
+```
+
 ### Type matching as a condition for `if` and `while`
 
-Type matching declares a new variable of checked type. This variable is available inside of `if` condition and `if` block only if type check evaluated to `true`:
+Declared variable is available inside of `if` condition and `if` block only if type check evaluated to `true`:
 ```haxe
 if(developer is indie:Indie && indie.hasMotivation()) {
 	indie.createGameEngine();
@@ -68,9 +77,17 @@ if(developer is indie:Indie && indie.hasMotivation()) {
 }
 indie.createGame(); //Error: unknown identifier "indie"
 ```
-This variable also should not be available in branches of condition which get executed if type matching evaluated to `false`
+Declared variable should not be available in branches of code which can be executed even if type matching evaluated to `false`
 ```haxe
-if(developer is indie:Indie || indie.hasMotivation()) {	//Error: unknown identifier "indie"
+if((developer is indie:Indie && indie.hasMotivation()) || anotherCondition()) {
+	indie.createGameEngine(); //Error: unknown identifier "indie"
+}
+
+if(
+	(developer is indie:Indie && indie.hasMotivation())
+	|| indie.hasMotivation()  //Error: unknown identifier "indie"
+) {
+	indie.createGameEngine(); //Error: unknown identifier "indie"
 }
 ```
 The same rules apply to `while` syntax:
@@ -80,9 +97,12 @@ while(developers[0] is indie:Indie && indie.hasMotivation()) {
 	developers.shift();
 }
 indie.createGame(); //Error: unknown identifier "indie"
-```
-Except for `do...while` declared variable is not available in a loop body.
-```haxe
+
+while(developers[0] is indie:Indie && indie.hasMotivation() || anotherCondition()) {
+	indie.createGameEngine(); //Error: unknown identifier "indie"
+	developers.shift();
+}
+
 do {
 	indie.createGameEngine(); //Error: unknown identifier "indie"
 	developers.shift();
@@ -109,15 +129,6 @@ switch(developer) {
 		//`student`, `newbie` and `indie` are not available here
 }
 //`student`, `newbie`, `indie` and `hired` are not available here
-```
-
-### Type matching in other places
-
-Type matching should not be allowed in any other places except `if`, `while` conditions and `switch` cases and guards.
-```haxe
-var isIndie = developer is Indie;       //Simple `is` allowed.
-var isIndie = developer is indie:Indie; //Error: type matching is not allowed here.
-indie.createGameEngine();               //Error: unknown identifier "indie".
 ```
 
 ### Expression definition for `is` keyword.
