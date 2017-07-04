@@ -70,7 +70,7 @@ Both options are viable and both will require changing macro data structures (wh
 
 Because of the required function type structure changes, it will break macros that work
 with `haxe.macro.Expr.ComplexType`, other than that it should not break anything because
-it's a complete new syntax.
+it's a completely new syntax.
 
 If we want to deprecate/remove the old syntax, so we can have one function type syntax (and
 this support unnamed arguments as mentioned above), we can provide a migration tool based on
