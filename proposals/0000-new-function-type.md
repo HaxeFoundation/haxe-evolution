@@ -23,7 +23,7 @@ There are several issues with this syntax:
 
  * For people familiar with functional programming languages, it suggests that auto-currying and partial application are supported, but they aren't.
  * For non-FP people, it looks unfamiliar and differs too much from the actual function definition syntax.
- * It doesn't support argument names. While they aren't important for the type system, they are very useful for self-documenting code, IDE signature hints, callback auto-generation, etc.
+ * It doesn't support argument names. While they aren't important for the type system, they are very useful for self-documenting code, IDE signature hints, callback auto-generation, etc. (see [fancy examples with screenshots here](https://github.com/HaxeFoundation/haxe/pull/6428#issue-239976019))
 
 What we could have instead is a function type syntax that somewhat follows the new [arrow function](https://github.com/HaxeFoundation/haxe-evolution/blob/master/proposals/0002-arrow-functions.md) syntax:
 
