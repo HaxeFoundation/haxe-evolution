@@ -9,15 +9,13 @@ Provide a new, more natural syntax for declaring function types with support for
 
 ## Motivation
 
-Haxe supports first-class functions from the beginning, using the following syntax for type-hinting
-variables containing functions:
+Haxe supports first-class functions from the beginning, using the following syntax for type-hinting variables containing functions:
 
 ```haxe
 Int->String->Void
 ```
 
-This syntax is often found in functional languages, such as OCaml and Haskell, but much less
-in non-functional and hybrid languages.
+This syntax is often found in functional languages, such as OCaml and Haskell, but much less in non-functional and hybrid languages.
 
 There are several issues with this syntax:
 
@@ -25,7 +23,7 @@ There are several issues with this syntax:
  * For non-FP people, it looks unfamiliar and differs too much from the actual function definition syntax.
  * It doesn't support argument names. While they aren't important for the type system, they are very useful for self-documenting code, IDE signature hints, callback auto-generation, etc. (see [fancy examples with screenshots here](https://github.com/HaxeFoundation/haxe/pull/6428#issue-239976019))
 
-What we could have instead is a function type syntax that somewhat follows the new [arrow function](https://github.com/HaxeFoundation/haxe-evolution/blob/master/proposals/0002-arrow-functions.md) syntax:
+What we could have instead is a function type syntax that follows the new [arrow function](https://github.com/HaxeFoundation/haxe-evolution/blob/master/proposals/0002-arrow-functions.md) syntax:
 
 ```
 (id:Int, name:String)->Void
@@ -80,13 +78,13 @@ e.g. `Int->String->Void` to `(a:Int, b:String)->Void`.
 ## Drawbacks
 
 The obvious drawback is that we'll have two function type syntaxes, which is why I think we should
-either deprecate or remove the old syntax. Removing the old syntax would be a huge change, but
-we're talking about a major release, and we are able to provide an automatic migration tool.
+ deprecate and eventually remove the old syntax. Removing the old syntax would be a huge change, but
+we're talking about a major releases, and we are able to provide an automatic migration tool.
 
 ## Alternatives
 
-I already [tried the another approach](https://github.com/HaxeFoundation/haxe/pull/6428) of "augmenting" the current funtion type syntax with argument names: `a:Int -> b:String -> Void`,
-but unfortunately that introduced a [syntax ambiguity](https://github.com/HaxeFoundation/haxe/issues/6433) with macro reification and case patterns. One workaround for that would be to require parenthesis for named arguments, so it would be `(name:Type)->Ret`, but that [suggests](https://github.com/HaxeFoundation/haxe/pull/6428#issuecomment-312671102) that one could do `(name:Type, name:Type)->Ret` while it's an invalid syntax.
+I already [tried the another approach](https://github.com/HaxeFoundation/haxe/pull/6428) of augmenting the current funtion type syntax with argument names: `a:Int -> b:String -> Void`,
+but unfortunately that introduced a [syntax ambiguity](https://github.com/HaxeFoundation/haxe/issues/6433) with macro reification and case patterns. One workaround for that would be to require parenthesis for named arguments, so it would be `(name:Type)->Ret`, but that [suggests](https://github.com/HaxeFoundation/haxe/pull/6428#issuecomment-312671102) that one could do `(name:Type, name:Type)->Ret` while it's an invalid syntax (one would have to do `(name:Type)->(name:Type)->Ret` instead).
 
 ## Unresolved questions
 
