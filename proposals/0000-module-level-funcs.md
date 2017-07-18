@@ -39,10 +39,10 @@ We have two options to deal with this:
 
  1) Implicitly create primary module class for module level functions and forbid explicit primary module class in this case. This would be the safest and most minimal change.
  2) Allow both primary module class and module statics class and apply additional identifier resolution rules:
-   * `import MyModule` imports both types and module-level functions from `MyModule` to local namespace.
-   * `import MyModule.method` if there's a module-level `method` function - import it, otherwise look for `method` in the primary class statics as it's done now.
-   * `import MyModule.*` imports both module-level functions and primary class statics, module-levels taking precedence.
-   * `MyModule.method()` calls the module-level function, if found, otherwise calls static method of the primary class.
+    * `import MyModule` imports both types and module-level functions from `MyModule` to local namespace.
+    * `import MyModule.method` if there's a module-level `method` function - import it, otherwise look for `method` in the primary class statics as it's done now.
+    * `import MyModule.*` imports both module-level functions and primary class statics, module-levels taking precedence.
+    * `MyModule.method()` calls the module-level function, if found, otherwise calls static method of the primary class.
 
 I propose going with the first option at least for now, because that would greatly simplify implementation and won't introduce new resolution semantics. Moreover, I think it'll be what people actually want when using module-level function declarations.
 
