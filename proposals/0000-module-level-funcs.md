@@ -11,7 +11,7 @@ Support defining functions directly in the module (.hx file) instead  of creatin
 
 Classes are the heart of object-oriented programming found in languages like Java. In this paradigm, we model our program as interaction between class instances, so it makes sense to have classes as containers for everything. Non-factory static methods are relatively rare, so there's no practical need for functions defined outside of a class.
 
-Nowadays, however, other programming paradigms, such as functional programming is becoming more and more popular, reducing the need for classic OOP classes and instead focusing on functions that process passive data structures.
+Nowadays, however, other programming paradigms, such as functional programming are becoming more and more popular, reducing the need for classic OOP classes and instead focusing on functions that process passive data structures.
 
 Haxe provides a lot of features supporting functional oriented paradigms (most importantly first-class functions), however it lacks a clean way to actually define functions without creating a wrapping class. This is annoying and gives a feeling of bloatedness to new people coming from non-OOP background. This is particularly unfortunate, because most of our target languages support plain functions, so having to wrap everything in a class can be a con when deciding whether to use Haxe or a target language directly.
 
