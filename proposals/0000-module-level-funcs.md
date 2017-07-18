@@ -1,4 +1,4 @@
-# Module-level functions and variables
+# Module-level functions
 
 * Proposal: [HXP-NNNN](NNNN-module-level-funcs.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
@@ -12,7 +12,7 @@ of creating a class with static methods.
 
 Classes are the heart of object-oriented programming found in languages like Java. In this paradigm, we
 model our program as interaction between class instances, so it makes sense to have classes as containers
-for everything. Non-factory static methods are relatively rare, so there's no need for functions defined outside of a class.
+for everything. Non-factory static methods are relatively rare, so there's no practical need for functions defined outside of a class.
 
 Nowadays, however, other programming paradigms, such as functional programming is becoming more and more
 popular, reducing the need for classic OOP classes and instead focusing on functions that process passive
