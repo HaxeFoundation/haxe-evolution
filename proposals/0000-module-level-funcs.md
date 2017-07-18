@@ -27,7 +27,7 @@ Supporting module-level functions should be pretty-straightforward. To minimize 
  * thereafter, when resolving an identifier (see more below), actually generate a static field access (`TTypeExpr(ModuleStatics).static(name)`)
  * when generating output, if target supports declaring plain functions (JavaScript, Lua, C, etc.), a generator can decide to lose the `KModuleStatics` class and generate functions directly. If target requires a wrapping class (Java, C#), generate like a normal class (plus, some optimizations an be applied, e.g. C# could mark class as `static`, and don't generate reflection helpers).
 
-While this proposal describes module-level functions, I think it would be logical and consistent (although less useful) to also allow module-level variables, treating them similarly static vars.
+> While this proposal describes module-level functions, I think it would be logical and consistent (although less useful) to also allow module-level variables, treating them similarly static vars.
 
 The `-main` argument should also handle module-level functions for program entry points.
 
@@ -53,17 +53,13 @@ code will be affected by this, because it only matters for exhaustive pattern ma
 
 ## Drawbacks
 
-> TODO: Describe the drawbacks of the proposed design worth consideration. This doesn't include breaking changes, since that's described in the previous section.
+I don't immediately see any drawbacks in the proposed feature. On the contrary, I believe it'll make Haxe not only more competitive in terms of expressiveness in everyday use, but also easier to learn for absolute beginners in programming, because they won't have to learn the concept of a class and static methods from the start.
 
 ## Alternatives
 
-> TODO: What alternatives have you considered to address the same problem, why the proposed solution is better?
-
-## Opening possibilities
-
-> TODO: Does this change make other future changes possible or easier? Leave this section out if the proposed change
-is completely self-contained.
+I don't see any viable alternatives that would allow defining plain functions. Having a Haxe superset that is compiled to Haxe with a macro or in any other way isn't something anyone would seriously consider in practice.
 
 ## Unresolved questions
 
-> TODO: Which parts of the design in question is still to be determined?
+ * importing/identifier resolution - two variants proposed.
+ * module-level vars - generally considered bad style, but would be consistent to have and can actually be useful for small scripts
