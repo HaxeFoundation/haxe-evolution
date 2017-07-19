@@ -46,6 +46,34 @@ We have two options to deal with this:
 
 I propose going for the first option at least for now, because that would greatly simplify implementation and won't introduce new resolution semantics. Moreover, I think it'll be what people actually want when using module-level function declarations.
 
+### Code example
+
+Here's some code to break down the wall of test a bit (also including module-level variables for the sake of example):
+
+Hello.hx
+```haxe
+inline var USAGE = "<name> [times]";
+
+function sayHello(name) trace('Hi, $name!');
+
+function main() {
+    var name, times;
+    switch Sys.args() {
+        case [n]:
+            name = n;
+            times = 1;
+        case [n,t]:
+            name = n;
+            times = Std.parseInt(t);
+        default:
+            trace(USAGE);
+            return;
+    }
+    for (_ in 0...times)
+        sayHello(name);
+}
+```
+
 ## Impact on existing code
 
 With regard to existing code, this change can only potentially affect macro code because of newly introduced enum constructors in the macro API, and I believe that a very small portion of macro code will be affected by this, because it only matters for exhaustive pattern matches on `TypeDefKind` and `ClassKind` which are quite rare.
@@ -57,6 +85,10 @@ I don't immediately see any drawbacks in the proposed feature. On the contrary, 
 ## Alternatives
 
 I don't see any viable alternatives that would allow defining plain functions. Having a Haxe superset that is compiled to Haxe with a macro or in any other way isn't something anyone would seriously consider in practice.
+
+## Opening possibilities
+
+I think we could also use module-level functions to define extern functions (e.g. `extern function SDL_Init(flags:UInt32):Int`), but that's gonna require some more thought, because it would mean that the implicitly created class must be made extern automatically.
 
 ## Unresolved questions
 
