@@ -88,7 +88,12 @@ I don't see any viable alternatives that would allow defining plain functions. H
 
 ## Opening possibilities
 
-I think we could also use module-level functions to define extern functions (e.g. `extern function SDL_Init(flags:UInt32):Int`), but that's gonna require some more thought, because it would mean that the implicitly created class must be made extern automatically.
+I think we could also use module-level functions to define extern functions, e.g.
+```haxe
+extern function SDL_Init(flags:UInt32):Int;
+````
+
+But that's gonna require some more thought, because it would mean that the implicitly created class must be made extern automatically.
 
 ## Unresolved questions
 
