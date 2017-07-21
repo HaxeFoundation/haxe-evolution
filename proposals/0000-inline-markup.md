@@ -81,6 +81,8 @@ var openingTag = '<$tagName',
 
 parser.pos = start + openingTag.length;
 
+//below `hasNeither` and `count` are left as an excercise to the reader
+
 switch source.indexOf('/>', parser.pos) {
   case v if (v != -1 && hasNeither(source, parser.pos, v, ['<', '>'])):
     parser.pos = v + 2;
@@ -90,7 +92,7 @@ switch source.indexOf('/>', parser.pos) {
         case -1: throw 'unclosed $openingTag';
         case v: parser.pos = v + closingTag.length;
       }
-    } while (count(openingTag, source, start, parser.pos) != count(closingTag, source, start, pos));
+    } while (count(openingTag, source, start, parser.pos) != count(closingTag, source, start, pos)); //
 }
 
 return makeInlineMarkupExpression(source, start, parser.pos);//just turn it into some opaque expression
@@ -124,6 +126,8 @@ This feature does not impact existing non-macro code directly. Depending on how 
    ![](https://raw.githubusercontent.com/back2dos/js-virtual-dom/master/hxx-example.gif)
    
    However trying to get the parser to be reentrant (so you can write e.g. `<div>{[1,2,3].map(i -> <button>{i}</button>)}</div>`), requires you to parse Haxe syntax by hand, which not only is slow and desparate and silly, but also kills autocompletion ... unless you want to implement that part too, which is way beyond desparate and silly.
+   
+3. The idea was proposed to make such a language extension rely on compiler plugins. I'm not even sure it is possible to swap out the parser in this manner, but I would argue it is undesireable, because it makes all libraries that rely on custom parsers mutually exclusive. This is not so with macros, because macros are called explicitly through specific entry points and can therefore coexist in the same build.
 
 ## Opening possibilities
 
