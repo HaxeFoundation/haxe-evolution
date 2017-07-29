@@ -62,6 +62,8 @@ function main() {
 }
 ```
 
+As you can see, mixing module-level functions and vars with other type declarations (`typedef Config` here) works just fine.
+
 ### Reflection
 
 Since the module-level functions/vars end up being static class fields, the usual reflection should automatically work (e.g. `Reflect.field(Type.resolveClass("MyModule"), "myMethod")`). Actually I'm not sure if this is specified to work currently in Haxe, but if it does, generators should respect that and don't over-optimize `KModuleStatics` generation when reflection features are enabled.
