@@ -23,7 +23,7 @@ Supporting module-level functions should be pretty-straightforward. To minimize 
  * allow parsing functions at the module level and parse them into that `TDFunction`.
  * on module loading, when processing syntax declarations into module types, treat all module-level functions as `public static` methods of an implicitly created class. For this class we introduce a new `ClassKind` variant: `KModuleStatics` or something. This is very similar to how `KAbstractImpl`-classes are implicitly created for abstract types.
  * thereafter, when resolving an identifier (see more below), actually generate a static field access (`TTypeExpr(ModuleStatics).static(name)`).
- * when generating output, if target supports declaring plain functions (JavaScript, Lua, C++, etc.), a generator can decide to lose the wrapping `KModuleStatics` class and generate functions directly. If target requires a wrapping class (Java, C#) - generate like a normal class (plus, some optimizations an be applied, e.g. C# could mark class as `static`, and don't generate reflection helpers).
+ * when generating output, if target supports declaring plain functions (JavaScript, Lua, C++, etc.), a generator can decide to lose the wrapping `KModuleStatics` class and generate functions directly. If target requires a wrapping class (Java, C#) - generate like a normal class (plus, some optimizations can be applied, e.g. C# could mark class as `static`, and don't generate reflection helpers).
 
 While the default access modifier for module-level functions is `public`, private module-level functions are supported by explicitly specifying the `private` keyword.
 
