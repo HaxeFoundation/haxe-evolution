@@ -41,25 +41,24 @@ Here's some code to break down the wall of text a bit. A slightly complicated he
 
 Hello.hx
 ```haxe
-inline var USAGE = "<name> [times]";
+inline var USAGE = "Usage: hello <name> [times]";
 
-function sayHello(name) trace('Hi, $name!');
+typedef Config = {
+    name:String,
+    times:Int,
+}
+
+function sayHello(config:Config) {
+    for (i in 0...config.times)
+        trace('Hi, ${config.name}!');
+}
 
 function main() {
-    var name, times;
-    switch Sys.args() {
-        case [n]:
-            name = n;
-            times = 1;
-        case [n,t]:
-            name = n;
-            times = Std.parseInt(t);
-        default:
-            trace(USAGE);
-            return;
-    }
-    for (_ in 0...times)
-        sayHello(name);
+    var args = Sys.args();
+    if (args.length != 2)
+        trace(USAGE);
+    else
+        sayHello({name: args[0], times: Std.parseInt(args[1])});
 }
 ```
 
