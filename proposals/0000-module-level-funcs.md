@@ -41,7 +41,7 @@ Here's some code to break down the wall of text a bit. A slightly complicated he
 
 Hello.hx
 ```haxe
-inline var USAGE = "Usage: hello <name> [times]";
+inline var USAGE = "Usage: hello <name> <times>";
 
 typedef Config = {
     name:String,
