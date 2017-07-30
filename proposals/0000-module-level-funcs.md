@@ -68,9 +68,16 @@ As you can see, mixing module-level functions and vars with other type declarati
 
 Since the module-level functions/vars end up being static class fields, the usual reflection should automatically work (e.g. `Reflect.field(Type.resolveClass("MyModule"), "myMethod")`). Actually I'm not sure if this is specified to work currently in Haxe, but if it does, generators should respect that and don't over-optimize `KModuleStatics` generation when reflection features are enabled.
 
-## Macros, static extensions and so on
+### Macros, static extensions and so on
 
 Since, again, module-level functions/vars are actually static fields, usual rules for `using` and `@:build(MyModule.myMethod)` calls apply, nothing new here.
+
+### Final note
+
+Because this document proposes implementing module-level functions in form of static class fields,
+one may think that it would be inconsistent to have them public and imported implicitly with the module, remember however that this proposal is not about providing syntax sugar for static fields, but about defining functions and var on module level, and the fact they become static fields is an _implementation detail_.
+
+Accessibility and resolution should follow those of other module-level declarations, that is: a module-level declaration (e.g. class/typedef/etc) is public unless specified as private, all module-level declarations are imported when the module is imported. Following these rules it makes sense to have module-levels functions to be public and be imported by default.
 
 ## Impact on existing code
 
