@@ -9,9 +9,9 @@ This proposal comes as an alternative to https://github.com/HaxeFoundation/haxe-
 
 ## Motivation
 
+As the introduction said, this proposal is an alternative to add inline XML. While said proposal wanted to add a fully XML parser to the compiler, this proposal leaves that functionality to the user via a macro function and doesn't stop with XML-like dialects like XML, HTML, JSX,... but let anything to be embedded.
 
-
-In addition, if the IDE supports it, it will be possible to highlight the block thanks to that tag.
+One could argue that, if the sole purpose of this proposal is to add yet another way to call a macro function, why even bother adding this feature. My reasoning for the addition of this feature is clear: Make the compiler aware about the content of the block, something that wouldn't be possible with a macro. Making the compiler aware of this would help other tools like, for example, an IDE can use this information for, if supported, add highlighting, auto completion,... to that specific block. Another example would be the usage of an external linter inside that block.
 
 ## Detailed design
 
@@ -19,9 +19,7 @@ This syntax for this proposal is inspired by the Markdown triple backtick code b
 
 For the compiler, the content would be the same as if the block were surrounded by single quotes with the addition of an optional tag after the starting three backticks ` ```tag something ${myObject.size} ``` ` would be the same as ` 'something ${myObject.size}' ` with the extra step of passing that string to an user macro. 
 
-It could use a similar AST node as this pull request adds https://github.com/HaxeFoundation/haxe/pull/6475 with the addition of an optional tag: `ECodeBlock(original:String, ?tag:String, parts:Array<FormatFragment>)`
-
-It will not only add inline XML, as the mentioned proposal wanted, but add anything the user want: html, xml, jsx, a custom DSL,... 
+It could use a similar AST node as this pull request suggests https://github.com/HaxeFoundation/haxe/pull/6475 with the addition of an optional tag parameter: `ECodeBlock(original:String, ?tag:String, parts:Array<FormatFragment>)`
 
 With the addition of a new Macro API the tag could be registered inside the compiler triggering an user function everytime the registered tag appear. For example, it could be an initialization macro like `--macro registerCodeBlock("xml", Macros.parseXmlCodeBlock)` with `Macros.parseXmlCodeBlock` being a static function that will accept the `ECodeBlock` AST node as a parameter and will return a new transformed expression. The compiler would call this function everytime a code block starts with ` ```xml ... ``` `
 
@@ -61,7 +59,7 @@ There are multiple alternatives for this functionality that wouldn't change anyt
 - Using an user macro with a metadata: `@:codeblock("jsx") var jsx = '...'; `
 - Using an user macro with a function: `var jsx = jsx('...');` `jsx()` being a macro
 
-While these options are known to work I feel that they aren't as recognizable for the user as the proposed pattern. They won't help the IDE with highlighting because the compiler won't be able to offer any help being these alternatives user made and not part of the language. The proposed pattern also avoids the need to escape `"` or `'` if the user wants to use it inside the string.
+But, as explained in the Motivation point, the compiler wouldn't be aware of what that string is representing and wouldn't be able to offer information to other tools. The proposed pattern also avoids the need to escape `"` or `'` if the user wants to use it inside the string.
 
 There are other alternatives that use different opening and closing tokens. I chose ` ``` ` because I feel it would be easy for the parser to parse them and, because it's only found on Markdown, it will lower the chance to create issues if the closing token is present before the block ends.
 
