@@ -5,15 +5,19 @@
 
 ## Introduction
 
-Add support to code blocks with triple backticks for opening an closing them and an optional tag after the opening backticks ` ```tag ... ``` `
+This proposal comes as an alternative to https://github.com/HaxeFoundation/haxe-evolution/pull/12 but leaving the block parsing and transformation to an user macro. It's achieved by the use of triple backticks ` ``` ` as opening and closing tokens and an optional tag after the opening backticks ` ```tag ... ``` ` that would apply an user macro to the block.
 
 ## Motivation
 
-This proposal comes as an alternative to https://github.com/HaxeFoundation/haxe-evolution/pull/12 but leaving the block parsing and transformation to a user macro making it easier to the compiler to parse the block. 
+
+
+In addition, if the IDE supports it, it will be possible to highlight the block thanks to that tag.
+
+## Detailed design
 
 This syntax for this proposal is inspired by the Markdown triple backtick code block syntax. If this syntax is to be followed, the tag may be optional making the code block behavior equal to a single quote string if there is no tag.
 
-For the compiler, parsing the block would be the same as parsing a single quote string block with the addition of an optional tag after the starting three backticks ` ```tag something ${myObject.size} ``` ` would be the same as ` 'something ${myObject.size}' `.
+For the compiler, the content would be the same as if the block were surrounded by single quotes with the addition of an optional tag after the starting three backticks ` ```tag something ${myObject.size} ``` ` would be the same as ` 'something ${myObject.size}' ` with the extra step of passing that string to an user macro. 
 
 It could use a similar AST node as this pull request adds https://github.com/HaxeFoundation/haxe/pull/6475 with the addition of an optional tag: `ECodeBlock(original:String, ?tag:String, parts:Array<FormatFragment>)`
 
@@ -21,19 +25,13 @@ It will not only add inline XML, as the mentioned proposal wanted, but add anyth
 
 With the addition of a new Macro API the tag could be registered inside the compiler triggering an user function everytime the registered tag appear. For example, it could be an initialization macro like `--macro registerCodeBlock("xml", Macros.parseXmlCodeBlock)` with `Macros.parseXmlCodeBlock` being a static function that will accept the `ECodeBlock` AST node as a parameter and will return a new transformed expression. The compiler would call this function everytime a code block starts with ` ```xml ... ``` `
 
-
-In addition, if the IDE supports it, it will be possible to highlight the block thanks to that tag.
-
-## Detailed design
-
 The behavior of this feature will be different if there is a tag or not.
 
 - A simple block without a tag. In this case, the block would be parsed as if it were a single quote string block. The optional tag in the AST node would be `null`:
 
 ![http://i.imgur.com/2rOPnQE.png](http://i.imgur.com/2rOPnQE.png)
 
-- A block with a tag. In this case, the block would be still parsed as a single quote string block but the optional tag in the AST node would be filled. If the tag is registered within the compiler the expression would be transformed by the registered function.
-
+- A block with a tag. In this case, the block would be still parsed as a single quote string block but the optional tag in the AST node would be filled. If the tag is registered within the compiler the expression will be transformed by the registered function.
 
 ```
 hxml file:
@@ -65,6 +63,19 @@ There are multiple alternatives for this functionality that wouldn't change anyt
 
 While these options are known to work I feel that they aren't as recognizable for the user as the proposed pattern. They won't help the IDE with highlighting because the compiler won't be able to offer any help being these alternatives user made and not part of the language. The proposed pattern also avoids the need to escape `"` or `'` if the user wants to use it inside the string.
 
+There are other alternatives that use different opening and closing tokens. I chose ` ``` ` because I feel it would be easy for the parser to parse them and, because it's only found on Markdown, it will lower the chance to create issues if the closing token is present before the block ends.
+
+On [this proposal](https://github.com/back2dos/haxe-evolution/blob/master/proposals/0000-inline-markup.md) by Juraj Kirchheim he proposes XML tags `<tag>...</tag>` as opening and closing tokens.
+
+ES6 offers [template literals](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Template_literals) which are the same as Haxe single quote strings. But it also offers the possibility of tagging them like:
+```
+tag`my string`
+```
+The only problem I see with this is that people coming from JavaScript will infer that the processing of the block can be done at runtime which won't work with Haxe because string interpolation is a compile-time feature only.
+
+
 ## Unresolved questions
 
 I don't really like the proposal's or the AST node's names but I can't come with a better naming.
+
+Should the compiler emit a warning if the tag isn't registered? The tags may be only used to document the block of code.
