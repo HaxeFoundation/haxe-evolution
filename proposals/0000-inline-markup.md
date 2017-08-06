@@ -138,4 +138,4 @@ It has been pointed out that [Haxe could greatly benefit from an easy way to emb
 
 ## Unresolved questions
 
-None so far.
+An important question is how to go about syntax highlighting within inline markup, but it seems to me that it doesn't concern the language as much as it concerns IDEs.
