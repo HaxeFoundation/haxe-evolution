@@ -52,6 +52,27 @@ That is safe, but introduces runtime overhead.
 
 If covariance is supported, `Option<Int>` can be `Option<Float>`.
 
+### Actual example
+
+This is important when using enum with type parameter and interface together.
+
+Here is an example of defining `DummyUser` class for testing.
+
+```haxe
+interface IUser {
+    var profile(default, never):Option<IProfile>; 
+}
+
+interface IProfile {}
+
+class DummyUser implements IUser {
+    // If Option<DummyProfile> is not Option<IProfile>, the compile error occurs.
+    public var profile(default, null):Option<DummyProfile>;
+}
+
+class DummyProfile implements IProfile {}
+```
+
 ## Detailed design
 
 In terms of variance, the arguments of each constructor of enum are same as the get-only properties. 
