@@ -24,7 +24,7 @@ Related issues and discussions:
 
 Anonymous structures and their `typedef`d variants are the most straightforward way to interoperate with native objects on most dynamic targets, like JavaScript, Lua, Python, etc.
 
-However it has one serious flaw: if the object contains a field name that is a reserved Haxe keyword, it cannot be described and accessed without use of reflection. This makes code less descriptive, unnecessarily ugly and potentionally less type-safe.
+However it has one serious flaw: if an object contains a field name that is a reserved Haxe keyword (e.g. `enum`) or an invalid Haxe identifier (e.g. `min-width`), it cannot be described and accessed without use of reflection. This makes code less descriptive, unnecessarily ugly and potentionally less type-safe.
 
 ## Detailed design
 
