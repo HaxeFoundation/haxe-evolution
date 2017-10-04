@@ -36,7 +36,7 @@ When unifying anonymous structures, we add additional check for `@:native` metad
 
  * let `f1` and `f2` be fields of two structures being unified with the same name
  * do the usual kind and visibility checks
- * let `n1` and `n2` be the optional string values of `@:native` metadata of these fields
+ * let `n1` and `n2` be the string values of optional `@:native` metadata of these fields
  * if both `n1` and `n2` are absent, fields unify, proceed to type checks
  * if both `n1` and `n2` present and have the same value, fields unify, proceed to type checks
  * if both `n1` and `n2` present, but have different value, fields don't unify, emit an error
