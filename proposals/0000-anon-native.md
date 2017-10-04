@@ -30,7 +30,7 @@ However it has one serious flaw: if the object contains a field name that is a r
 
 From the user's perspective it's simply about adding `@:native("fieldName")` metadata to the anonymous structure definition, as shown in the example above. So `@:native` has similar/same semantics like it does in extern classes.
 
-However care should be taken not to lose `@:native` information between structure unifications, so costraints are required in that part.
+However care should be taken not to lose `@:native` information between structure unifications, so some constraints are required in that part.
 
 When unifying anonymous structures, we add additional check for `@:native` metadata on fields with the following rules:
 
