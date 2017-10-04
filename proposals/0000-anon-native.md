@@ -34,13 +34,13 @@ However care should be taken not to lose `@:native` information between structur
 
 When unifying anonymous structures, we add additional check for `@:native` metadata on fields with the following rules:
 
- * let `f1` and `f2` be fields of two structures being unified with the same name,
+ * let `f1` and `f2` be fields of two structures being unified with the same name
  * do the usual kind and visibility checks
  * let `n1` and `n2` be the optional string values of `@:native` metadata of these fields
- * if both `n1` and `n2` are absent, fields unify
- * if both `n1` and `n2` present and have the same value, fields unify
- * if both `n1` and `n2` present, but have different value, fields don't unify
- * if either of `n1`, `n2` is present while another one is absent, fields don't unify
+ * if both `n1` and `n2` are absent, fields unify, proceed to type checks
+ * if both `n1` and `n2` present and have the same value, fields unify, proceed to type checks
+ * if both `n1` and `n2` present, but have different value, fields don't unify, emit an error
+ * if either of `n1`, `n2` is present while another one is absent, fields don't unify, emit an error
 
 This will ensure that it's safe to pass values of different anonymous structure types with `@:native` is involved.
 
