@@ -42,7 +42,7 @@ When unifying anonymous structures, we add additional check for `@:native` metad
  * if both `n1` and `n2` present, but have different values, fields don't unify, emit an error
  * if either of `n1`, `n2` is present while another one is absent, fields don't unify, emit an error
 
-This will ensure that it's safe to pass values of different anonymous structure types with `@:native` is involved.
+This will ensure that it's safe to pass values of different anonymous structure types when `@:native` is involved.
 
 Another place where additional handling is required is object declarations. We want to be able to create objects with `@:native` fields, so, when the expected type of an object declaration expression is a known structure, we relax the `@:native` unification rule above and allow creating the object using specified field names. In the generated code the field in the object declaration should be renamed to `@:native` version:
 
