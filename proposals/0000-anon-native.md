@@ -75,7 +75,7 @@ This should provide a straightforward and safe way of representing these kind of
 
 At the moment, `@:native` on structure fields is not handled in any way, so this should not break any existing behaviour unless there's some particular macro processing, but given the semantics `@:native` has on classes, I don't think this meta is used for anything other than the proposed feature.
 
-I know just one [macro implementation](https://github.com/clemos/haxe-js-kit/blob/develop/util/NativeMap.hx) that uses `@:native` on structures to provide the field renaming feature by @clemos that is used like [this](https://github.com/clemos/haxe-js-kit/blob/develop/js/browser/socketio/Client.hx). With the addition of the proposed feature, the macro shouldn't break, but will become obsolete and could be removed, I think.
+I know just one [macro implementation](https://github.com/clemos/haxe-js-kit/blob/develop/util/NativeMap.hx) that uses `@:native` on structures to provide the field renaming feature by @clemos that is used like [this](https://github.com/clemos/haxe-js-kit/blob/6447e9f07a430836a7f4f5eafd2f8f71895639ea/js/atomshell/browser/BrowserWindow.hx#L15-L35). With the addition of the proposed feature, the macro shouldn't break, but will become obsolete and could be removed, I think.
 
 ## Drawbacks
 
