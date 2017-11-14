@@ -42,7 +42,7 @@ class Calculator extends BasicCalculator {
 class Test {
     static function main() {
         var calculator = new Calculator();
-        var result = calculator.add(2,3).sin().result; // <-- this would not be possible in current Haxe
+        var result = calculator.add(2).sin().result; // <-- this would not be possible in current Haxe
     }
 }
 ```
@@ -73,7 +73,7 @@ class Test {
     static function main() {
         var calculator = new Calculator();
 
-        var result = cast(calculator.add(2), Calculator).sin().result; <-- cast, because calculator.add() returns BasicCalculator"
+        var result = cast(calculator.add(2), Calculator).sin().result; // <-- cast, because calculator.add() returns BasicCalculator"
         trace(result);
     }
 }
