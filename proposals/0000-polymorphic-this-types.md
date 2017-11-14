@@ -18,7 +18,7 @@ This is just one example where this feature would be useful. Surely there are ot
 ## Detailed design
 
 Example:
-```
+```haxe
 class BasicCalculator {
     public var result = 0.0;
 
@@ -48,7 +48,7 @@ class Test {
 ```
 
 In current Haxe, if you would want to use "method chaining", you would have to cast, like so:
-```
+```haxe
 class BasicCalculator {
     public var result= 0.0;
 
