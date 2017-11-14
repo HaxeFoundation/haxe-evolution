@@ -7,7 +7,7 @@
 
 This feature is directly taking from Typescript. Therefore I am just quoting from the [Typescript docs](https://www.typescriptlang.org/docs/handbook/advanced-types.html):
 
-"A polymorphic this type represents a type that is the subtype of the containing class or interface. This is called F-bounded polymorphism. This makes hierarchical fluent interfaces much easier to express, for example"
+"A polymorphic this type represents a type that is the subtype of the containing class or interface. This is called F-bounded polymorphism. This makes hierarchical fluent interfaces much easier to express (...)"
 
 ## Motivation
 
