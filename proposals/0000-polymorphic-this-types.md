@@ -1,4 +1,4 @@
-# ::enter feature name here::
+# Polymorphic `this` types
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
 * Author: [mak](https://github.com/matulkum)
