@@ -97,7 +97,7 @@ iterating over keys and getting the value each time, if the collection can provi
 One performance-related concern is the use of structural typing, which can be an issue on static
 targets in their current implementation, however this is a more general problem which also applies to
 normal iterators, so it's out of scope for this proposal. Still, we might want to provide a standard
-optimized implementation of the `Pair` type implementation that would be used for key/value iterators
+optimized implementation of the readonly `KeyValuePair` type implementation that would be used for key/value iterators
 instead of `{key:K, value:V}`.
 
 ## Impact on existing code
