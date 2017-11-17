@@ -93,6 +93,7 @@ code similar to the one in the "Motivation" section. For example, see [this try.
 
 For some specific collection implementations, I imagine the key/value iterator could be faster than
 iterating over keys and getting the value each time, if the collection can provide pairs directly.
+Actually, even standard `Array` might benefit from this, since it could save some bounds checking on getting values.
 
 One performance-related concern is the use of structural typing, which can be an issue on static
 targets in their current implementation, however this is a more general problem which also applies to
