@@ -107,8 +107,8 @@ Trait implementations must not conflict; conflicts will be treated as a compile-
 
 - Two distinct interfaces which do not extend each other, since a class could implement both.
 - Anonymous structures which each have unique fields, since a structure could contain both sets.
-- Null<T> and T.
-- An abstract and its underlying type for traits used outside of @:genericTrait functions.
+- `Null<T>` and `T`.
+- An abstract and its underlying type for traits used outside of @:generic functions.
 
 Multiple trait implementations are *not* in conflict if they are unambiguous, or if one is strictly "more specific" than the other. For example, the following are allowed:
 
@@ -119,8 +119,8 @@ Multiple trait implementations are *not* in conflict if they are unambiguous, or
 - Int and Float; Int takes precedence.
 - Anonymous structures where one is a superset of the other; the superset takes precedence.
 - Dynamic; any other implementation will take precedence.
-- An abstract and its underlying type, or two abstracts with the same underlying type, for traits used in @:genericTrait functions.
-- MyType<T> and MyType<SpecificType>; the specific form takes precedence.
+- An abstract and its underlying type, or two abstracts with the same underlying type, for traits used in @:generic functions.
+- `MyType<T>` and `MyType<SpecificType>`; the specific form takes precedence.
 
 Trait implementations must be imported to be used. Therefore, trait implementations which are not defined either in the same file as (1) the type they're implemented for or (2) the interface they're implementing will not automatically apply without a separate import.
 
