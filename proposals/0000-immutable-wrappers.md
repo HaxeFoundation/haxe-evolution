@@ -11,7 +11,10 @@ Provide compile-time support for wrappers of values with recursively restricted 
 
 As an object-oriented language, Haxe values are mutable by default and any function may have side effects. Haxe also supports functional paradigms; in functional programming, immutable values and pure functions are used to limit and contain code with side effects. Supporting this in Haxe would enable safer code, capable of making guarantees about which parts of a program may contain side effects; it may also enable new compile-time optimizations.
 
+Example use cases:
 
+- An API that returns an internal array that shouldn't be modified. Rather than copy it, return it and hope for no modification, or write a custom abstract wrapper, with this proposal you can instead easily return a `Const<Array<T>>`.
+- A backend API can provide a read-only value to the presentation layer, which can use it but not modify it.
 
 ## Detailed design
 
@@ -88,7 +91,9 @@ No negative impact; this is a new, opt-in feature.
 
 ## Drawbacks
 
-A method or expression could be incorrectly labeled as `@:pure`. If this information is relied on for optimizations, this could be a problem; it can also break the guarantee of side-effect-free code.
+A method or expression could be incorrectly labeled as `@:pure`. This information is relied on for optimizations, so this could be a problem, and it limits the guarantee of side-effect-free code.
+
+This requires maintaining mutability as part of the type signature in the standard library, which shouldn't be too much additional effort and may have benefits for static analysis.
 
 ## Alternatives
 
@@ -111,6 +116,6 @@ How to handle `@:pure`-ness in interfaces or overridden methods? (We should prob
 
 Is it feasible for the compiler to try to infer `@:pure`-ness of a method body?
 
-There should probably be a way for methods to auto-"constify" their return value as field access does, i.e. you can call this method on a value or a Const, but if called on the Const, the return value is a Const too. This would be useful for getters, array access, iterators...
+There should probably be a way for methods to auto-"constify" their return value as field access does, i.e. you can call this method on a value or a Const, but if called on the Const, the return value is a Const too. This would be useful for getters, array access, iterators... One option is to allow `@:pure` to take a type as an optional argument: `@:pure(Const<Array<T>>)`. This would mean that when the method is called on a `Const` value, the return value will be cast to `Const<Array<T>>` instead of the usual return type.
 
 In some cases it may be necessary to use `untyped` to convert a Const back to its original value (for example in a method which accepts `Const<T>` as an argument; Neko's Array.concat was one case where this was necessary.) In my opinion this is okay and shouldn't be feared. `untyped` removes the type system's ability to make correctness guarantees, which is okay as long as its use is self-contained and easy enough to reason about so we can make those guarantees ourselves.
