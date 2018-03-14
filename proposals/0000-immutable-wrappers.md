@@ -25,9 +25,9 @@ Compiler support for a new wrapper type, `abstract Const<T>(T) from T` is propos
 A `Const<T>` value is subject to the following limitations:
 
 - `T` can be implicitly coerced to a `Const<T>`. The reverse is not possible without `untyped`. An exception is basic types which are already immutable (Int, Float, enums...) which *can* be used interchangeably with `Const<T>` for ease of use.
-- For an abstract or object, methods which are not marked with `@:pure` (see below) may not be called.
-- Fields may not be set. Properties can be get or set as long as the getter/setter is itself a `@:pure` function.
-- Field access will always return a `Const<U>` instead of their original type `U`, except for (1) basic types which are already immutable, or (2) if `U` itself is a `Const` type. (`@:pure` methods do *not* return `Const<U>` by default; they return their original return type.)
+- For an abstract or object, methods which are not marked with `@:const` (see below) may not be called.
+- Fields may not be set. Properties can be get or set as long as the getter/setter is itself a `@:const` function.
+- Field access will always return a `Const<U>` instead of their original type `U`, except for (1) basic types which are already immutable, or (2) if `U` itself is a `Const` type. (`@:const` methods do *not* return `Const<U>` by default; they return their original return type.)
 
 Violations of these rules will result in a compile-time error.
 
@@ -39,7 +39,7 @@ extern class Array<T> {
 
     // concat is safe to execute on an immutable array, and its argument
     // can also be immutable since neither array is modified
-    @:pure function concat(a:Const<Array<T>>):Array<T>;
+    @:const function concat(a:Const<Array<T>>):Array<T>;
 
     // push on the other hand is not safe from an immutable array
     function push(x:T):Int;
@@ -63,13 +63,13 @@ extern class Array<T> {
     // OK, returns an Int (since Const<Int> is equivalent to Int)
     trace(b.length);
 
-    // OK, because concat has @:pure
+    // OK, because concat has @:const
     var c = b.concat([4,5,6]);
 
-    // OK, because iterator() has @:pure
+    // OK, because iterator() has @:const
     for (i in b) { // ... }
 
-    // compile-time error: can't call non-@:pure method from Const value
+    // compile-time error: can't call non-@:const method from Const value
     b.push(4);
 
     // compile-time error: can't cast Const<Array<Int>> back into Array<Int>
@@ -81,9 +81,23 @@ extern class Array<T> {
 
 ### Denoting immutability in Haxe code
 
-Method and function calls are assumed to require a mutable (non-`Const`) value unless otherwise specified. To make `Const<T>` useful, we can leverage the existing `@:pure` metadata to mark methods as being side-effect free, and allow these methods from an immutable value.
+Method and function calls are assumed to require a mutable (non-`Const`) value unless otherwise specified. To make `Const<T>` useful, we can use the `@:const` metadata to mark methods as being side-effect free, and allow these methods from an immutable value.
+
+Some immutable methods (Array.concat) should return the same type regardless of whether they're called on a Const or a regular value, but others (iterator, array access, getters) should wrap their return value in a Const if they were called on a Const. For this reason the `@:const` metadata can take a type as an argument; when the read only version of the method is called, the result will be cast to the specified type.
+
+```haxe
+extern class Array<T> {
+    // returns a new Array<T> (with normal access to mutable methods)
+    @:const function concat( a : Const<Array<T>> ) : Array<T>;
+
+    // returns an iterator of Consts
+    @:const(:Iterator<Const<T>>) function iterator() : Iterator<T>;
+}
+```
 
 Function arguments can be typed as accepting `Const<T>` in order to denote that their arguments can be `Const<T>` wrappers. Since `T` unifies with `Const<T>` this will work with const or non-const arguments.
+
+(Note that this uses a new `EComplexType` syntax as metadata arguments which has not yet been accepted or merged.)
 
 ## Impact on existing code
 
@@ -91,7 +105,7 @@ No negative impact; this is a new, opt-in feature.
 
 ## Drawbacks
 
-A method or expression could be incorrectly labeled as `@:pure`. This information is relied on for optimizations, so this could be a problem, and it limits the guarantee of side-effect-free code.
+A method or expression could be incorrectly labeled as `@:const`. This information is relied on for optimizations, so this could be a problem, and it limits the guarantee of side-effect-free code.
 
 This requires maintaining mutability as part of the type signature in the standard library, which shouldn't be too much additional effort and may have benefits for static analysis.
 
@@ -108,14 +122,12 @@ This functionality can be mimicked by using a custom `@:genericBuild` macro. How
 
 In addition to safer code and denoting where side effects can happen, adding information about mutability may enable static analyzer improvements, such as automatic inlining of constant expressions or elimination of function calls with unused return values.
 
-`@:pure` methods or expressions may be allowed as initial values for static variables.
+`@:const` methods or expressions may be allowed as initial values for static variables.
 
 ## Unresolved questions
 
-How to handle `@:pure`-ness in interfaces or overridden methods? (We should probably enforce that they're the same, as if they're part of the type signature.)
+How to handle `@:const`-ness in interfaces or overridden methods? (We should probably enforce that they're the same, as if they're part of the type signature.)
 
-Is it feasible for the compiler to try to infer `@:pure`-ness of a method body?
-
-There should probably be a way for methods to auto-"constify" their return value as field access does, i.e. you can call this method on a value or a Const, but if called on the Const, the return value is a Const too. This would be useful for getters, array access, iterators... One option is to allow `@:pure` to take a type as an optional argument: `@:pure(Const<Array<T>>)`. This would mean that when the method is called on a `Const` value, the return value will be cast to `Const<Array<T>>` instead of the usual return type.
+Is it feasible for the compiler to try to infer `@:const`-ness of a method body?
 
 In some cases it may be necessary to use `untyped` to convert a Const back to its original value (for example in a method which accepts `Const<T>` as an argument; Neko's Array.concat was one case where this was necessary.) In my opinion this is okay and shouldn't be feared. `untyped` removes the type system's ability to make correctness guarantees, which is okay as long as its use is self-contained and easy enough to reason about so we can make those guarantees ourselves.
