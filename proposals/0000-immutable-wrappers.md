@@ -37,22 +37,21 @@ For an `Const<Array<T>>`, this means:
 extern class Array<T> {
     // ...
 
-    // concat is safe to execute on an immutable array, and its argument
-    // can also be immutable since neither array is modified
-    @:const function concat(a:Const<Array<T>>):Array<T>;
+    // indexOf can be called from a Const<Array>; its argument may also be a Const<T>
+    @:const function indexOf( x : Const<T>, ?fromIndex:Int ) : Int;
 
-    // push on the other hand is not safe from an immutable array
+    // push is not allowed from a Const<Array>
     function push(x:T):Int;
+
+    // concat is safe to execute on an immutable array, and its argument
+    // can also be immutable since neither array is modified.
+    // If called on a Const<Array>, the returned Array will be mutable, but
+    // its contents will not.
+    @:const(:Array<Const<T>>) function concat(a:Const<Array<T>>):Array<T>;
 
     // ...
 }
 ```
-
-- The `Array<T>` can be coerced to a `Const<Array<T>`: `var c:Const<Array<Int>> = [1];` or `var c = Const([1]);`
-- `concat` may be called on a `Const<Array<T>>`, returning a (mutable) `Array<T>`.
-- `length` may be accessed on a `Const<Array<T>>`, returning a `Const<Int>` (which has no difference from a regular Int.)
-- Iterating over or indexing the array will produce `Const<T>` values.
-- An attempt to call `push` will throw a compiler error.
 
 ```haxe
     var a:Array<Int> = [1,2,3];
@@ -72,7 +71,7 @@ extern class Array<T> {
     // compile-time error: can't call non-@:const method from Const value
     b.push(4);
 
-    // compile-time error: can't cast Const<Array<Int>> back into Array<Int>
+    // compile-time error: can't coerce Const<Array<Int>> back into Array<Int>
     var d:Array<Int> = b;
 
     // OK; explicitly sidestepping type system checks
@@ -83,21 +82,20 @@ extern class Array<T> {
 
 Method and function calls are assumed to require a mutable (non-`Const`) value unless otherwise specified. To make `Const<T>` useful, we can use the `@:const` metadata to mark methods as being side-effect free, and allow these methods from an immutable value.
 
-Some immutable methods (Array.concat) should return the same type regardless of whether they're called on a Const or a regular value, but others (iterator, array access, getters) should wrap their return value in a Const if they were called on a Const. For this reason the `@:const` metadata can take a type as an argument; when the read only version of the method is called, the result will be cast to the specified type.
+Some immutable methods (Array.concat) should return the same type regardless of whether they're called on a Const or a regular value, but others (iterator, array access, getters) should wrap their return value if they were called on a Const. For this reason the `@:const` metadata can take a type as an argument; when the read only version of the method is called, the result will be cast to the specified type. (Note that this uses a new `EComplexType` syntax as metadata arguments which has not yet been accepted or merged.)
 
 ```haxe
 extern class Array<T> {
-    // returns a new Array<T> (with normal access to mutable methods)
-    @:const function concat( a : Const<Array<T>> ) : Array<T>;
+    // return value is always an Int
+    @:const function indexOf( x : Const<T>, ?fromIndex:Int ) : Int;
 
-    // returns an iterator of Consts
+    // iterating over a Const yields an iterator of Consts, protecting the
+    // underlying array contents
     @:const(:Iterator<Const<T>>) function iterator() : Iterator<T>;
 }
 ```
 
 Function arguments can be typed as accepting `Const<T>` in order to denote that their arguments can be `Const<T>` wrappers. Since `T` unifies with `Const<T>` this will work with const or non-const arguments.
-
-(Note that this uses a new `EComplexType` syntax as metadata arguments which has not yet been accepted or merged.)
 
 ## Impact on existing code
 
