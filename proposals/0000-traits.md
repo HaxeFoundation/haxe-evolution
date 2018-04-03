@@ -1,4 +1,4 @@
-# Traits
+# Traits/Type Classes
 
 * Proposal: [HXP-NNNN](NNNN-traits.md)
 * Author: [Ben Morris](https://github.com/bendmorris)
@@ -9,27 +9,25 @@ A more powerful analog to static extension that enables open polymorphism, modul
 
 ## Motivation
 
-As implemented in [Rust](https://rustbyexample.com/trait.html), traits are a more powerful extension of interfaces from OOP, with some key differences:
+Traits, or type classes, are a powerful extension of the concept of interfaces from OOP, with some key differences:
 
 - Implementing traits is external to the definition of the type; traits may be implemented for existing types, including basic types, outside of the original type declaration.
-- Traits may include default implementations for methods.
 
-Rust and Haxe share an emphasis on providing powerful, zero-runtime-cost abstractions. Haxe provides several analogous features for extending the functionality of existing types, including static extension and abstracts. However, none of these features is as powerful as traits; specifically, they lack the ability to define a single type which wraps multiple existing types. Adopting the Rust trait system for Haxe will open the door to new ways of defining behavior in a modular and extensible way.
+Haxe provides several analogous features for extending the functionality of existing types, including static extension and abstracts. However, none of these features is as powerful as traits; specifically, they lack the ability to define a single type which wraps multiple existing types. Adopting the Rust trait system for Haxe will open the door to new ways of defining behavior in a modular and extensible way.
 
 Benefits of traits include:
 
-- Providing an elegant way to express polymorphism over an open set of types, including types which are *not* classes such as primitives, abstracts or structures.
+- Providing an elegant way to express polymorphism over an open set of types, including types which are not classes such as primitives, abstracts or structures.
 - Breaking up large class/abstract definitions into more concise blocks by functionality.
 - Providing a standard way to extend language-level functionality (see "opening possibilities".)
 
-Caveats to this proposal:
-
-- Some OOP languages such as PHP also include a "trait" concept, also known as a "mixin", focused around code reuse. These are orthogonal concepts that unfortunately share a name. This proposal deals with the specific implementation of traits from Rust as a method of open polymorphism.
-- Adding optional default implementations to interfaces (as supported in [tink_lang](https://github.com/haxetink/tink_lang) traits) is outside of the scope of this proposal. Because traits are implemented via interfaces here, default method implementations would be relatively straightforward to add in the future, which would also satisfy the "mixin" definition of a trait.
+Note: some OOP languages such as PHP include a "trait" concept, also known as a "mixin", focused around code reuse. This is an orthogonal concept that unfortunately shares the same name. This proposal deals with the specific implementation of traits from [Rust](https://rustbyexample.com/trait.html) as a method of open polymorphism.
 
 ## Detailed design
 
-To avoid duplication in the language, traits can simply reuse the existing interface concept:
+### Declaring traits
+
+From an OOP perspective, traits can easily be understood as analogous to interfaces. Therefore, the simplest way to introduce them to Haxe is to extend the existing interface concept:
 
 ```haxe
 interface Serializable
@@ -57,18 +55,20 @@ implement Serializable for {name: String}
 }
 ```
 
-The following methods of implementing an interface are equivalent (but see Unresolved questions):
+Given the following interface, the following two implementations are equivalent:
 
 ```haxe
 interface MyInterface {}
 
-// current way
+// interface implementation
 class MyClass1 implements MyInterface {}
 
-// trait way
+// trait implementation
 class MyClass2 {}
 implement MyInterface for MyClass2 {}
 ```
+
+They differ in how the caller is treated; see "implementation" below.
 
 An `implement` block may only include the methods of the interface, and must include them all.
 
@@ -90,37 +90,94 @@ class Serializer
 }
 ```
 
-Trait implementations could be compiled in two ways, similar to generics:
+### Implementation
 
-- When used as a generic type parameter, traits resolve fully at compile time, and will generate a separate version of the function per implementer:
+An `implement X for Y` block creates a "trait declaration" of interface X for type Y. Trait implementations can be compiled in two ways:
+
+#### Generic trait use
+
+When used as a generic type parameter, a separate version of the function is generated per used implementer; in these functions the trait implementation may be inlined. For example this generic function:
 
 ```haxe
-@:generic public static function serialize<T:Serializable>(value:T)
+@:generic public static function serialize<T:Serializable>(value:T):String
 {
 	return value.toString();
 }
 ```
 
-- Otherwise, implementation of a trait will generate an implementing class to which the type will be coerced at runtime to unify implementers with their traits; trait usage is more restricted in these cases to avoid conflicts.
+When the observed type of parameter T is a trait declaration unifying with the interface (and not an object that implements the interface), the trait declaration's method is inlined, yielding:
 
-Trait implementations must not conflict; conflicts will be treated as a compile-time error. Examples of disallowed combinations due to the possibility of ambiguity in choosing the trait implementation include:
+```haxe
+public static function serialize_Int(value:Int):String
+{
+	return Std.int(value);
+}
 
-- Two distinct interfaces which do not extend each other, since a class could implement both.
-- Anonymous structures which each have unique fields, since a structure could contain both sets.
-- `Null<T>` and `T`.
-- An abstract and its underlying type for traits used outside of @:generic functions.
+public static function serialize_name_String(value:{name:String}):String
+{
+	return value.name;
+}
+```
 
-Multiple trait implementations are *not* in conflict if they are unambiguous, or if one is strictly "more specific" than the other. For example, the following are allowed:
+This provides a zero-runtime-cost version of traits at the expense of larger code size.
 
-- A parent and child class; the child takes precedence.
-- An parent interface and the interface extending it; the child takes precedence.
-- A class and an interface it implements; the class takes precedence.
-- A class and a structure definition with the same fields; the class takes precedence.
-- Int and Float; Int takes precedence.
-- Anonymous structures where one is a superset of the other; the superset takes precedence.
-- Dynamic; any other implementation will take precedence.
-- An abstract and its underlying type, or two abstracts with the same underlying type, for traits used in @:generic functions.
-- `MyType<T>` and `MyType<SpecificType>`; the specific form takes precedence.
+#### Trait objects
+
+Otherwise, when a value is coerced to an interface (and the value is not an object that implements the interface) a valid trait declaration will be selected, and the value will be coerced to a wrapper object of a class which implements the interface as per the trait declaration.
+
+Given this function,
+
+```haxe
+public function serialize(value:Serializable):String
+{
+	return value.toString()
+}
+```
+
+The following:
+
+```haxe
+class Main
+{
+	static function main()
+	{
+		serialize(42);
+	}
+}
+```
+
+would implicitly yield something like:
+
+```haxe
+class Serializable_Int implements Serializable
+{
+	public var val:Int;
+
+	public function new(val:Int)
+	{
+		this.val = val;
+	}
+
+	public function toString()
+	{
+		return Std.string(this.val);
+	}
+}
+
+class Main
+{
+	static function main()
+	{
+		serialize(new Serializable_Int(42));
+	}
+}
+```
+
+While this example shows an allocation of a wrapper object, in practice these wrapper objects may be cached and reused internally. The `@:generic` version is also available as an alternative to avoid allocation.
+
+### Trait implementation selection and conflict resolution
+
+Both the `@:generic` and wrapped form of using traits require selecting an appropriate trait implementation at compile time. Eligible trait implementations must not conflict; conflicts will be treated as a compile-time error and must be manually disambiguated. Multiple trait implementations are *not* in conflict if they are unambiguous, or if one is strictly "more specific" than the other; i.e., if type A is valid as type B but type B is not valid as type A, type A's implementation will take precedence.
 
 Trait implementations must be imported to be used. Therefore, trait implementations which are not defined either in the same file as (1) the type they're implemented for or (2) the interface they're implementing will not automatically apply without a separate import.
 
@@ -131,8 +188,6 @@ As a new language feature, this would be opt-in and should have no impact on exi
 ## Drawbacks
 
 Resolving to the correct trait implementation can be complex and potentially confusing.
-
-This feature may give users the potential to break external code by implementing external interfaces for external types, which can result in functional changes. In Rust this is dealt with by only allowing implementations where either the type or the trait (or both) was defined within the crate; these would have no possibility of affecting external crates. While Haxe packages are not as isolated as Rust crates, the same strategy may be useful.
 
 ## Alternatives
 
@@ -150,10 +205,10 @@ Traits would open the door to more thoroughly utilizing open polymorphism within
 
 Another example is `haxe.io.Bytes`, which currently contains a finite set of methods for adding types to a byte stream; with traits, a native Bytes object could be extended to support any type that implemented `ReadBytes` or `WriteBytes` traits, including non-classes such as structs which would currently require extending Bytes. (This example could be implemented via static extension, but a generic `write` function accepting many different types could not.)
 
-See many other examples of possible future additions in the Rust standard library, including `Drop` (destructors), `From<T>` (type conversion), and `Copy`.
+See many other examples of possible future additions in the Rust standard library, including `Drop` (destructors), `To<T>` and `From<T>` (type conversion), and `Copy`.
 
 Traits could be even more powerful with the addition of a [polymorphic this type](https://github.com/HaxeFoundation/haxe-evolution/pull/36), allowing the trait to refer to the implementer.
 
 ## Unresolved questions
 
-- How would @:autoBuild etc. work on an interface implemented as a trait? This could be dangerous as it allows rewriting external code.
+None?
