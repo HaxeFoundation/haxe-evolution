@@ -125,6 +125,7 @@ Instead of this rather general approach, the individual problems of structural e
 
 Since the goal for now is only feature parity, it doesn't open any new possibilities outside of macros.
 
+In the future, we can support intersection types for interfaces as well. If you have lots of classes which use `implements Interface1 implements Interface2` (and potentially many more), you could instead `typedef Interface3 = Interface1 & Interface2` and use `implements Interface3`. This would work exactly like before, but be easier to write and maintain, especially in interface-heavy code.
 
 ## Unresolved questions
 
