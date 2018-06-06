@@ -1,6 +1,6 @@
 # Intersection Types
 
-* Proposal: [HXP-NNNN](0000-intersection-types.md)
+* Proposal: [HXP-0004](0004-intersection-types.md)
 * Author: [Simn](https://github.com/simn)
 
 
