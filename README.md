@@ -53,3 +53,21 @@ Basically, everything that needs some design process and consensus among the dev
     corresponding pull request. If the proposal is rejected, the PR is closed with a comment explaining the reasons.
  5. Active proposals are to be further discussed in details by the Haxe developer team
     and finally implemented.
+
+## Voting process
+
+It's the responsibility of the author of a proposal to start the voting process.
+
+Once discussion is exhausted, the author of a proposal can request the voting.
+Following requirements should be met:
+
+* All questions asked by the core members of Haxe Foundation to the author are answered;
+* The last edit to a proposal was made at least two weeks ago;
+* The last message in the discussion was posted at least two weeks ago.
+
+To start the voting process the author should post a comment:
+
+> Request for voting.
+
+Additionally author can tag voters in this comment to draw their attention.
+After this comment is posted the discussion will be locked by any Haxe Foundation member with the write access to the haxe-evolution repository. From that point only voters will be able to post comments to the discussion.
