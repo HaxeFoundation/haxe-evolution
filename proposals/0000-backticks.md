@@ -56,6 +56,7 @@ There should be no impact on existing code since this is new syntax and doesn't 
 
 - If backticks are supported and have string interpolation, it might be confusing for (new) people that single-quote strings `'` also support string interpolation and `"` doesn't.
 - Can't paste it into markdown :)
+- Probably requires additional IDE support
 
 ## Alternatives
 
