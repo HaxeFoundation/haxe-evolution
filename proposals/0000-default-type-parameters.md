@@ -15,10 +15,15 @@ $type((null: Test)); // Test<String>
 ## Motivation
 
 Some types can benefit from having default type parameters. As an example look at
-a generic virtual dom component: `class Component<Props: {}, State: {}>` 
+a generic virtual dom component: 
+````haxe
+class Component<Props: {}, State: {}> {}
+````
 Users of the library subclass the Component. Often there's no state or props used,
 but with current haxe it's required to write out the empty parameters explicitly:
-`class MyComponent extends Component<{}, {}>`
+````haxe
+class MyComponent extends Component<{}, {}> {}
+````
 With defaults it's possible to simply extend and leave the defaults to the library:
 ````haxe
 class Component<Props: {} = {}, State: {} = {}> {}
@@ -49,8 +54,8 @@ Don't see any at this time.
 ## Alternatives
 
 - It's possible to emulate with `@:genericBuild` but there's some downsides:
- - Can't use those in macros
- - Can't use the type as a type hint (`var a: MyGenericBuild;`)
+  - Can't use those in macros
+  - Can't use the type as a type hint (`var a: MyGenericBuild;`)
 
 - Parameters can be inferred on first usage, but only when constructing a type.
 
