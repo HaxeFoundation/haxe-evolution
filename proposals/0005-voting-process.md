@@ -1,6 +1,6 @@
 # Haxe Evolution voting process
 
-* Proposal: [HXP-NNNN](NNNN-voting-process.md)
+* Proposal: [HXP-0005](0005-voting-process.md)
 * Author: [Alexander Kuzmenko](https://github.com/RealyUniqueName/)
 
 ## Introduction

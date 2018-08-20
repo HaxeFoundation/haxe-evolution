@@ -69,5 +69,6 @@ To start the voting process the author should post a comment:
 
 > Request for voting.
 
-Additionally author can tag voters in this comment to draw their attention.
+Additionally author can tag voters in this comment to draw their attention ([example](https://github.com/HaxeFoundation/haxe-evolution/pull/48#issuecomment-412341110)).
+
 After this comment is posted the discussion will be locked by any Haxe Foundation member with the write access to the haxe-evolution repository. From that point only voters will be able to post comments to the discussion.
