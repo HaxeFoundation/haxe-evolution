@@ -1,4 +1,4 @@
-# ::enter feature name here::
+# Implied Field Names on Object Literals
 
 * Proposal: [HXP-NNNN](0000-implied-fieldnames.md)
 * Author: [Neil Graham](https://github.com/Lerc)
@@ -7,7 +7,9 @@
 
 Add implied field names to object literals. 
 
-essentially allow `{fish,cheese}` instead of requiring `{fish:fish,cheese:cheese}`
+If a field name and value is represented by the same text allow it to be written just once.
+
+Essentially allow `{fish,cheese}` instead of requiring `{fish:fish,cheese:cheese}`
 
 ## Motivation
 
