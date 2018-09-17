@@ -12,7 +12,15 @@ Supports type parameter covariance and contravariance of enum.
 A common case is to assign an `Option` to another `Option`.
 
 ```haxe
-var option:Option<Float> = Option.Some(1);
+import haxe.ds.Option;
+
+class Main {
+	static public function main() {
+		var optionFloat:Option<Float>;
+		var optionInt = Option.Some(1);
+		optionFloat = optionInt;
+	}
+}
 ```
 
 Currently, following compile errors occur.
