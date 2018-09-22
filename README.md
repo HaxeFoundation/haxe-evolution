@@ -9,12 +9,14 @@ Haxe Proposals (HXP) can be submitted by any Haxe team developer or community me
 Once a HXP has been submitted, it can be discussed and modified. Anybody can also submit a PR against an existing HXP to have it amended.
 
 After the HXP has been discussed, a formal vote can take place to accept it. Only Haxe Core Team members are allowed to vote:
- - Nicolas Cannasse (Haxe creator)
- - Simon Krajewski (Compiler Maintainer)
- - Hugh Sanderson (Haxe C++ backend)
- - Caue Waneck (Haxe C# and Java backends)
- - Andy Li (tools and infrastructure)
- - Dan Korostelev (compiler contributor)
+ - Nicolas Cannasse [@ncannasse](https://github.com/ncannasse) (Haxe creator)
+ - Simon Krajewski [@Simn](https://github.com/Simn) (Compiler Maintainer)
+ - Hugh Sanderson [@hughsando](https://github.com/hughsando) (Haxe C++ backend)
+ - Cauê Waneck [@waneck](https://github.com/waneck) (Haxe C# and Java backends)
+ - Andy Li [@andyli](https://github.com/andyli) (tools and infrastructure)
+ - Dan Korostelev [@nadako](https://github.com/nadako) (compiler contributor)
+ - Alexander Kuzmenko [@RealyUniqueName](https://github.com/RealyUniqueName) (Haxe PHP7 backend)
+ - Justin Donaldson [@jdonaldson](https://github.com/jdonaldson) (Haxe Lua backend)
 
 To be accepted the HXP needs half + 1 votes in favor of it.
 
