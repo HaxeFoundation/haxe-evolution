@@ -32,6 +32,45 @@ class MyComponentWithProps extends Component<MyProps> {}
 class MyComponentWithPropsAndState extends Component<MyProps, MyState> {}
 ````
 
+Another use case is simplifying user facing APIs where some types are only necessary 
+to be given explicitly in very specific cases. The types are ready to be used without
+the user having all of the implementation details.
+
+For example tink_core defines an Error as
+````haxe
+typedef Error = TypedError<Dynamic>;
+````
+where with default type parameters there would not necessarily have been a distinction
+as `Error` and `TypedError` could have been defined as:
+````haxe
+class Error<T = Dynamic> {}
+````
+
+Another example would be a generic Promise implementation which holds error data as well. 
+In most cases it makes a lot of sense to default the error type parameter to an error type
+that works for the user but would not restrict them from using it differently if the use
+case came up.
+````haxe
+class Promise<T, E = Error> {}
+````
+
+Using the dom in the javascript target can also demonstrate the use as accessing elements
+is usually done through `js.html.Element`. That works as long as you want access to those
+properties. But in a few cases you need access to specific properties of the element and
+thus want it typed. Say in a lifecycle method of typical virtual dom components
+(ignoring state or props here):
+
+````haxe
+class Component<E = js.html.Element> {
+  onmount(element: E) {}
+}
+````
+If you'd like to set the `src` property of an image this can be used as:
+````haxe
+class Image extends Component<js.html.ImageElement>
+````
+But in most other cases you can use `Component` directly without passing a specific element type.
+
 See also: https://github.com/HaxeFlixel/flixel/issues/1677
 
 ## Detailed design
@@ -40,6 +79,12 @@ See also: https://github.com/HaxeFlixel/flixel/issues/1677
 - Ensure the default unifies with possible type guards
 - Disallow a type parameter with a default to be followed by one without
 - Use the default parameter when the type is used and there's none declared
+- Other generic parameters can be used as long as they were defined before the default
+  ````
+  This should work: class A<B, C = B>
+  This shouldn't: class A<B = C, C>
+  ````
+  The reasoning has been discussed in [other places](https://github.com/Microsoft/TypeScript/issues/2175) and works.
 
 ## Impact on existing code
 
@@ -49,7 +94,7 @@ should function exactly the same.
 
 ## Drawbacks
 
-Don't see any at this time.
+- [Implicit types](https://github.com/HaxeFoundation/haxe-evolution/pull/50#issuecomment-418016806): It can cause some confusion because it's not easy to tell where a type came from.
 
 ## Alternatives
 
@@ -65,5 +110,4 @@ https://github.com/massiveinteractive/haxe-react/blob/19156680859ac0e27249762101
 
 ## Unresolved questions
 
-- Should the defaults have access to the other parameters?
-  `Test<A, B, C = A & B>` This would introduce a lot of edge cases.
+/
