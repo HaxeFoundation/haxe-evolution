@@ -22,18 +22,18 @@ To be accepted the HXP needs half + 1 votes in favor of it.
 
 In order to keep the long term goals and vision of Haxe, Nicolas can veto any accepted proposal after the vote, but will explain his reasoning for doing so in details and agrees to use this power with care.
 
-Once the HXP is accepted, the core team will work on implementing it.
+If the HXP is accepted, the core team will work on implementing it.
 
 ## What needs a proposal?
 
-Stuff that don't need a formal proposal (unless it's something fundamental):
+Stuff that doesn't need a formal proposal (unless it's something fundamental):
 
  * bugfixes
  * optimizations
  * documentation
  * minor API additions
 
-Stuff that most probably need a formal proposal:
+Stuff that most probably needs a formal proposal:
 
  * language changes, including adding new features
  * breaking standard library changes
@@ -67,10 +67,10 @@ Following requirements should be met:
 * The last edit to a proposal was made at least two weeks ago;
 * The last message in the discussion was posted at least two weeks ago.
 
-To start the voting process the author should post a comment:
+To start the voting process the author should post the comment:
 
 > Request for voting.
 
-Additionally author can tag voters in this comment to draw their attention ([example](https://github.com/HaxeFoundation/haxe-evolution/pull/48#issuecomment-412341110)).
+Additionally, the author can tag voters in this comment to draw their attention ([example](https://github.com/HaxeFoundation/haxe-evolution/pull/48#issuecomment-412341110)).
 
-After this comment is posted the discussion will be locked by any Haxe Foundation member with the write access to the haxe-evolution repository. From that point only voters will be able to post comments to the discussion.
+After this comment is posted the discussion will be locked by any Haxe Foundation member with write access to the haxe-evolution repository. From that point only voters will be able to post comments to the discussion.
