@@ -4,11 +4,18 @@ This project is for maintaining formal change proposals for Haxe language.
 
 ## About proposals
 
-Haxe Proposals (HXP) can be submitted by any Haxe team developer or community member, as long as it's complete and well explained.
+Haxe Proposals (HXP) can be submitted by any Haxe team developer or community member, as long as it's complete and well explained (please see the "How to submit an HXP" section below).
 
 Once a HXP has been submitted, it can be discussed and modified. Anybody can also submit a PR against an existing HXP to have it amended.
 
-> Please understand that the HXP discussion and voting process is for cases where the core team is not opposed to the proposed changes. Although all proposals are appreciated, if the core team is opposed to a given HXP then it may be rejected with little or no discussion in the PR. Please don't be discouraged if this happens to your HXP; there is simply not enough time for the core team to provide detailed written rationale for every proposed change which they think would not be a good overall fit for Haxe.
+> Please understand that the HXP discussion and voting process is for
+> cases where the core team is not opposed to the proposed
+> changes. The team internally discusses all proposals; if they are
+> opposed to a given HXP then it may be rejected with very little
+> public discussion in the PR comments. There is simply not enough
+> time for the core team to provide detailed written rationale for
+> every proposed change which they think would not be a good overall
+> fit for Haxe.
 
 After the HXP has been discussed, a formal vote can take place to accept it. Only Haxe Core Team members are allowed to vote:
 
@@ -49,7 +56,7 @@ Basically, everything that needs some design process and consensus among the dev
 
  1. Fork the repo, copy the `0000-template.md` to `proposals/0000-short-name.md`,
     where `short-name` is a descriptive filename for the proposal document. Don't assign the number yet.
- 2. Carefully fill in the proposal, pay attention to details: it should show your understanding
+ 2. Carefully fill in all sections of the proposal. Pay attention to details: it should show your understanding
     of the issue and the impact of the proposed design.
  3. Submit a pull request with the proposal. In this PR, Haxe team and the community can provide
     feedback for it. Be prepared to react accordingly and revise the proposal document.
