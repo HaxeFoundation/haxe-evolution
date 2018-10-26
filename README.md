@@ -8,7 +8,10 @@ Haxe Proposals (HXP) can be submitted by any Haxe team developer or community me
 
 Once a HXP has been submitted, it can be discussed and modified. Anybody can also submit a PR against an existing HXP to have it amended.
 
+> Please understand that the HXP discussion and voting process is for cases where the core team is not opposed to the proposed changes. Although all proposals are appreciated, if the core team is opposed to a given HXP then it may be rejected with little or no discussion in the PR. Please don't be discouraged if this happens to your HXP; there is simply not enough time for the core team to provide detailed written rationale for every proposed change which they think would not be a good overall fit for Haxe.
+
 After the HXP has been discussed, a formal vote can take place to accept it. Only Haxe Core Team members are allowed to vote:
+
  - Nicolas Cannasse [@ncannasse](https://github.com/ncannasse) (Haxe creator)
  - Simon Krajewski [@Simn](https://github.com/Simn) (Compiler Maintainer)
  - Hugh Sanderson [@hughsando](https://github.com/hughsando) (Haxe C++ backend)
