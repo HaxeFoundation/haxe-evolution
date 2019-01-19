@@ -80,7 +80,7 @@ interface IUser {
     //Methods marked as default should be implemented here;
     default public function isEmailValid ():Bool {
         /* ... */ 
-        //This method has access the interface variables and functions.
+        //This method have access to the interface variables and functions.
         return false;
     }
     
