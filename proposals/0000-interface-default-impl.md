@@ -106,7 +106,7 @@ class Cat implements IUser {
     }
 }
 ```
-
+`default` keyword may be replaced with some meta, or may not be used at all. This is not necessary for the idea in general. 
 Generated code should be the same as it already is in the current implementation. 
 And example code described above can be unrolled into this:
 
