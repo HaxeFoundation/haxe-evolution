@@ -4,7 +4,7 @@
 * Author: [Dmitry Hryppa](https://github.com/dmitryhryppa)
 
 ## Introduction
-Allow default function implementations in interfaces. As an alternative to create intermediate class.
+Allow default function implementations in interfaces. As an alternative to create new entities in the codebase.
 
 ## Motivation
 
