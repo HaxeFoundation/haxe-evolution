@@ -20,7 +20,7 @@ interface IUser {
     public function sayHello ():Void;
     
     //We can't add this new things without impacting all our codebase bellow.
-    private var email:String; 
+    public var email:String; 
     public function isEmailValid ():Bool;
 }
 
@@ -79,7 +79,7 @@ Let's look at the example of possible implementation of this feature:
 ```haxe
 interface IUser {
     //Fields marked as default should be initialized here;
-    default private var email:String = "";
+    default public var email:String = "";
     
     //Methods marked as default should be implemented here;
     default public function isEmailValid ():Bool {
@@ -116,25 +116,25 @@ And example code described above can be unrolled into this:
 
 ```haxe
 interface IUser {
-    private var email:String;
+    public var email:String;
     public function isEmailValid ():Bool;
     public function sayHello ():Void;
 }
 
 class A implements IUser {
-    private var email:String = ""; // injected from the interface
+    public var email:String = ""; // injected from the interface
     public function isEmailValid ():Bool { /*impl injected from the interface */}
     public function sayHello ():Void { /* own impl */}
 } 
 
 class B implements IUser {
-    private var email:String = ""; // injected from the interface
+    public var email:String = ""; // injected from the interface
     public function isEmailValid ():Bool { /*impl injected from the interface */}
     public function sayHello ():Void { /* own impl */}
 }
 
 class C implements IUser {
-    private var email:String = ""; // injected from the interface
+    public var email:String = ""; // injected from the interface
     public function isEmailValid ():Bool { /*impl injected from the interface */}
     public function sayHello ():Void { /* own impl */}
 }
