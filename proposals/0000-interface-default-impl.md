@@ -4,11 +4,15 @@
 * Author: [Dmitry Hryppa](https://github.com/dmitryhryppa)
 
 ## Introduction
-Allow default function implementations in interfaces. As an alternative to create new entities in the codebase.
+Allow default function implementation in interface. 
+Allow default field initialization in interface.
+As an alternative to create new entities in the codebase.
 
 ## Motivation
 
-In a situation when we have an interface which is implemented by a bunch of classes and we want to add a new method into that interface, then we need to change all our classes and implement that method everywhere. It is annoying if we need a method which should have the same implementation for all our classes.
+If we have an interface which is implemented by a bunch of classes and we want to add a new method into that interface, then we need to change all our classes and implement that method everywhere.
+
+It is annoying if we need a method which should have the same implementation for all our classes.
 Example:
 
 ```haxe
@@ -119,19 +123,19 @@ interface IUser {
 
 class A implements IUser {
     private var email:String = ""; // injected from the interface
-    public function isEmailValid ():Bool { /*impl from interface */}
+    public function isEmailValid ():Bool { /*impl injected from the interface */}
     public function sayHello ():Void { /* own impl */}
 } 
 
 class B implements IUser {
     private var email:String = ""; // injected from the interface
-    public function isEmailValid ():Bool { /*impl from interface */}
+    public function isEmailValid ():Bool { /*impl injected from the interface */}
     public function sayHello ():Void { /* own impl */}
 }
 
 class C implements IUser {
     private var email:String = ""; // injected from the interface
-    public function isEmailValid ():Bool { /*impl from interface */}
+    public function isEmailValid ():Bool { /*impl injected from the interface */}
     public function sayHello ():Void { /* own impl */}
 }
 ```
