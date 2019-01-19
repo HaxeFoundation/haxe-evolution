@@ -118,19 +118,19 @@ interface IUser {
 }
 
 class A implements IUser {
-    private var email:String = ""; //<< injected interface 
+    private var email:String = ""; // injected from the interface
     public function isEmailValid ():Bool { /*impl from interface */}
     public function sayHello ():Void { /* own impl */}
 } 
 
 class B implements IUser {
-    private var email:String = ""; //<< injected interface 
+    private var email:String = ""; // injected from the interface
     public function isEmailValid ():Bool { /*impl from interface */}
     public function sayHello ():Void { /* own impl */}
 }
 
 class C implements IUser {
-    private var email:String = ""; //<< injected interface 
+    private var email:String = ""; // injected from the interface
     public function isEmailValid ():Bool { /*impl from interface */}
     public function sayHello ():Void { /* own impl */}
 }
