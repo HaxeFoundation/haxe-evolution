@@ -1,7 +1,7 @@
 # Command for empty project initialization
 
 * Proposal: [HXP-NNNN](NNNN-init-command.md)
-* Author: [Haxe Developer](https://github.com/dmitryhryppa)
+* Author: [Dmitry Hryppa](https://github.com/dmitryhryppa)
 
 ## Introduction
 
@@ -25,13 +25,15 @@ Then Haxe will create a bunch of files and directories:
 ├───.vscode
 │   ├── settings.json
 │   └── tasks.json
+│
 ├── out
 │   ├── cpp
 │   ├── hl
 │   └── js
-│       └── main.js
+│
 ├── src
 │   └── Main.hx
+│
 ├── build.cpp.hxml
 ├── build.hl.hxml
 ├── build.js.hxml
