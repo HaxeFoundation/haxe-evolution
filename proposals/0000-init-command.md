@@ -62,7 +62,7 @@ None.
 
 ## Alternatives
 
-None
+Create VSHaxe project templates?
 
 ## Unresolved questions
 
