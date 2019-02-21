@@ -2,6 +2,7 @@
 
 * Proposal: [HXP-0010](0010-inline-calls.md)
 * Author: [YellowAfterlife](https://github.com/yellowafterlife)
+* Status: implemented in 4.0.0
 
 ## Introduction
 

@@ -2,7 +2,7 @@
 
 * Proposal: [HXP-0003](0003-new-function-type.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
-* Accepted in: 4.0.0
+* Status: implemented in 4.0.0
 
 ## Introduction
 

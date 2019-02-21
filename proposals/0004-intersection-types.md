@@ -2,7 +2,7 @@
 
 * Proposal: [HXP-0004](0004-intersection-types.md)
 * Author: [Simn](https://github.com/simn)
-
+* Status: implemented in 4.0.0
 
 ## Introduction
 

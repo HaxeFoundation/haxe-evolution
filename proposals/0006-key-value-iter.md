@@ -2,6 +2,7 @@
 
 * Proposal: [HXP-0006](0006-key-value-iter.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
+* Status: implemented in 4.0.0
 
 ## Introduction
 

@@ -2,6 +2,7 @@
 
 * Proposal: [HXP-0008](0008-module-level-funcs.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/7452)
 
 ## Introduction
 

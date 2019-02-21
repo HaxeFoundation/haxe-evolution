@@ -2,7 +2,7 @@
 
 * Proposal: [HXP-0002](0002-arrow-functions.md)
 * Author: [Alexander Kuzmenko](https://github.com/RealyUniqueName)
-* Accepted in: 4.0.0
+* Status: implemented in 4.0.0
 
 ## Introduction
 
