@@ -1,6 +1,6 @@
 # Inline Markup
 
-* Proposal: [HXP-NNNN](NNNN-filename.md)
+* Proposal: [HXP-0007](0007-inline-markup.md)
 * Author: [Juraj Kirchheim](https://github.com/back2dos)
 
 ## Introduction

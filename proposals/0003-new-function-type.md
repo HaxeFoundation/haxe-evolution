@@ -26,7 +26,7 @@ There are several issues with this syntax:
 
 What we could have instead is a function type syntax that follows the new [arrow function](https://github.com/HaxeFoundation/haxe-evolution/blob/master/proposals/0002-arrow-functions.md) syntax:
 
-```
+```haxe
 (id:Int, name:String) -> Void
 ```
 
@@ -36,7 +36,7 @@ What we could have instead is a function type syntax that follows the new [arrow
 
 The proposed syntax would looks like this:
 
-```
+```haxe
 // no arguments
 () -> Void
 
@@ -78,13 +78,13 @@ Int -> Int
 
 Mixing old and new syntax without parenthesis results in a syntax error:
 
-```
+```haxe
 (Int, Int) -> Int -> Int // syntax error: unexpected ->
 (a:Int) -> Int -> Int // same
 ```
 
 If the desired behaviour is to have a functional return type, parenthesis should be used:
-```
+```haxe
 (Int, Int) -> (Int -> Int)
 (a:Int) -> (Int -> Int)
 ```

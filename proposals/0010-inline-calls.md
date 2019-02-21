@@ -1,6 +1,6 @@
 # Inlining functions at call location
 
-* Proposal: [HXP-NNNN](NNNN-filename.md)
+* Proposal: [HXP-0010](0010-inline-calls.md)
 * Author: [YellowAfterlife](https://github.com/yellowafterlife)
 
 ## Introduction
@@ -17,9 +17,9 @@ But you cannot - a function is either inline (hinted or forced with @:extern) or
 
 Considering the current syntax, I think it would be fitting to have this as `inline <TCall>` prefix "operator" - so this would permit to write the earlier shown code like
 ```haxe
-	public function readInt16() : Int {
-		var n = inline readUInt16();
-		if( n & 0x8000 != 0 ) ...
+public function readInt16() : Int {
+	var n = inline readUInt16();
+	if( n & 0x8000 != 0 ) ...
 ```
 If the function cannot be inlined, an error could be shown as it is with `@:extern inline`.
 

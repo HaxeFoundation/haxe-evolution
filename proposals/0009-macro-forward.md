@@ -1,6 +1,6 @@
 # Expression macro method forwarding
 
-* Proposal: [HXP-NNNN](NNNN-filename.md)
+* Proposal: [HXP-0009](0009-macro-forward.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
 
 ## Introduction

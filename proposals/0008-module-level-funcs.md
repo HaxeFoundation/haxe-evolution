@@ -1,6 +1,6 @@
 # Module-level functions and variables
 
-* Proposal: [HXP-NNNN](NNNN-module-level-funcs.md)
+* Proposal: [HXP-0008](0008-module-level-funcs.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
 
 ## Introduction
@@ -96,7 +96,7 @@ I don't see any viable alternatives that would allow defining plain functions. H
 I think we could also use module-level functions to define extern functions, e.g.
 ```haxe
 extern function SDL_Init(flags:UInt32):Int;
-````
+```
 
 But that's gonna require some more thought, because it would mean that the implicitly created class must be made extern automatically.
 
