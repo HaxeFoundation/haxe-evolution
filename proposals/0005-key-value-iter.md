@@ -1,6 +1,6 @@
 # key => value iteration syntax
 
-* Proposal: [HXP-0006](0006-key-value-iter.md)
+* Proposal: [HXP-0005](0005-key-value-iter.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
 * Status: implemented in 4.0.0
 

@@ -1,6 +1,6 @@
 # Inline Markup
 
-* Proposal: [HXP-0007](0007-inline-markup.md)
+* Proposal: [HXP-0006](0006-inline-markup.md)
 * Author: [Juraj Kirchheim](https://github.com/back2dos)
 * Status: implemented in 4.0.0
 

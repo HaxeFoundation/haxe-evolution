@@ -1,6 +1,6 @@
 # Expression macro method forwarding
 
-* Proposal: [HXP-0009](0009-macro-forward.md)
+* Proposal: [HXP-0008](0008-macro-forward.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
 * Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/7453)
 

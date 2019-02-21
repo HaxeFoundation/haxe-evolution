@@ -1,6 +1,6 @@
 # Inlining functions at call location
 
-* Proposal: [HXP-0010](0010-inline-calls.md)
+* Proposal: [HXP-0009](0009-inline-calls.md)
 * Author: [YellowAfterlife](https://github.com/yellowafterlife)
 * Status: implemented in 4.0.0
 
