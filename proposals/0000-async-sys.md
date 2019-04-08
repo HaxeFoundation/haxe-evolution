@@ -158,6 +158,10 @@ extern class Promise<T> {
 }
 ```
 
+### Target specifics
+
+Where possible, the `sys.async` methods should use native asynchronous methods (see example links in the [motivation](#motivation) section). For some targets this might not be possible, so in the worst-case scenario these methods will wrap a `Thread` with a Promise API.
+
 ### Testing
 
 Since the `sys.async` package will be built on top of the Promise implementation, Promises should be thoroughly unit-tested, e.g. using the [A+ Compliance Test Suite](https://github.com/promises-aplus/promises-tests).
