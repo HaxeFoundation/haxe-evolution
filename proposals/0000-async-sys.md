@@ -9,7 +9,7 @@ Add A+-like Promises. Add a `sys.async` package with Promise-based asynchronous 
 
 ## Motivation
 
-For any larger project it may be necessary to perform other tasks while a system call is being processed in the background. The standard libraries of many Haxe targets include system-related methods which may not return/produce a result immediately:
+For any larger project it may be necessary to perform other tasks while a system call is being processed in the background. Libraries in many Haxe targets include system-related methods which may not return/produce a result immediately:
 
  - [C++ - `boost.asio`](http://think-async.com/Asio/boost_asio_1_12_2/doc/html/boost_asio.html) (or just [`asio`](http://think-async.com/Asio/)) - with `co_async/co_await` coroutines
  - [C#](https://docs.microsoft.com/en-us/dotnet/standard/io/asynchronous-file-i-o) - with `async/await` coroutines
