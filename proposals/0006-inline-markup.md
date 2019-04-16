@@ -124,7 +124,7 @@ This feature does not impact existing non-macro code directly. Depending on how 
 
 2. Parse inline strings. This works *amazingly well* in `tink_hxx` (I am biased here, but I think it really shows the benefits of a proper, tight integration):
 
-   ![](https://raw.githubusercontent.com/back2dos/js-virtual-dom/master/hxx-example.gif)
+   ![](../images/hxx-example.gif)
    
    However, trying to get the parser to be reentrant (so you can write e.g. `<div>{[1,2,3].map(i -> <button>{i}</button>)}</div>`), requires you to parse Haxe syntax by hand, which not only is slow and desparate and silly, but also kills autocompletion ... unless you want to implement that part too, which is way beyond desparate and silly.
    
