@@ -1,11 +1,11 @@
-# Promise-based asynchronous `sys` API
+# Asynchronous `sys` API
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
 * Author: [Aurel Bílý](https://github.com/Aurel300)
 
 ## Introduction
 
-Add A+-like Promises. Add a `sys.async` package with Promise-based asynchronous alternatives to some `sys` methods.
+Add a `sys.async` package with Promise-based asynchronous alternatives to some `sys` methods. Provide additional methods in the synchronous `sys` classes for a more complete system API.
 
 ## Motivation
 
@@ -23,36 +23,26 @@ Importantly, these asynchronous APIs **notify** the caller code on operation com
 As an example, we might want to write a couple of very large files in parallel. With the current libraries:
 
 ```haxe
-class Example {
-  public static function main():Void {
-    var done = 0;
-    var data = haxe.io.Bytes.alloc(1024 * 1024 * 700);
-    for (i in 0...3) sys.thread.Thread.create(() -> {
-        sys.io.File.saveBytes('out${i}.bin', data);
-        done++;
-      });
-    while (done < 3) {
-      Sys.sleep(.25);
-    }
-    trace("file writes done!");
-  }
+var done = 0;
+var data = haxe.io.Bytes.alloc(1024 * 1024 * 700);
+for (i in 0...3) sys.thread.Thread.create(() -> {
+    sys.io.File.saveBytes('out${i}.bin', data);
+    done++;
+  });
+while (done < 3) {
+  Sys.sleep(.25);
 }
+trace("file writes done!");
 ```
 
-Note the use of thread, an explicit loop, and manual state control. Now, assuming we have a `sys.async.io.File.saveBytes()` method returning an A+ `Promise` (see [detailed design](#detailed-design)):
+Note the use of thread, an explicit loop, and manual state control. Now, assuming we have a `sys.async.io.File.saveBytes()` method returning a `haxe.Promise` (see [detailed design](#detailed-design)):
 
 ```haxe
-class Example {
-  public static function main():Void {
-    var data = haxe.io.Bytes.alloc(1024 * 1024 * 700);
-    Promise.all([
-        for (i in 0...3) sys.async.io.File.saveBytes('out${i}.bin', data)
-      ]).then(() -> trace("file writes done!"));
-  }
-}
+var data = haxe.io.Bytes.alloc(1024 * 1024 * 700);
+Promise.all([
+    for (i in 0...3) sys.async.io.File.saveBytes('out${i}.bin', data)
+  ]).then(() -> trace("file writes done!"));
 ```
-
-A+ Promises are chosen as the reference implementation since it is the most widespread specification, so it should be familiar to any Javascript developer. Assuming coroutine support is added over promises, the code will also be very familiar to programmers of coroutine-supporting languages (C++, C#, Lua, Javascript/ES6).
 
 ## Detailed design
 
@@ -105,66 +95,11 @@ The following methods will get their async counterparts:
  - `sys.Http` (static)
    - `requestUrl(url:String):Promise<String>`
 
-A `Promise` class will be added to the standard library, either in the top-level or the `haxe` package. Its API will mimic the A+ API where possible (A+ is the `Promise` API used in Javascript). The differences are highlighted:
-
-```haxe
-enum PromiseOrValue<T> {
-  Promise(_:Promise<T>);
-  Value(_:T);
-  
-  // may be necessary to avoid errors (Void cannot be used as a value)
-  VoidValue;
-}
-
-enum PromiseState {
-  Pending;
-  Fulfilled;
-  Rejected;
-}
-
-extern class Promise<T> {
-  // resolve in A+
-  public static function resolved<T>(with:T):Promise<T>;
-  
-  // reject in A+
-  public static function rejected<T>(with:Dynamic):Promise<T>;
-  
-  public static function all<T>(promises:Array<PromiseOrValue<T>>):Promise<Array<T>>;
-  
-  public static function race<T>(promises:Array<PromiseOrValue<T>>):Promise<T>;
-  
-  // bluebird specific
-  // also already in haxe.Timer
-  public static function delay(millis:Float):Promise<Void>;
-  
-  public var state(default, null):PromiseState;
-  
-  // if Fulfilled
-  public var value(default, null):T;
-  
-  // if Rejected
-  public var error(default, null):Dynamic;
-  
-  public function new(?resolver:(PromiseOrValue<T>->Void)->(Dynamic->Void)->Void);
-  
-  public function done(?onFulfilled:T->Void, ?onRejected:Dynamic->Void):Void;
-  
-  public function then<U>(onFulfilled:T->PromiseOrValue<U>, ?onRejected:Dynamic->PromiseOrValue<U>):Promise<U>;
-  
-  // catch in A+
-  public function catchError<U>(onRejected:Dynamic->PromiseOrValue<U>):Promise<U>;
-  
-  public function finally<U>(onFinally:Void->U):Promise<U>;
-}
-```
-
 ### Target specifics
 
 Where possible, the `sys.async` methods should use native asynchronous methods (see example links in the [motivation](#motivation) section). For some targets this might not be possible, so in the worst-case scenario these methods will wrap a `Thread` with a Promise API.
 
 ### Testing
-
-Since the `sys.async` package will be built on top of the Promise implementation, Promises should be thoroughly unit-tested, e.g. using the [A+ Compliance Test Suite](https://github.com/promises-aplus/promises-tests).
 
 The majority of tests for `sys` classes should be reused. It may be worthwhile to adapt the existing tests to test both implementations (with a forced synchronous operation on `sys.async`) so tests are not duplicated. Additional tests should be written to test async-specific features, such as writing multiple files in parallel.
 
@@ -175,6 +110,8 @@ Existing code should not be affected, since the new classes will be in the new `
 The optional migration from `sys` to `sys.async` where appropriate amounts to a possibly large refactor.
 
 ## Drawbacks
+
+-
 
 ## Alternatives
 
@@ -190,12 +127,12 @@ Alternatives to having asynchronous methods altogether:
 
 ## Opening possibilities
 
+-
+
 ## Unresolved questions
 
- - should this proposal be split into two? "Promises" and "Async `sys` API"
  - drawbacks, opening possibilities?
 
 ### TODO before PR
 
  - [ ] finalise the list of async methods
- - [ ] agree on the `Promise` API
