@@ -109,6 +109,10 @@ On Javascript, `haxe.Promise` can simply wrap `js.lib.Promise`.
 
 Whenever available or possible, new asynchronous APIs should use asynchronous native calls. On thread-supporting targets, synchronous APIs can be wrapped into asynchronous promises by running the synchronous call in a separate thread which will resolve the promise once done.
 
+### Testing
+
+Since the intended use for promises is primarily to enable the Haxe standard library to provide asynchronous APIs, Promises should be thoroughly unit-tested, e.g. using the [A+ Compliance Test Suite](https://github.com/promises-aplus/promises-tests).
+
 ## Impact on existing code
 
 Minimal or none. `Promise` will be in the `haxe` package, which should not interfere with other promise implementations.
@@ -119,7 +123,7 @@ Minimal or none. `Promise` will be in the `haxe` package, which should not inter
 
 ## Alternatives
 
- - coroutines
+With eventual support of [coroutines in Haxe](https://github.com/RealyUniqueName/Coro), API authors and the Haxe standard library could provide asynchronous API functions as coroutines instead of returning Promises. Since coroutines can easily be created from promises, this should not be an issue – promises and coroutines can coexist in Haxe.
 
 ## Opening possibilities
 
