@@ -5,7 +5,7 @@
 
 ## Introduction
 
-Add a `Promise` type to the Haxe standard library based on the A+ specification for the most part.
+Add a `haxe.Promise` type to the Haxe standard library based on the A+ specification for the most part.
 
 ## Motivation
 
@@ -51,13 +51,7 @@ A+ Promises are chosen as the reference implementation since it is the most wide
 The proposed interface:
 
 ```haxe
-enum PromiseOrValue<T> {
-  Promise(_:Promise<T>);
-  Value(_:T);
-  
-  // may be necessary to avoid errors (Void cannot be used as a value)
-  VoidValue;
-}
+package haxe;
 
 enum PromiseState {
   Pending;
@@ -66,46 +60,58 @@ enum PromiseState {
 }
 
 extern class Promise<T> {
-  public static function resolved<T>(with:T):Promise<T>;
+  // create a resolved promise with the given value
+  public static function resolved<T>(value:T):Promise<T>;
   
-  public static function rejected<T>(with:Dynamic):Promise<T>;
+  // create a rejected promise with the given error
+  public static function rejected<T>(error:Dynamic):Promise<T>;
   
-  public static function all<T>(promises:Array<PromiseOrValue<T>>):Promise<Array<T>>;
+  // wait for all promises in an array to complete, return a promise with an
+  // array of their resolved values
+  public static function all<T>(promises:Array<Promise<T>>):Promise<Array<T>>;
   
-  public static function race<T>(promises:Array<PromiseOrValue<T>>):Promise<T>;
+  // wait for all promises in an array to complete, regardless of their type
+  public static function join(promises:Array<Promise<Dynamic>>):Promise<Void>;
   
-  public var state(default, null):PromiseState;
+  // wait for any of the promises in the array to finish, return its value
+  public static function race<T>(promises:Array<Promise<T>>):Promise<T>;
   
-  // if Fulfilled
-  public var value(default, null):T;
-  
-  // if Rejected
-  public var error(default, null):Dynamic;
-  
-  public function new(?resolver:(PromiseOrValue<T>->Void)->(Dynamic->Void)->Void);
+  public function new(
+    ?resolver:(resolve:(?promise:Promise<T>, ?value:T)->Void, reject:(?error:Dynamic)->Void)->Void
+  );
   
   public function done(?onFulfilled:T->Void, ?onRejected:Dynamic->Void):Void;
   
-  public function then<U>(onFulfilled:T->PromiseOrValue<U>, ?onRejected:Dynamic->PromiseOrValue<U>):Promise<U>;
+  // chain a promise, returning another promise in the given handler function
+  public function then<U>(onFulfilled:T->Promise<U>, ?onRejected:Dynamic->Promise<U>):Promise<U>;
+  
+  // chain a promise, returning a non-promise value in the given handler function
+  public function map<U>(onFulfilled:T->U, ?onRejected:Dynamic->U):Promise<U>;
   
   // catch in A+ (renamed since catch is a Haxe keyword)
   public function catchError<U>(onRejected:Dynamic->PromiseOrValue<U>):Promise<U>;
   
   public function finally<U>(onFinally:Void->U):Promise<U>;
+  
+  // implementation detail:
+  private var state:PromiseState;
+  private var value:T; // if Fulfilled
+  private var error:Dynamic; // if Rejected
 }
 ```
 
-`error` may need to have its own type parameter; `catchError` may present additional typing problems (see https://github.com/HaxeFoundation/haxe/issues/8170).
+ - `error` may need to have its own type parameter; `catchError` may present additional typing problems (see https://github.com/HaxeFoundation/haxe/issues/8170)
+ - `then` is split into `then` and `map` for when the handler function returns a `Promise` and a value, respectively
 
 ### Target specifics
 
-On Javascript, `Promise` can simply wrap `js.lib.Promise`.
+On Javascript, `haxe.Promise` can simply wrap `js.lib.Promise`.
 
 Whenever available or possible, new asynchronous APIs should use asynchronous native calls. On thread-supporting targets, synchronous APIs can be wrapped into asynchronous promises by running the synchronous call in a separate thread which will resolve the promise once done.
 
 ## Impact on existing code
 
-Minimal; `Promise` will be in the top-level package, which may interfere with projects using other Promise implementations.
+Minimal or none. `Promise` will be in the `haxe` package, which should not interfere with other promise implementations.
 
 ## Drawbacks
 
