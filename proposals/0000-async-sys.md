@@ -1,113 +1,249 @@
-# Asynchronous `sys` API
+# New `sys` APIs
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
 * Author: [Aurel Bílý](https://github.com/Aurel300)
 
 ## Introduction
 
-Add a `sys.async` package with Promise-based asynchronous alternatives to some `sys` methods. Provide additional methods in the synchronous `sys` classes for a more complete system API.
+Improved API for both synchronous and asynchronous filesystem operations based on Node.js; improved networking API; asynchrony primitives; I/O streams.
 
 ## Motivation
 
-For any larger project it may be necessary to perform other tasks while a system call is being processed in the background. Libraries in many Haxe targets include system-related methods which may not return/produce a result immediately:
+### Asynchrony
 
- - [C++ - `boost.asio`](http://think-async.com/Asio/boost_asio_1_12_2/doc/html/boost_asio.html) (or just [`asio`](http://think-async.com/Asio/)) - with `co_async/co_await` coroutines
- - [C#](https://docs.microsoft.com/en-us/dotnet/standard/io/asynchronous-file-i-o) - with `async/await` coroutines
- - [node.js - `fs`](https://nodejs.org/api/fs.html) - methods take a `callback` argument, although in practice [`promisify`](https://nodejs.org/api/util.html#util_util_promisify_original) is often used to transform callback-taking methods into Promise-returning methods
- - [Java - `AsynchronousFileChannel`](https://docs.oracle.com/javase/7/docs/api/java/nio/channels/AsynchronousFileChannel.html) - methods return a `Future` (largely identical to Promise from an API perspective)
- - [Python - Twisted](https://twistedmatrix.com/trac/) - networking methods
- - [lua - LuaNode](https://github.com/ignacio/luanode) (might be a dead project) - node.js-like I/O
+There is currently no good way to asynchronously perform many `sys`-related tasks (without manually creating `Thread`s). Two basic primitives are added to the library:
 
-Importantly, these asynchronous APIs **notify** the caller code on operation completion or failure ([Proactor design pattern](https://en.wikipedia.org/wiki/Proactor_pattern)). This is superior to non-blocking operations, which may perform a small part of an operation, e.g. writing `n` bytes to a file, then returning to the caller code immediately. With such APIs the programmer is responsible for writing a wrapper around the API to make sure the task is finished completely. This is error-prone and imitating a true async API interface most likely involves threading.
+ - [events](#events) (and listeners)
+ - [unified callback style](#callbacks)
 
-As an example, we might want to write a couple of very large files in parallel. With the current libraries:
+### Streams
 
-```haxe
-var done = 0;
-var data = haxe.io.Bytes.alloc(1024 * 1024 * 700);
-for (i in 0...3) sys.thread.Thread.create(() -> {
-    sys.io.File.saveBytes('out${i}.bin', data);
-    done++;
-  });
-while (done < 3) {
-  Sys.sleep(.25);
-}
-trace("file writes done!");
-```
+The current Haxe API contains `haxe.io.Input` and `haxe.io.Output` for input and output streams. These lack:
 
-Note the use of thread, an explicit loop, and manual state control. Now, assuming we have a `sys.async.io.File.saveBytes()` method returning a `haxe.Promise` (see [detailed design](#detailed-design)):
+ - ability to express a read **and** write stream (`sys.io.File` has two separate streams rather than one RW stream)
+ - pipelining without manual chunking
+ - proper asynchronous operations
+ - automatically pacing streams with different data emission / consumption rates
 
-```haxe
-var data = haxe.io.Bytes.alloc(1024 * 1024 * 700);
-Promise.all([
-    for (i in 0...3) sys.async.io.File.saveBytes('out${i}.bin', data)
-  ]).then(() -> trace("file writes done!"));
-```
+### Filesystem
+
+The current filesystem APIs in Haxe lack a number of important features:
+
+ - asynchronous tasks
+ - changing permissions, owners of files
+ - symlink operations
+ - watching for changes
+
+### Networking
+
+Non-blocking socket operations are inconvenient to use in the current API even though they are the only (non-`Thread`) solution to some real-time network communication problems. IPC communication is not possible, UDP sockets are not fully featured.
+
+There is a lack of proper unit testing of the networking APIs. Certain platforms also miss full implementations of various parts of the networking API. (See https://github.com/HaxeFoundation/haxe/issues/6933, https://github.com/HaxeFoundation/haxe/issues/6816)
 
 ## Detailed design
 
-The following methods will get their async counterparts:
+Modified modules (new API + backward compatibility):
 
- - `sys.db.Mysql` (static)
-   - `connect(params:...):Promise<Connection>`
- - `sys.db.Sqlite` (static)
-   - `open(file:String):Promise<Connection>`
- - `sys.io.File` (static)
-   - `copy(srcPath:String, dstPath:String):Promise<Void>`
-   - `getBytes(path:String):Promise<Bytes>`
-   - `getContent(path:String):Promise<String>`
-   - `saveBytes(path:String, bytes:Bytes):Promise<Void>`
-   - `saveContent(path:String, content:String):Promise<Void>`
- - `sys.io.Process` (static)
-   - `open(cmd:String, ?args:Array<String>, ?detached:Bool):Promise<Process>` (counterpart to the constructor)
- - `sys.io.Process` (instance)
-   - `close():Promise<Void>`
-   - `exitCode():Promise<Int>`
-   - `kill():Promise<Void>`
- - `sys.net.Host` (instance)
-   - `reverse():Promise<String>`
- - `sys.net.Socket` (static)
-   - `select(read, write, others):Promise<{read, write, others}>`
- - `sys.net.Socket` (instance)
-   - `accept():Promise<Socket>`
-   - `connect(host:Host, port:Int):Promise<Void>`
- - `sys.ssl.Certificate` (static)
-   - `loadDefaults():Promise<Certificate>`
-   - `loadFile(file:String):Promise<Certificate>`
-   - `loadPath(path:String):Promise<Certificate>`
- - `sys.ssl.Key` (static)
-   - `loadFile(file:String, ?isPublic:Bool, ?pass:String):Promise<Key>`
- - `sys.ssl.Socket` (instance)
-   - `handshake():Promise<Void>`
- - `sys.thread.Deque` (instance)
-   - `pop():Promise<T>` (this could just be added to the existing `Deque`)
- - `sys.thread.Lock` (instance)
-   - `wait():Promise<Void>` (this could just be added to the existing `Lock`)
- - `sys.FileSystem` (static)
-   - `createDirectory(path:String):Promise<Void>`
-   - `deleteDirectory(path:String):Promise<Void>`
-   - `deleteFile(path:String):Promise<Void>`
-   - `exists(path:String):Promise<Bool>`
-   - `isDirectory(path:String):Promise<Bool>`
-   - `readDirectory(path:String):Promise<Array<String>>`
-   - `rename(path:String, newPath:String):Promise<Void>`
-   - `stat(path:String):Promise<sys.FileStat>`
- - `sys.Http` (static)
-   - `requestUrl(url:String):Promise<String>`
+ - [`haxe.io.Path`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Path.hx)
+ - [`sys.FileStat`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileStat.hx)
+ - [`sys.FileSystem`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileSystem.hx)
+ - [`sys.io.File`](https://github.com/Aurel300/haxe-sys/blob/master/sys/io/File.hx)
+ - [`sys.net.UdpSocket`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/UdpSocket.hx)
+
+Added modules:
+
+ - [`haxe.Error`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/Error.hx) - for reporting errors, see [errors](#errors)
+ - [`haxe.ErrorType`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/ErrorType.hx)
+ - [`haxe.NoData`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/NoData.hx) - type to represent an absence of data in generics (e.g. `Callback<NoData>`)
+ - [`haxe.async.Callback`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/async/Callback.hx) - generic type to represent an error-first callback, see [callbacks](#callbacks)
+ - [`haxe.async.Event`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/async/Event.hx) - see [events](#events)
+ - [`haxe.async.Listener`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/async/Listener.hx) - event listener
+ - [`haxe.io.Duplex`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Duplex.hx) - see [streams](#streams)
+ - [`haxe.io.IReadable`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/IReadable.hx)
+ - [`haxe.io.IStream`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/IStream.hx)
+ - [`haxe.io.IWritable`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/IWritable.hx)
+ - [`haxe.io.Readable`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Readable.hx)
+ - [`haxe.io.Stream`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Stream.hx)
+ - [`haxe.io.Writable`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Writable.hx)
+ - [`sys.DirectoryEntry`](https://github.com/Aurel300/haxe-sys/blob/master/sys/DirectoryEntry.hx)
+ - [`sys.FileAccessMode`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileAccessMode.hx)
+ - [`sys.FileCopyFlags`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileCopyFlags.hx)
+ - [`sys.FileMode`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileMode.hx)
+ - [`sys.FileOpenFlags`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileOpenFlags.hx)
+ - [`sys.FileWatcher`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileWatcher.hx)
+ - [`sys.async.FileSystem`](https://github.com/Aurel300/haxe-sys/blob/master/sys/async/FileSystem.hx)
+ - [`sys.async.Http`](https://github.com/Aurel300/haxe-sys/blob/master/sys/async/Http.hx)
+ - [`sys.async.net.Socket`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Socket.hx)
+ - [`sys.io.AsyncFile`](https://github.com/Aurel300/haxe-sys/blob/master/sys/io/AsyncFile.hx)
+ - [`sys.io.FileReadStream`](https://github.com/Aurel300/haxe-sys/blob/master/sys/io/FileReadStream.hx)
+ - [`sys.io.FileWriteStream`](https://github.com/Aurel300/haxe-sys/blob/master/sys/io/FileWriteStream.hx)
+ - [`sys.net.Dns`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Dns.hx)
+ - [`sys.net.Net`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Net.hx)
+ - [`sys.net.Server`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Server.hx)
+ - [`sys.net.UdpSocket`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/UdpSocket.hx)
+ - [`sys.net.Url`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Url.hx)
+
+Relevant Node.js APIs:
+
+ - [`dgram`](https://nodejs.org/api/dgram.html)
+ - [`dns`](https://nodejs.org/api/dns.html)
+ - [`fs`](https://nodejs.org/api/fs.html)
+ - [`http`](https://nodejs.org/api/http.html)
+ - [`net`](https://nodejs.org/api/net.html)
+ - [`path`](https://nodejs.org/api/path.html)
+ - [`stream`](https://nodejs.org/api/stream.html)
+ - [`url`](https://nodejs.org/api/url.html)
+
+See also the [detailed differences from Node.js APIs](https://github.com/Aurel300/haxe-sys/blob/master/NODE-DIFF.md) and [Haxe 4 breaking chagnes](https://github.com/Aurel300/haxe-sys/blob/master/BREAKING.md).
+
+### Errors
+
+A `haxe.Error` class is added to unify error reporting in the system APIs. It has a `message` field which contains the human-readable description of the error. It also includes a `type` field which can be `switch`-ed on.
+
+```haxe
+try {
+  sys.FileSystem.someOperation();
+} catch (err:haxe.Error) {
+  trace("error!", err);
+}
+// or
+try {
+  sys.FileSystem.someOperation();
+} catch (err:haxe.Error) {
+  switch (err.type) {
+    case FileNotFound: // it's fine
+    case _: throw err;
+  }
+}
+```
+
+> **Unresolved question:**
+> 
+> There are multiple ways of expressing proper type-safe errors for the filesystem API:
+> - errors represented by a single `enum` (`sys.FileSystemError`), with the individual cases containing all the information of that particular error
+>   - awkward to catch individual errors (any `catch` would need a `switch`)
+>   - fewer classes to maintain, less work to throw errors (the case names the error, so no message is needed)
+> - errors represented by sub-classes of a single base class
+>   - possible to catch individual subclasses in separate `catch` blocks
+>   - many classes in the package (could be moved into a sub-package for errors?)
+> - base class `Error` + enum for types, as implemented in the draft now
+> 
+> The primary aim for any solution is to be able to catch specific types of errors without having to rely on string comparison.
+
+### Events
+
+A type-safe system for emitting events, similar to `tink_core` `Signal`s is added. An `Event<T>` is simply an abstract over an array of listeners (`Listener<T>`). An event-emitting object has a number of `final` events.
+
+```haxe
+class Example {
+  public final eventFoo = new Event<NoData>();
+  public final eventBar = new Event<String>();
+  public function new() super();
+  public function emitEvents() {
+    eventFoo.emit(new NoData());
+    eventBar.emit("hello");
+  }
+}
+
+class Main {
+  static function main():Void {
+    var example = new Example();
+    example.eventFoo.on(() -> trace("event foo"));
+    example.eventBar.on(str -> trace("event bar", str));
+    example.emitEvents();
+  }
+}
+```
+
+Currently no efforts were made to "hide" the `emit` method (like the `Signal` and `SignalTrigger` distinction made in `tink_core`).
+
+### Callbacks
+
+Asynchronous methods are identical to their synchronous counter-parts, except:
+
+ - their return type is `Void`
+ - they have an additional, required `callback` argument of type `Callback<DataType>` or `Callback<NoData>`
+   - first argument passed to the callback is a `haxe.Error`, or `null` if no error occurred
+   - any additional arguments represent the data returned by the call, analogous to the return type of the synchronous method; if the synchronous method has a `Void` return type, the callback takes no additional arguments
+   - `Callback<T>` is an abstract which has some `from` methods, allowing a callback to be created from functions with a simpler signature (e.g. a `Callback<NoData>` from `(err:Error)->Void`)
+
+### Flags, modes, constants
+
+Several methods in the API accept constants or a combination of flags. Constants (where the argument is *exactly one of* a set of options) have been converted to an `enum` or `enum abstract`. Flags (where the argument is *zero or more of* a set of options) have been converted to an `abstract` over `Int`, with an overloaded `|` operator.
+
+### Streams
+
+At the core of a lot of Node.js APIs lie [streams](https://nodejs.org/api/stream.html), which are abstractions for data consumers (`Writable`), data producers (`Readable`), or a mix of both (`Duplex` or `Transform`). Streams enable better composition of data operations with methods such as `pipeline`. There is also a mechanism to minimise buffering of data in memory (`highWaterMark`, `drain`) when combining streams.
+
+### File descriptors
+
+The Node.js API has a concept of file descriptors, represented by a single integer. To avoid issues with platforms without explicit file descriptor numbers, `sys.io.File` is an `abstract`, similar to the new threading API.
+
+Various `fs.f*` methods from Node.js which take `fd` as their first argument are moved into their own methods in the `File` abstract.
+
+### Synchronous / asynchronous versions
+
+To avoid the `someMethod` + `someMethodSync` naming scheme present in Node.js, the two versions are more clearly split:
+
+ - `sys.FileSystem` and `sys.async.FileSystem` (static methods)
+ - `sys.io.File` has an `async` field for asynchronous instance methods
+
+```haxe
+// synchronously:
+var file = sys.FileSystem.open("file.txt", Read);
+var data = file.readFile();
+
+// asynchronously:
+sys.async.FileSystem.open("file.txt", Read, (err, file) -> {
+    file.readFile((err, data) -> {
+        // ...
+      });
+  });
+```
+
+### Non-Unicode filepaths
+
+In Node.js, wherever a path is expected as an argument, a `Buffer` can be provided, equivalent to `haxe.io.Bytes`. Similarly, whenever paths are to be returned, either a `String` or a `Buffer` is returned, depending on the `encoding` option (`"utf8"` or `"buffer"`).
+
+It would be awkward to mirror this behaviour in Haxe, so instead, the assumption is made that filepaths will be Unicode most of the time, and `String` is used consistently in the API. In the rare cases that non-Unicode paths are returned, they are escaped into a Unicode string. The original `Bytes` can be obtained with `sys.FileSystem.bytesOfPath(path)`. There is also the inverse `sys.FileSystem.pathOfBytes(bytes)`.
+
+See https://github.com/HaxeFoundation/haxe/issues/8134
+
+### Backward compatibility
+
+The methods in the current `sys.FileSystem` and `sys.io.File` APIs will be kept for the time being, as `inline`s using the new methods. The names of the methods in Node.js are arguably less intuitive (e.g. `mkdir` instead of `createDirectory`), but they were kept to retain familiarity.
 
 ### Target specifics
 
-Where possible, the `sys.async` methods should use native asynchronous methods (see example links in the [motivation](#motivation) section). For some targets this might not be possible, so in the worst-case scenario these methods will wrap a `Thread` with a Promise API.
+Where possible, the asynchronous methods should use native calls. For some targets this might not be possible, so in the worst-case scenario these methods will run the synchronous call in a `Thread`, then trigger the callback once done.
+
+For many targets, wrapping libuv (the library that powers Node.js APIs) will be the most straight-forward implementation option.
+
+(**TODO:** research individual APIs on remaining targets)
+
+ - cpp
+ - cs
+ - eval - [libuv bindings for OCaml](https://github.com/fdopen/uwt) ?
+ - hl - libuv bindings already started
+ - java, jvm
+ - js (with `hxnodejs`) - mostly trivial mapping since it is the Node.js API
+ - lua - [luvit](https://github.com/luvit/luvit)
+ - neko
+ - php
+ - python
 
 ### Testing
 
-The majority of tests for `sys` classes should be reused. It may be worthwhile to adapt the existing tests to test both implementations (with a forced synchronous operation on `sys.async`) so tests are not duplicated. Additional tests should be written to test async-specific features, such as writing multiple files in parallel.
+The majority of tests for the current `sys` classes should be reused. It may be worthwhile to adapt the existing tests to test both implementations (with a forced synchronous operation on `sys.async`) so tests are not duplicated. Additional tests should be written to test async-specific features, such as writing multiple files in parallel.
+
+For methods that were not present in the original APIs, some tests may be based on the extensive [Node.js test suite](https://github.com/nodejs/node/tree/master/test/parallel).
 
 ## Impact on existing code
 
-Existing code should not be affected, since the new classes will be in the new `sys.async` package and the old `sys` API will not be changed.
+Existing code should not be affected:
 
-The optional migration from `sys` to `sys.async` where appropriate amounts to a possibly large refactor.
+ - completely new APIs will be in new packages
+ - new APIs which are largely compatible with the old APIs still keep the methods of the old APIs for backward compatibility
 
 ## Drawbacks
 
@@ -115,24 +251,21 @@ The optional migration from `sys` to `sys.async` where appropriate amounts to a 
 
 ## Alternatives
 
-Alternatives to returning `Promise`s:
-
- - callback arguments on the methods (as in node.js) - difficult to chain, leads to deeply-nested functions (callback hell)
- - object instance per asynchronous operation with `dynamic` functions (as in `sys.Http`) - cannot chain, a lot of additional classes
- - skip `Promise`s completely and use [coroutines](https://github.com/RealyUniqueName/Coro) - the Coro API is already based on A+ Promises
-
-Alternatives to having asynchronous methods altogether:
-
- - using manual threading (see example in [motivation](#motivation)) - more error-prone
+-
 
 ## Opening possibilities
 
--
+ - better haxelib
 
 ## Unresolved questions
 
- - drawbacks, opening possibilities?
+To be determined before implementation (in PR discussions):
 
-### TODO before PR
-
- - [ ] finalise the list of async methods
+ - [error reporting style](#errors)
+ - specifics of packages, class names generally
+ - currently all filesize and file position arguments are `Int`, but this only allows sizes of up to 2 GiB
+   - should we use `haxe.Int64`?
+   - is the support of `haxe.Int64` good enough on sys targets
+   - Node.js uses the `Number` type, which has at least 53 bits of integer precision
+ - Haxe compatibility - Dns (Host), Socket
+ - Https - mostly a copy of the Http APIs, some extra SSL-specific options
