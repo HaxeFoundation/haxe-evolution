@@ -44,44 +44,45 @@ There is a lack of proper unit testing of the networking APIs. Certain platforms
 
 Modified modules (new API + backward compatibility):
 
- - [`haxe.io.Path`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Path.hx)
- - [`sys.FileStat`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileStat.hx)
- - [`sys.FileSystem`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileSystem.hx)
- - [`sys.io.File`](https://github.com/Aurel300/haxe-sys/blob/master/sys/io/File.hx)
- - [`sys.net.UdpSocket`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/UdpSocket.hx)
+ - [`haxe.io.Path`](haxe/io/Path.hx)
+ - [`sys.FileStat`](sys/FileStat.hx)
+ - [`sys.FileSystem`](sys/FileSystem.hx)
+ - [`sys.io.File`](sys/io/File.hx)
+ - [`sys.net.UdpSocket`](sys/net/UdpSocket.hx)
 
 Added modules:
 
- - [`haxe.Error`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/Error.hx) - for reporting errors, see [errors](#errors)
- - [`haxe.ErrorType`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/ErrorType.hx)
- - [`haxe.NoData`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/NoData.hx) - type to represent an absence of data in generics (e.g. `Callback<NoData>`)
- - [`haxe.async.Callback`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/async/Callback.hx) - generic type to represent an error-first callback, see [callbacks](#callbacks)
- - [`haxe.async.Event`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/async/Event.hx) - see [events](#events)
- - [`haxe.async.Listener`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/async/Listener.hx) - event listener
- - [`haxe.io.Duplex`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Duplex.hx) - see [streams](#streams)
- - [`haxe.io.IReadable`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/IReadable.hx)
- - [`haxe.io.IStream`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/IStream.hx)
- - [`haxe.io.IWritable`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/IWritable.hx)
- - [`haxe.io.Readable`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Readable.hx)
- - [`haxe.io.Stream`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Stream.hx)
- - [`haxe.io.Writable`](https://github.com/Aurel300/haxe-sys/blob/master/haxe/io/Writable.hx)
- - [`sys.DirectoryEntry`](https://github.com/Aurel300/haxe-sys/blob/master/sys/DirectoryEntry.hx)
- - [`sys.FileAccessMode`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileAccessMode.hx)
- - [`sys.FileCopyFlags`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileCopyFlags.hx)
- - [`sys.FileMode`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileMode.hx)
- - [`sys.FileOpenFlags`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileOpenFlags.hx)
- - [`sys.FileWatcher`](https://github.com/Aurel300/haxe-sys/blob/master/sys/FileWatcher.hx)
- - [`sys.async.FileSystem`](https://github.com/Aurel300/haxe-sys/blob/master/sys/async/FileSystem.hx)
- - [`sys.async.Http`](https://github.com/Aurel300/haxe-sys/blob/master/sys/async/Http.hx)
- - [`sys.async.net.Socket`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Socket.hx)
- - [`sys.io.AsyncFile`](https://github.com/Aurel300/haxe-sys/blob/master/sys/io/AsyncFile.hx)
- - [`sys.io.FileReadStream`](https://github.com/Aurel300/haxe-sys/blob/master/sys/io/FileReadStream.hx)
- - [`sys.io.FileWriteStream`](https://github.com/Aurel300/haxe-sys/blob/master/sys/io/FileWriteStream.hx)
- - [`sys.net.Dns`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Dns.hx)
- - [`sys.net.Net`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Net.hx)
- - [`sys.net.Server`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Server.hx)
- - [`sys.net.UdpSocket`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/UdpSocket.hx)
- - [`sys.net.Url`](https://github.com/Aurel300/haxe-sys/blob/master/sys/net/Url.hx)
+ - [`haxe.Error`](haxe/Error.hx) - for reporting errors, see [errors](#errors)
+ - [`haxe.ErrorType`](haxe/ErrorType.hx)
+ - [`haxe.NoData`](haxe/NoData.hx) - type to represent an absence of data in generics (e.g. `Callback<NoData>`)
+ - [`haxe.async.Callback`](haxe/async/Callback.hx) - generic type to represent an error-first callback, see [callbacks](#callbacks)
+ - [`haxe.async.Event`](haxe/async/Event.hx) - see [events](#events)
+ - [`haxe.async.Listener`](haxe/async/Listener.hx) - event listener
+ - [`haxe.io.Duplex`](haxe/io/Duplex.hx) - see [streams](#streams)
+ - [`haxe.io.FilePath`](haxe/io/FilePath.hx) - see [non-unicode filepaths](#non-unicode-filepaths)
+ - [`haxe.io.IReadable`](haxe/io/IReadable.hx)
+ - [`haxe.io.IStream`](haxe/io/IStream.hx)
+ - [`haxe.io.IWritable`](haxe/io/IWritable.hx)
+ - [`haxe.io.Readable`](haxe/io/Readable.hx)
+ - [`haxe.io.Stream`](haxe/io/Stream.hx)
+ - [`haxe.io.Writable`](haxe/io/Writable.hx)
+ - [`sys.DirectoryEntry`](sys/DirectoryEntry.hx)
+ - [`sys.FileAccessMode`](sys/FileAccessMode.hx)
+ - [`sys.FileCopyFlags`](sys/FileCopyFlags.hx)
+ - [`sys.FileMode`](sys/FileMode.hx)
+ - [`sys.FileOpenFlags`](sys/FileOpenFlags.hx)
+ - [`sys.FileWatcher`](sys/FileWatcher.hx)
+ - [`sys.async.FileSystem`](sys/async/FileSystem.hx)
+ - [`sys.async.Http`](sys/async/Http.hx)
+ - [`sys.async.net.Socket`](sys/net/Socket.hx)
+ - [`sys.io.AsyncFile`](sys/io/AsyncFile.hx)
+ - [`sys.io.FileReadStream`](sys/io/FileReadStream.hx)
+ - [`sys.io.FileWriteStream`](sys/io/FileWriteStream.hx)
+ - [`sys.net.Dns`](sys/net/Dns.hx)
+ - [`sys.net.Net`](sys/net/Net.hx)
+ - [`sys.net.Server`](sys/net/Server.hx)
+ - [`sys.net.UdpSocket`](sys/net/UdpSocket.hx)
+ - [`sys.net.Url`](sys/net/Url.hx)
 
 Relevant Node.js APIs:
 
@@ -94,7 +95,7 @@ Relevant Node.js APIs:
  - [`stream`](https://nodejs.org/api/stream.html)
  - [`url`](https://nodejs.org/api/url.html)
 
-See also the [detailed differences from Node.js APIs](https://github.com/Aurel300/haxe-sys/blob/master/NODE-DIFF.md) and [Haxe 4 breaking chagnes](https://github.com/Aurel300/haxe-sys/blob/master/BREAKING.md).
+See also the [detailed differences from Node.js APIs](NODE-DIFF.md) and [Haxe 4 breaking chagnes](BREAKING.md).
 
 ### Errors
 
@@ -205,7 +206,7 @@ sys.async.FileSystem.open("file.txt", Read, (err, file) -> {
 
 In Node.js, wherever a path is expected as an argument, a `Buffer` can be provided, equivalent to `haxe.io.Bytes`. Similarly, whenever paths are to be returned, either a `String` or a `Buffer` is returned, depending on the `encoding` option (`"utf8"` or `"buffer"`).
 
-It would be awkward to mirror this behaviour in Haxe, so instead, the assumption is made that filepaths will be Unicode most of the time, and `String` is used consistently in the API. In the rare cases that non-Unicode paths are returned, they are escaped into a Unicode string. The original `Bytes` can be obtained with `sys.FileSystem.bytesOfPath(path)`. There is also the inverse `sys.FileSystem.pathOfBytes(bytes)`.
+It would be awkward to mirror this behaviour in Haxe, so instead, the assumption is made that filepaths will be Unicode most of the time, and `haxe.io.FilePath` (an `abstract` over `String`) is used consistently in the new API. In the rare cases that non-Unicode paths are returned, they are escaped into a Unicode string. The original `Bytes` can be obtained with `FilePath.decode(path)`. There is also the inverse `FilePath.encode(bytes)`.
 
 See https://github.com/HaxeFoundation/haxe/issues/8134
 
