@@ -7,7 +7,7 @@
 
 Add a way to access "self" for abstracts, which is a getter for `(cast this:MyAbstract)`.
 
-Based on [this discussion](https://github.com/HaxeFoundation/haxe/issues/8162) I'd like to propose an optional `as selfIdent` for abstracts, which allows to add/name your own "self":
+Based on [this discussion](https://github.com/HaxeFoundation/haxe/issues/8162) I'd like to propose an optional `as <indent>` for abstracts, which allows to add/name your own "self":
 
 ```haxe
 abstract MyAbstract(MyType) as selfIdent {
@@ -17,9 +17,12 @@ abstract MyAbstract(MyType) as selfIdent {
 
 ## Motivation
 
-I find myself copy/pasting the following piece of snippet quite a lot, when dealing with abstracts.
+I find myself copy/pasting the following piece of snippet quite a lot, when dealing with abstracts:
+```haxe
+var self(get, never):MyAbstract;
+inline function get_self() return (cast this:MyAbstract);
+```
 It would be nice if there was a way to solve this in the language.
-
 
 #### Use case 1 
 One actual example use-case would be this simplified abstract (based on [hx-vector2d](https://github.com/markknol/hx-vector2d/blob/master/src/geom/Vector2d.hx#L89) library).  
@@ -75,26 +78,21 @@ enum abstract Item(String) as item {
 
 ## Detailed design
 
-You can name selfIdent however you want. And it is also completely optional.
+> `abstract MyAbstract(MyType) as <indent> { }`
 
-```haxe
-abstract MyAbstract(MyType) as selfIdent {
-  
+This feature is only for abstracts. You can name `<indent>` however you want, with exception of existing keywords and it should take field name validation in account. 
+Also, `as <indent>` is completely optional for abstracts.
+
+If there is already a field with same name as the indent in the scope there should be a duplication error.
+
+ ```
+abstract MyAbstract(MyType) as foo { // line 1: Duplicate abstract field declaration : MyAbstract.foo
+  public inline function foo():Void; 
 }
-```
-
-This snippet could generate this:
-
-```haxe
-var selfIdent(get, never):MyAbstract;
-inline function get_selfIdent() return (cast this:MyAbstract);
-```
-
-If there is already a `selfIdent` in the scope there should be a duplication error.
+ ```
 
 At the moment, if you forward a field/function and create a same named field,
-there is no duplication/override error, so I think we don't have to add error messages for that.
-
+there is no duplication/override error. I think we don't have to add error messages for that.
 
 ## Impact on existing code
 
