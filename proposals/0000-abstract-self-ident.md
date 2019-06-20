@@ -85,11 +85,11 @@ Also, `as <ident>` is completely optional for abstracts.
 
 If there is already a field with same name as the ident in the scope there should be a duplication error.
 
- ```
+```haxe
 abstract MyAbstract(MyType) as foo { // line 1: Duplicate abstract field declaration : MyAbstract.foo
   public inline function foo():Void; 
 }
- ```
+```
 
 At the moment, if you forward a field/function and create a same named field,
 there is no duplication/override error. I think we don't have to add error messages for that.
