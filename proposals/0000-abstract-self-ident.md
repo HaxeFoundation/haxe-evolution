@@ -1,13 +1,13 @@
 # Self access for abstracts
 
-* Proposal: [HXP-NNNN](NNNN-abstract-self-indent.md)
+* Proposal: [HXP-NNNN](NNNN-abstract-self-ident.md)
 * Author: [Mark Knol](https://github.com/markknol)
 
 ## Introduction
 
 Add a way to access "self" for abstracts, which is a getter for `(cast this:MyAbstract)`.
 
-Based on [this discussion](https://github.com/HaxeFoundation/haxe/issues/8162) I'd like to propose an optional `as <indent>` for abstracts, which allows to add/name your own "self":
+Based on [this discussion](https://github.com/HaxeFoundation/haxe/issues/8162) I'd like to propose an optional `as <ident>` for abstracts, which allows to add/name your own "self":
 
 ```haxe
 abstract MyAbstract(MyType) as selfIdent {
@@ -78,12 +78,12 @@ enum abstract Item(String) as item {
 
 ## Detailed design
 
-> `abstract MyAbstract(MyType) as <indent> { }`
+> `abstract MyAbstract(MyType) as <ident> { }`
 
-This feature is only for abstracts. You can name `<indent>` however you want, with exception of existing keywords and it should take field name validation in account. 
-Also, `as <indent>` is completely optional for abstracts.
+This feature is only for abstracts. You can name `<ident>` however you want, with exception of existing keywords and it should take field name validation in account. 
+Also, `as <ident>` is completely optional for abstracts.
 
-If there is already a field with same name as the indent in the scope there should be a duplication error.
+If there is already a field with same name as the ident in the scope there should be a duplication error.
 
  ```
 abstract MyAbstract(MyType) as foo { // line 1: Duplicate abstract field declaration : MyAbstract.foo
@@ -100,7 +100,7 @@ Since it is a new feature and is optional, it doesn't break existing code.
 
 ## Drawbacks
 
-This proposal allows you to name your own indent which is nice and flexible (it allows self being to forwarded from another abstract?) but it doesn't encourage a standard way of writing.
+This proposal allows you to name your own ident which is nice and flexible (it allows self being to forwarded from another abstract?) but it doesn't encourage a standard way of writing.
 This downside is maybe minor, but is one to consider.
 
 ## Alternatives
