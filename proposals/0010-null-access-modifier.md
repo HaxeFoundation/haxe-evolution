@@ -5,7 +5,7 @@
 
 ## Introduction
 
-Replace `null` access identifier with `this`.
+Replace `null` identifier with `this` in access modifiers syntax.
 
 ## Motivation
 
@@ -18,12 +18,12 @@ It's only about replacing a `null` keyword with `this` as a "protected" access m
 
 Example:
 ```haxe
-public var isDataExists(default, this):Bool;
+public var data(default, this):Bool;
 ```
 
 ## Impact on existing code
 
-It will conflict with the old codebase. But `null` may be marked as deprecated for some time before it will be fully removed from access modifiers syntax.
+It will conflict with the old codebase. But `null` may be marked as deprecated for some time before it will be fully removed from the access modifiers syntax.
 
 ## Drawbacks
 
