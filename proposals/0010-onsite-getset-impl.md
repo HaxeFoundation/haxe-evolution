@@ -34,7 +34,7 @@ VS
 public var isDataExists(() -> data != null, never):Bool;
 ```
 
-This feature may be done without `() -> expr`, with just an expression inside. But it may be a bit less consistent compared to a full syntax.
+This feature may be done without `() -> expr`, with just an expression inside. But it may be a bit less consistent compared to a full syntax. Example:
 ```haxe
 public var isDataExists(data != null, never):Bool;
 ```
