@@ -41,6 +41,10 @@ public var isDataExists(data != null, never):Bool;
 
 ## Impact on existing code
 
+.
+
+## Drawbacks
+
 There may be a problem with overriding getters and setters. But to solve this Haxe compiler may generate from short expression: `() -> data != null` just a regular syntax:
 
 ```haxe
@@ -50,10 +54,6 @@ function get_isDataExists():Bool {
 ```
 
 So, `get_isDataExist` will be allowed for overriding by the child.
-
-## Drawbacks
-
-.
 
 ## Alternatives
 
