@@ -33,8 +33,8 @@ enum Comment
     Multi(value:String); 
     
     /**
-	* Javadoc style example
-	*/
+    * Javadoc style example
+    */
     Doc(value:String)
 }
 ```
@@ -78,12 +78,12 @@ The above example might look something like this (position info removed for read
     expr:EWhile($v{true},
                 {
                     expr: EBlock{
-               			[{
-                			expr:ECall($i{'func'}, []),
-        					comments:[Comment.Single("Comment 2")]
-						}]
+                        [{
+                            expr:ECall($i{'func'}, []),
+                            comments:[Comment.Single("Comment 2")]
+                        }]
                     },
-                	comments:[Comment.Multi("Comment 1")]
+                    comments:[Comment.Multi("Comment 1")]
                 }, true),
 }
 ```
@@ -101,13 +101,13 @@ The downside is that this introduces a little ambiguity as to where a comment en
     expr:EWhile($v{true},
                 {
                     expr: EBlock{
-               			[{
-                			expr:ECall($i{'func'}, []),
-        					comments:[Comment.Single("Comment 2")],
-        					postComments:[Comment.Single("Comment 3")]
-						}]
+                        [{
+                            expr:ECall($i{'func'}, []),
+                            comments:[Comment.Single("Comment 2")],
+                            postComments:[Comment.Single("Comment 3")]
+                        }]
                     },
-                	comments:[Comment.Multi("Comment 1")]
+                    comments:[Comment.Multi("Comment 1")]
                 }, true),
 }
 ```
@@ -126,8 +126,8 @@ Adding comments as an enum to ExprDef is a simple solution that accounts for man
                         [{
                             expr:EComment(Comment.Single("Comment 2"))
                         },{
-                			expr:ECall($i{'func'}, [])
-						},{
+                            expr:ECall($i{'func'}, [])
+                        },{
                             expr:EComment(Comment.Single("Comment 3"))
                         }]
                     }
@@ -149,12 +149,12 @@ A combination of Solution 1 and 3 could be used, where comments are created as E
                         [{
                             expr:EComment(Comment.Single("Comment 2"))
                         },{
-                			expr:ECall($i{'func'}, [])
-						},{
+                            expr:ECall($i{'func'}, [])
+                        },{
                             expr:EComment(Comment.Single("Comment 3"))
                         }]
                     },
-                	comments:[Comment.Multi("Comment 1")]
+                    comments:[Comment.Multi("Comment 1")]
                 }, true),
 }
 ```
@@ -197,9 +197,9 @@ enum Comment
 }
 typedef FieldDoc =
 {
-	?description: String,
-	?version: String,
-	?returns: String,
+    ?description: String,
+    ?version: String,
+    ?returns: String,
     ?authors: Array<String>
     ?params: Array<{name:String, doc:String}>,
 }
