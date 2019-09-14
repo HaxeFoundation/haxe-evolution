@@ -19,31 +19,41 @@ This would make Haxe more appealing as a source language for core business logic
 
 ## Detailed design
 
-#### Comment Enum
+#### 1a. Comment Enum
 
 An enum would be created to represent different styles of comments:
 
 ```haxe
 enum Comment
 {
-    // example
+    // example (starts with '//')
     Single(value:String); 
     
-    /* example */
+    /*
+	example  (starts with '/*')
+	*/
     Multi(value:String); 
     
     /**
-    * Javadoc style example
+    * Javadoc style example (starts with '/**')
     */
     Doc(value:String)
 }
 ```
 
-Parsing of Javadoc style comments would differ slightly from the current implementation in that the leading whitespace and `*` character of each line would be stripped, so that the content of the comment can be written to other languages that use different comment syntax (e.g. python).
+This would also leave room for more styles of comments to be added over time (e.g. Markdown, HTML).
 
-#### Classes and Fields
+##### 1b.  Improved Javadoc parsing
 
-These could be accommodated by adding a `?comments:Array<Comment>` prop to the `ClassType`, `ClassField` & `Field`.
+Currently when Javadoc style comments get parsed, the leading `*` on each line isn't stripped. Haxe documentation doesn't use these on each line, but most languages/developers do (and many IDEs add this formatting by default).
+
+This means that code generators that never use this syntax (e.g. python) have to strip this leading character off, or put up with poorly formatted comments.
+
+The proposal here is to assess the comment block and strip the minimum amount of whitespace with an optional `*` char that occurs on **all** lines of the comment.
+
+#### 2. Types and Fields
+
+These could be accommodated by adding a `?comments:Array<Comment>` prop to the `BaseType`, `ClassField` & `Field`.
 
 ```haxe
 /* Some Class Information */
@@ -52,128 +62,7 @@ class BundleAnalytics
 
 This does mean that comments trailing class definitions would be omitted.
 
-#### Near Expressions
-
-I'll detail a few different approaches to comments in expressions for discussion.
-
-**Example:**
-
-```haxe
-while(true) /* comment 1 */
-{
-    // comment 2
-    func();
-    // comment 3
-}
-```
-
-**Solution 1:**
-
-Adding comments to the `Expr` typedef is a simple solution that catches most cases, e.g. `?comments:Array<Comment>`.
-
-The above example might look something like this (position info removed for readability):
-
-```haxe
-{
-    expr:EWhile($v{true},
-                {
-                    expr: EBlock{
-                        [{
-                            expr:ECall($i{'func'}, []),
-                            comments:[Comment.Single("Comment 2")]
-                        }]
-                    },
-                    comments:[Comment.Multi("Comment 1")]
-                }, true),
-}
-```
-
-Note: This solution doesn't have a nice place to put Comment 3, so the comment is omitted.
-
-**Solution 1a:**
-
-To cover more cases, another property `?postComments:Array<Comment>` could be added to `Expr` which could be used to catch any dangling comments that can't be pinned to a subsequent expression.
-
-The downside is that this introduces a little ambiguity as to where a comment ends up; on the previous expression or the next one.
-
-```haxe
-{
-    expr:EWhile($v{true},
-                {
-                    expr: EBlock{
-                        [{
-                            expr:ECall($i{'func'}, []),
-                            comments:[Comment.Single("Comment 2")],
-                            postComments:[Comment.Single("Comment 3")]
-                        }]
-                    },
-                    comments:[Comment.Multi("Comment 1")]
-                }, true),
-}
-```
-
-
-
-**Solution 2:**
-
-Adding comments as an enum to ExprDef is a simple solution that accounts for many cases.
-
-```haxe
-{
-    expr:EWhile($v{true},
-                {
-                    expr: EBlock{
-                        [{
-                            expr:EComment(Comment.Single("Comment 2"))
-                        },{
-                            expr:ECall($i{'func'}, [])
-                        },{
-                            expr:EComment(Comment.Single("Comment 3"))
-                        }]
-                    }
-                }, true),
-}
-```
-
-Note: This solution doesn't have a nice place to put Comment 1, so the comment is omitted.
-
-**Solution 2a:**
-
-A combination of Solution 1 and 3 could be used, where comments are created as Exprs if possible, otherwise they're pinned to the following Expr:
-
-```haxe
-{
-    expr:EWhile($v{true},
-                {
-                    expr: EBlock{
-                        [{
-                            expr:EComment(Comment.Single("Comment 2"))
-                        },{
-                            expr:ECall($i{'func'}, [])
-                        },{
-                            expr:EComment(Comment.Single("Comment 3"))
-                        }]
-                    },
-                    comments:[Comment.Multi("Comment 1")]
-                }, true),
-}
-```
-
-The downside here is that it adds ambiguity about how comments should be exist in the AST, and is a bit more verbose.
-
-#### Edge cases
-
-That said, it may not be possible to support comments in every part of the code, as they lack a suitable structure to be pinned to in AST, for example:
-
-```haxe
-var myProp:Null<MyStrAbstract/*String*/>;
-```
-
-As comments are essentially 'sugar', I think it's ok that comments that don't fit nicely into the AST are discarded.
-
-These situations will normally happen when comments are being used to contain old code, rather than useful information, so it may not be a 'real' issue.
-
-#### Parsing Javadoc more
+#### 3. Parsing Javadoc more
 
 It may also be worth parsing Javadoc style comments in greater detail, so that they can be reformatted for the conventions of the target language.
 
@@ -193,9 +82,9 @@ In this case, the Comment.Doc enum would look something like this (more fields o
 enum Comment
 {
     ...
-    Doc(value:FieldDoc)
+    Doc(value:DocBlock)
 }
-typedef FieldDoc =
+typedef DocBlock =
 {
     ?description: String,
     ?version: String,
@@ -203,9 +92,16 @@ typedef FieldDoc =
     ?authors: Array<String>
     ?params: Array<{name:String, doc:String}>,
 }
+// Or something more simple
+typedef DocBlock =
+{
+    ?description: String,
+    ?params:Array<{name:String, doc:String}>,
+    ?tags:Array<{name:String, value:String}>,
+}
 ```
 
-#### Code Generation
+#### 4. Code Generation
 
 When using the compiler, specifying `-Dcomments` would request that the generated code contains comments.
 
@@ -213,9 +109,8 @@ It may also be useful to have a few options on this:
 
 ```
 -Dcomments=all // include all comments
--Dcomments=class // only include comments on classes
--Dcomments=class+field // only include comments on classes and fields
--Dcomments=expr // only include comments in expression blocks
+-Dcomments=type // only include comments on classes
+-Dcomments=type+field // only include comments on classes and fields
 -Dcomments // implies 'all'
 ```
 
@@ -235,14 +130,13 @@ Some targets would never support this and would always throw an error (i.e. SWF)
 
 ## Drawbacks
 
-None of the solutions offer a guarantee that every comment will make it to the target language.
+None.
 
 ## Alternatives
 
 Currently Haxe does have a simple implementation of comments in classes and fields (`doc` property), but this support has several limitations.
 
 - Only retains Javadoc style comments, no single or multi-line comments.
-- Doesn't allow for comments within expressions.
 - Doesn't support multiple comments per entity.
 - Doesn't cope well with Javadoc style comments (i.e. retains leading whitespace and '*' on each line).
 - Doesn't have a way to include these comments in the generated code (as far as I know).
@@ -255,5 +149,6 @@ This could open up Haxe for using comments as containers for certain DSLs.
 
 ## Unresolved questions
 
-- How to represent comments within expressions
 - What level of control to give with compiler flag (`-Dcomments`)
+- Is using an enum overkill? Could also just be a single typedef with optional fields.
+- Is keeping an array of comments against every entity overkill? Maybe a single Comment would suffice.
