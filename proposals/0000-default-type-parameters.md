@@ -14,6 +14,8 @@ $type((null: Test)); // Test<String>
 
 ## Motivation
 
+### Use case: types
+
 Some types can benefit from having default type parameters. As an example look at
 a generic virtual dom component: 
 ````haxe
@@ -72,6 +74,19 @@ class Image extends Component<js.html.ImageElement>
 But in most other cases you can use `Component` directly without passing a specific element type.
 
 See also: https://github.com/HaxeFlixel/flixel/issues/1677
+
+### Use case: methods
+
+Methods with a generic type parameter are not always able to infer that type from the parameters (especially if that type is optional).
+
+````haxe
+function createMyClass<T = MyDefault>(?input: T): MyClass<T>
+  return new MyClass(if (input == null) new MyDefault() else input);
+
+$type(createMyClass()); // MyClass<MyDefault>
+````
+
+Outlined in more detail [here](https://github.com/HaxeFoundation/haxe-evolution/pull/50#issuecomment-413976704)
 
 ## Detailed design
 
