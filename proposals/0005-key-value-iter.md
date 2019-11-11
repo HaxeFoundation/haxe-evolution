@@ -25,7 +25,7 @@ for (key in map.keys()) {
 
 for (index in 0...array.length) {
     var value = array[index];
-    trace(key, value);
+    trace(index, value);
 }
 ```
 
@@ -37,7 +37,7 @@ for (key => value in map) {
 }
 
 for (index => value in array) {
-    trace(key, value);
+    trace(index, value);
 }
 ```
 
