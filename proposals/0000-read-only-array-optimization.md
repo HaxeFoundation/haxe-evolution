@@ -13,7 +13,7 @@ Constant LUT (Lookup Tables) would greatly benefit from this. When the compiler 
 
 ## Detailed design
 
-```
+```haxe
     // Example 1
     static public final arr:ReadOnlyArray<Int> = [10, 20, 30, 40];
     static public function main() {
