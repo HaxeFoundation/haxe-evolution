@@ -83,7 +83,16 @@ public abstract function implementMe2():Void; //also ok
 ```
 Static methods cannot be abstract:
 ```haxe
-static abstract function implementMe():Void; // Error: static functions cannot be abstract
+abstract class SomeAbstr {
+	static abstract function implementMe():Void; // Error: static functions cannot be abstract
+}
+```
+Abstract classes may contain static fields just like normal classes:
+```haxe
+abstract class SomeAbstr {
+	static public var field:String = 'hello';
+	static public function method():Void {}
+}
 ```
 Abstract classes may or may not contain abstract methods.
 ```haxe
@@ -151,6 +160,7 @@ abstract interface IFace { // Error: interfaces don't need abstract modifier
 	abstract function implementMe():Void; // Error: interface fields don't need abstract modifier
 }
 ```
+Abstract classes don't imply any special rules for constructors.
 
 ## AST changes
 
@@ -177,7 +187,7 @@ Using `abstract` keyword for this feature may be confusing especially in a docum
 But using any other keyword would be even more confusing since "abstract classes" is a common term for almost any OOP programming language.
 
 This probably can be solved to some extent by _always_ using "abstract" accompanied with the correct word (either "abstract type" or "abstract class")
-to form a strong distinction between these two features in the "community mind".
+in docs or speeches to form a strong distinction between these two features in the "community mind".
 
 ## Alternatives
 
