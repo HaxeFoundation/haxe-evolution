@@ -101,6 +101,32 @@ abstract class SomeAbstr {
 }
 abstract class AnotherAbstr { } // also ok
 ```
+Abstract classes cannot be instantiated:
+```haxe
+abstract class Main {
+	static function main() {
+		var m = new Main(); // Error: cannot instantiate abstract class Main
+	}
+
+	public function new() {}
+}
+```
+Abstract classes may contain an implementation, but still cannot be instantiated:
+```haxe
+abstract class Greeter {
+	public final name:String;
+	public function new(name:String) {
+		this.name = name;
+	}
+	public function greet() trace('Hello, $name!');
+}
+
+class Main {
+	static public function main() {
+		new Greeter('world'); //Error: cannot instantiate abstract class Greeter
+	}
+}
+```
 If a class contains abstract methods, then the class itself must be declared `abstract`.
 ```haxe
 class Some {
@@ -127,16 +153,6 @@ interface IFace {
 abstract class Abstr implements IFace {} // ok
 class Concrete extends Abstr {} // Error : Concrete is missing an implementation for function implementMe
 ```
-Abstract classes cannot be instantiated:
-```haxe
-abstract class Main {
-	static function main() {
-		var m = new Main(); // Error: cannot instantiate abstract class Main
-	}
-
-	public function new() {}
-}
-```
 `abstract` access modifier cannot be used with `final` or `inline` access modifiers:
 ```haxe
 final abstract class Abstr { // Error: abstract class cannot be final
@@ -158,6 +174,29 @@ Interfaces and their fields cannot have `abstract` access modifier:
 ```haxe
 abstract interface IFace { // Error: interfaces don't need abstract modifier
 	abstract function implementMe():Void; // Error: interface fields don't need abstract modifier
+}
+```
+If a class provides an implementation for an abstract method it does not need `override` keyword as no actual implementation is overridden.
+```haxe
+abstract class Abstr {
+	abstract function implementMe():Void;
+}
+class Concrete extends Abstr {
+	function implementMe():Void { //no "override"
+		trace('implemented');
+	}
+}
+```
+Abstract classes may define abstract getters and/or setters:
+```haxe
+abstract class Abstr {
+	public var prop1(get,set):Int;
+	function get_prop1() return Std.random(10);
+	abstract function set_prop1(value:Int):Int;
+
+	public var prop2(get,set):Int;
+	abstract function get_prop2():Int;
+	abstract function set_prop2(value:Int):Int;
 }
 ```
 Abstract classes don't imply any special rules for constructors.
