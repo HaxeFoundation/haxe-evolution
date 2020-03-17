@@ -134,4 +134,5 @@ None.
 
 ## Drawbacks
 
-None.
+* No support target native abstract class
+* Existing starndard library change will be breaking, because of changing `extends` to `implements`.
