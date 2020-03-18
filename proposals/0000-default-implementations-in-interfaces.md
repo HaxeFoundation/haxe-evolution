@@ -77,7 +77,7 @@ interface C extends A {
 
 ### Static call
 
-Interface functions can be called as static function.
+Interface functions can be called as static function with an additional first argument `this`.
 
 ```haxe
 interface A {
