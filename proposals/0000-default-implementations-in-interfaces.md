@@ -17,6 +17,16 @@ interface A {
 class B implements A {}
 ```
 
+### Background
+
+Some other languages have the feature.
+
+* [Java](https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html)
+* [Kotlin](https://kotlinlang.org/docs/reference/interfaces.html)
+* [C#8.0](https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/default-interface-methods-versions)([proposal](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/proposals/csharp-8.0/default-interface-methods))
+
+This proposes a way like Java and Kotlin.
+
 ## Motivation
 
 Same as [abstract class](https://github.com/RealyUniqueName/haxe-evolution/blob/abstract-classes/proposals/NNNN-abstract-classes.md#motivation).
