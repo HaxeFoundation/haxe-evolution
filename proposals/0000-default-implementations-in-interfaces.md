@@ -87,16 +87,18 @@ Default implementations in interfaces avoid these problems.
 
 ## Detailed design
 
-### Output
+### Generate implementation class internaly
 
-Compiler converts first example to:
+Since many target languages are not suport default methods, the compiler generates internal class as in the case of `abstract`.
+
+For example, the compiler converts first code to:
 
 ```haxe
 interface A {
 	function a():Void;
 }
 
-class _A_Impl {
+class A_Impl_ {
 	public static function a(self:A):Void {
 		trace("foo");
 	}
@@ -104,14 +106,14 @@ class _A_Impl {
 
 class B implements A {
 	public function a():Void {
-		_A_Impl.a(this);
+		A_Impl_.a(this);
 	}
 }
 ```
 
 ### Override
 
-Overriding function requires `override` keyword.
+Overriding function requires `override` keyword in both classes and interfaces.
 
 ```haxe
 interface A {
@@ -151,9 +153,11 @@ class X {
 }
 ```
 
-### Conflict
+This feature enables you to resolve conflicts without new syntax, as described below.
 
-To resolve conflicts requires overriding.
+### Conflict error
+
+If two same name implementations are inherited for a class or an interface, the compiler raises a conflict error.
 
 ```haxe
 interface Y1 {
@@ -171,7 +175,7 @@ interface Y2 {
 class Z implements Y1 implements Y2 {} // Compile Error
 ```
 
-The following is OK:
+To resolve a conflict error requires overriding function.
 
 ```haxe
 class Z implements Y1 implements Y2 {
@@ -180,6 +184,10 @@ class Z implements Y1 implements Y2 {
 	}
 }
 ```
+
+Thanks to the conflict error, it is clarified that every function in a class has one implementation per name, and every function in an interface has one or zero default implementation per name.
+
+Unlike `@:using` for interface, it causes no confusion from not knowing which implementation has priority.
 
 ## Impact on existing code
 
