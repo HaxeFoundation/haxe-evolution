@@ -204,6 +204,10 @@ interface S {
 
 The auto-generated internal class solves the problem of implementation.
 
+### AST Changes
+
+Since `interface` is `haxe.macro.ClassType` for which `isInterface` is `true`, no type change is required.
+
 ## Impact on existing code
 
 None.
