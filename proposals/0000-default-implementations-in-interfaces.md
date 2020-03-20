@@ -189,6 +189,21 @@ Thanks to the conflict error, it is clarified that every function in a class has
 
 Unlike `@:using` for interface, it causes no confusion from not knowing which implementation has priority.
 
+
+### Static functions, variables and constants
+
+To write default implements comfortably, static functions, variables and constants are allowed.
+
+```haxe
+interface S {
+	static public var variable:Int = 1;
+	static public inline var CONSTANT:Int = 2;
+	static public function func():Void {}
+}
+```
+
+The auto-generated internal class solves the problem of implementation.
+
 ## Impact on existing code
 
 None.
