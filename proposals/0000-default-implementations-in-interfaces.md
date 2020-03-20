@@ -218,6 +218,11 @@ None.
 * `@:using` metadata for interface
 * Macro
 
+### Comparison with abstract class
+
+* Abstract class doesn't allows multiple inheritance.
+* Interface has no constructor.
+
 ## Drawbacks
 
 * No support target native abstract class
