@@ -29,13 +29,61 @@ This proposes a way like Java and Kotlin.
 
 ## Motivation
 
-Same as [abstract class](https://github.com/RealyUniqueName/haxe-evolution/blob/abstract-classes/proposals/NNNN-abstract-classes.md#motivation).
+Some are common with [abstract class](https://github.com/RealyUniqueName/haxe-evolution/blob/abstract-classes/proposals/NNNN-abstract-classes.md#motivation). It enables a type to have both abstract functions and implementations.
 
-### Advantages
-* Multiple inheritance
-* Minimal AST change
-* No breaking IDE
-* No confusing keyward
+Although C # and Java already have abstract classes, they added default implementations for interfaces later. 
+As you can see from that, it has advantages not found in abstract classes.
+
+### Updating interface without breaking change
+
+When you want to add new functions to interfaces in your library, you can update without breaking change.
+
+### Mixin / Multiple inheritance
+
+Implementing two interfaces which have default methods enables multiple inheritance.
+
+Actually, haxe already has mixin feature `@:using` for interface. However, it is confusing when function names conflict:
+
+```haxe
+@:using(Main.UTools)
+interface U {}
+class UTools {
+    public static function sample(u:U):Void {
+        trace("U");
+    }
+}
+@:using(Main.VTools)
+interface V {}
+class VTools {
+    public static function sample(v:V):Void {
+        trace("V");
+    }
+}
+
+class UV implements U implements V {
+    public function new() {}
+}
+class VU implements V implements U {
+    public function new() {}
+}
+
+class VUV extends VU implements V {}
+
+class Main {
+    static function main() {
+        new UV().sample();  // V
+        new VU().sample();  // U
+        new VUV().sample(); // U
+    }
+}
+```
+
+`@:using` for interface has
+
+* no `override` and no subtyping polymorphism
+* no conflict error
+
+Default implementations in interfaces avoid these problems.
 
 ## Detailed design
 
@@ -140,6 +188,7 @@ None.
 ## Alternatives
 
 * [Abstract class](https://github.com/HaxeFoundation/haxe-evolution/pull/69)
+* `@:using` metadata for interface
 * Macro
 
 ## Drawbacks
