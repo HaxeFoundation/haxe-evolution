@@ -52,9 +52,10 @@ When using multiple array access, there could be conflicts between getting one e
   Multiple Access with one argument means "one access provide some value used to get another one".
 
 
-## Detailed design
+## Detailed design 
 As stated above it is just a change in the grammar to allow multiple arguments in an array access like in a function.
-I propose to add a new enum value in Expr.ExprDef:
+I propose two changes:
+- Option 1: **add a new ExprDef**
 ```
 enum ExprDef {
    ...
@@ -64,14 +65,25 @@ enum ExprDef {
    ...
 }
 ```
+
+- Option 2: **changing EArray definition**
+```
+enum ExprDef {
+   ...
+   EArray(e1:Expr, e2:Expr, ?others:Array<Expr>);
+   ...
+}
+```
+
 Then when a `array[a, b...]` is in the code it will be put in the AST and it can be matched during compile time.
 The different targets can then throw an exception if it is still there when they get the AST.
 Or they could also generate code that use multiple argument array access when it is allowed like in C# or python.
 
 ## Impact on existing code
-
-Because it is a new Enum value added, previous macro code will still be able to parse simple array access.
-It may break if they are using the default case in a switch on the expression definition.
+- Option 1:
+Because it is a new Enum value added, previous macro code will still be able to parse simple array access. It may break if they are using the default case in a switch on the expression definition.
+- Option 2:
+Because we add an optionnal argument to the definition the previous code will still match even if there is multiple arguments. Moreover, they will not be detected in the default case.
 
 ## Drawbacks
 
