@@ -20,9 +20,7 @@ array2[0, "foo"] // Get an "Expected ]" error
 ```
 
 I stepped into that issue when I tried to implement a multi dimensionnal array lib that would use a syntax close to numpy element indexing.
-But when I try to parse it with macro to add some sugar syntax I ran into complex code just to know the number of array access on a variablewhen using `array[_][_]`, we get `EArray(EArray(array, _), _)` expr.
-The current approach would be even less easy to parse if we have more nested array access.
-With this add we could directly know the size of the argument list and what is inside.
+But we can imagine the same problem for any object that have a meaning for indexing with multiple access, for exemple a map with a pair of keys.
 After this proposal we can write without an error:
 ```
   myMacro(array[0, "foo"]);
@@ -42,6 +40,8 @@ And the macro code:
     // In my case, I would return a function call
   }
 ```
+With the proposed syntax we now have a more clear semantic on what we are accessing at the first sight and it improves code readability.
+When using multiple array access, there could be conflicts between getting one element from the variable and then getting something from it and an access with multiple arguments.
 
 
 **Workarounds:**
