@@ -19,6 +19,31 @@ array1[0] // allowed
 array2[0, "foo"] // Get an "Expected ]" error
 ```
 
+I stepped into that issue when I tried to implement a multi dimensionnal array lib that would use a syntax close to numpy element indexing.
+But when I try to parse it with macro to add some sugar syntax I ran into complex code just to know the number of array access on a variablewhen using `array[_][_]`, we get `EArray(EArray(array, _), _)` expr.
+The current approach would be even less easy to parse if we have more nested array access.
+With this add we could directly know the size of the argument list and what is inside.
+After this proposal we can write without an error:
+```
+  myMacro(array[0, "foo"]);
+```
+And the macro code:
+```
+  public static macro function myMacro(e:Expr):Expr {
+    switch(e.expr) {
+      case EArrayMultiple(e1, args):
+        return generateExpr(e1, args);
+      default:
+        return null;
+    }
+  }
+
+  public static function generateExpr(e:Expr):Expr {
+    // In my case, I would return a function call
+  }
+```
+
+
 **Workarounds:**
 - We could use a function call with multiple arguments but the purpose would be less clear than the array access. 
   If there is an assignement operator (=, +=, ...) after, it would be even less cleat at the first sight.
