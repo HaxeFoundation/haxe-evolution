@@ -14,7 +14,7 @@ This proposal follows my [issue](https://github.com/HaxeFoundation/haxe/issues/9
 This feature proposes, as stated above, is to provide multi arguments array access. 
 For now, we can only have one argument and if we provide mulitple we get an error.
 Exemple:
-```haxe
+```
 array1[0] // allowed
 array2[0, "foo"] // Get an "Expected ]" error
 ```
@@ -30,7 +30,7 @@ array2[0, "foo"] // Get an "Expected ]" error
 ## Detailed design
 As stated above it is just a change in the grammar to allow multiple arguments in an array access like in a function.
 I propose to add a new enum value in Expr.ExprDef:
-```haxe
+```
 enum ExprDef {
    ...
    EArray(e1:Expr, e2:Expr); // We keep this one for retro compatibility
@@ -39,7 +39,7 @@ enum ExprDef {
    ...
 }
 ```
-Then when a `array[a, b...]` is in the code it will be put in the AST. Then we can match it during compile time.
+Then when a `array[a, b...]` is in the code it will be put in the AST and it can be matched during compile time.
 The different targets can then throw an exception if it is still there when they get the AST.
 Or they could also generate code that use multiple argument array access when it is allowed like in C# or python.
 
