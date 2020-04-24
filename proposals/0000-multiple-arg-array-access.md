@@ -11,40 +11,28 @@ This proposal follows my [issue](https://github.com/HaxeFoundation/haxe/issues/9
 
 ## Motivation
 
-This feature proposes, as stated above, is to provide multi arguments array access. 
+**Current state** 
+
+This feature proposes, as stated above, to provide multi arguments array access. 
 For now, we can only have one argument and if we provide mulitple we get an error.
+
 Exemple:
 ```
 array1[0] // allowed
 array2[0, "foo"] // Get an "Expected ]" error
 ```
 
-I stepped into that issue when I tried to implement a multi dimensionnal array lib that would use a syntax close to numpy element indexing.
-But we can imagine the same problem for any object that have a meaning for indexing with multiple access, for exemple a map with a pair of keys.
-After this proposal we can write without an error:
-```
-  myMacro(array[0, "foo"]);
-```
-And the macro code:
-```
-  public static macro function myMacro(e:Expr):Expr {
-    switch(e.expr) {
-      case EArrayMultiple(e1, args):
-        return generateExpr(e1, args);
-      default:
-        return null;
-    }
-  }
+**Goals**
 
-  public static function generateExpr(e:Expr):Expr {
-    // In my case, I would return a function call
-  }
-```
-With the proposed syntax we now have a more clear semantic on what we are accessing at the first sight and it improves code readability.
+- I stepped into that issue when I tried to implement a multi dimensionnal array lib that would use a syntax close to numpy element indexing.
+But we can imagine the same problem for any object that have a meaning for indexing with multiple access, for exemple a map with a pair of keys.
+
+- With the proposed syntax we now have a more clear semantic on what we are accessing at the first sight and it improves code readability.
 When using multiple array access, there could be conflicts between getting one element from the variable and then getting something from it and an access with multiple arguments.
 
 
 **Workarounds:**
+
 - We could use a function call with multiple arguments but the purpose would be less clear than the array access. 
   If there is an assignement operator (=, +=, ...) after, it would be even less cleat at the first sight.
 - We could also use chained array access but it would be less direct to use it in macro time.
@@ -54,7 +42,7 @@ When using multiple array access, there could be conflicts between getting one e
 
 ## Detailed design 
 As stated above it is just a change in the grammar to allow multiple arguments in an array access like in a function.
-I propose two changes:
+I propose two possible changes:
 - Option 1: **add a new ExprDef**
 ```
 enum ExprDef {
@@ -75,7 +63,35 @@ enum ExprDef {
 }
 ```
 
-Then when a `array[a, b...]` is in the code it will be put in the AST and it can be matched during compile time.
+Then when a `array[a, b...]` is in the code it will be put in the AST and it can be matched during compile time, like this:
+```
+  myMacro(array[0, "foo"]);
+```
+
+And the macro code:
+- For Option 1:
+```
+  public static macro function myMacro(e:Expr):Expr {
+    switch(e.expr) {
+      case EArrayMultiple(e1, args):
+        return generateExpr(e1, args);
+      default:
+        return null;
+    }
+  }
+```
+- For Option 2:
+```
+  public static macro function myMacro(e:Expr):Expr {
+    switch(e.expr) {
+      case EArray(e1, e2, args):
+        return generateExpr(e1, e2, args);
+      default:
+        return null;
+    }
+  }
+```
+
 The different targets can then throw an exception if it is still there when they get the AST.
 Or they could also generate code that use multiple argument array access when it is allowed like in C# or python.
 
