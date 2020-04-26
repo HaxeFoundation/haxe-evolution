@@ -6,7 +6,7 @@
 ## Introduction
 
 Introduce an extension to the array access operator in order to allow multiple parameters between []: `array["foo", 0]`.
-This only proposes a grammar and AST modification to parse it in a macro. But it doesn't concern operator overloading (for now...).
+This proposal also concern operator overloading.
 This proposal follows my [issue](https://github.com/HaxeFoundation/haxe/issues/9339).
 
 ## Motivation
@@ -34,16 +34,15 @@ When using multiple array access, there could be conflicts between getting one e
 
 
 **Workarounds:**
-
-- We could use a function call with multiple arguments but the purpose would be less clear than the array access. 
-  If there is an assignement operator (=, +=, ...) after, it would be even less cleat at the first sight.
-- We could also use chained array access but it would be less direct to use it in macro time.
-  Moreover, it doesn't provide the same meaning:
-  Multiple Access with one argument means "one access provide some value used to get another one".
-
+- Using a function call with multiple arguments. Drawbacks:
+  - Semantically () has not the same meaning that [].
+  - Currently there is no way to overload the = operator so we can't do `a(0, 1) = "foo"`.
+- We can use a chained array access. Drawback:
+  - At runtime we need to add a lot more logic or return proxy objects to be able to use this syntax. It adds complexity and overhead to the code. 
 
 ## Detailed design 
-As stated above it is just a change in the grammar to allow multiple arguments in an array access like in a function.
+**Grammar change:**
+As stated above, it needs a change in the grammar.
 I propose two possible changes:
 - Option 1: **add a new ExprDef**
 ```
@@ -65,56 +64,44 @@ enum ExprDef {
 }
 ```
 
-Then when a `array[a, b...]` is in the code it will be put in the AST and it can be matched during compile time, like this:
+**Syntax for operator overload**
+I propose a new way to provide the @:op() arguments for array access.
+We keep the same syntax:
 ```
-  myMacro(array[0, "foo"]);
+@:op([]) 
+public function arrayRead(n:Int) {}
+
+@:op([]) public function arrayWrite(n:Int, value:Int) {}
+```
+But we extend it be able to use multiple arguments:
+```
+@:op([_, _])
+public function arrayRead(n1:Int, n2:Int) {}
+
+@:op([_, _])
+public function arrayWrite(n1:Int, n2:Int, value:Int)
 ```
 
-And the macro code:
-- For Option 1:
-```
-  public static macro function myMacro(e:Expr):Expr {
-    switch(e.expr) {
-      case EArrayMultiple(e1, args):
-        return generateExpr(e1, args);
-      default:
-        return null;
-    }
-  }
-```
-- For Option 2:
-```
-  public static macro function myMacro(e:Expr):Expr {
-    switch(e.expr) {
-      case EArray(e1, e2, args):
-        return generateExpr(e1, e2, args);
-      default:
-        return null;
-    }
-  }
-```
-
-The different targets can then throw an exception if it is still there when they get the AST.
-Or they could also generate code that use multiple argument array access when it is allowed like in C# or python.
 
 ## Impact on existing code
+**Grammar change**
 - Option 1:
 Because it is a new Enum value added, previous macro code will still be able to parse simple array access. It may break if they are using the default case in a switch on the expression definition.
 - Option 2:
 Because we add an optionnal argument to the definition the previous code will still match even if there is multiple arguments. Moreover, they will not be detected in the default case.
+
+**Syntax of the overload operator**
+The new syntax should not conflict with the old one.
 
 ## Drawbacks
 
 
 ## Alternatives
 
-I thought about other syntax that can be parsed like multiple array access or function call that can be parsed.
-But it is less clear or more tricky to parse in a macro.
+- Multiple array access that add more complexity or overhead.
+- Function call that does not allow some basic operation such as using = operator, or it needs macros.
 
 ## Opening possibilities
-
-With this change to grammar it opens to overload of array access with multiple argument array access.
-I think it could be a first step to that.
 
 ## Unresolved questions
 
