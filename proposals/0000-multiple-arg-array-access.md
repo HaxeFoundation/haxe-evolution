@@ -30,8 +30,6 @@ But we can imagine the same problem for any object that have a meaning for index
 - With the proposed syntax we now have a more clear semantic on what we are accessing at the first sight and it improves code readability.
 When using multiple array access, there could be conflicts between getting one element from the variable and then getting something from it and an access with multiple arguments.
 
-- By beginning with just extending the grammar and allowing it in macro, it could be extensively tested before integrating it with operator overloading. Because for now, if you want to chain array access you will need to return a new object for each access, and then access it using sqaure brackets. So it will be a good crash test for this feature, as it would be done in two separate steps.
-
 
 **Workarounds:**
 - Using a function call with multiple arguments. Drawbacks:
