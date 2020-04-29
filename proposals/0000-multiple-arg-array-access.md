@@ -36,7 +36,7 @@ When using multiple array access, there could be conflicts between getting one e
   - Semantically () has not the same meaning that [].
   - Currently there is no way to overload the = operator so we can't do `a(0, 1) = "foo"`.
 - We can use a chained array access. Drawback:
-  - At runtime we need to add a lot more logic or return proxy objects to be able to use this syntax. It adds complexity and overhead to the code. 
+  - At runtime we need to add a lot more logic or return proxy objects to be able to use this syntax that adds complexity to the code. 
 
 ## Detailed design 
 **Grammar change:**
