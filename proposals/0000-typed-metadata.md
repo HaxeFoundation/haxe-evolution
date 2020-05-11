@@ -23,7 +23,7 @@ class Foo {
 
 ## Motivation
 
-Metadata in haxe is currently just a string which is most of the time needlessly dynamic.
+Metadata in haxe is currently just a string. Most of the time this is needlessly dynamic.
 
 This has the following drawbacks:
 * Users are not notified if they make a typo or if the metadata they are using is deprecated.
@@ -60,13 +60,13 @@ static function getMetadataType(metadata: MetadataEntry) : Null<Type> {
 }
 ```
 
-Additionally at this stage the compiler could check for metadata in the resolved type.
-
-For example check that the resolved type has `@>haxe.meta.MetadataType`. This would make metadata types an opt in feature for types, for extra type safety.
+Additionally at this stage the compiler could check for metadata in the resolved type. For example:
+* Check that the resolved type has `@>haxe.meta.MetadataType`. This would make metadata types an opt in feature for extra type safety.
+* Issue a warning if the type is marked as deprecated.
 
 A `type: Null<Type>` field could be added to `MetadataEntry` that the compiler will fill with the resolved type.
 
-Alternatively perhaps a new type can be introduced `TypedMetadataEntry` that extends `MetadataEntry` by adding the `type: Null<Type>` field. Then `EMeta` can have `MetadataEntry` while `TMeta` would have the typed one.
+Alternatively a new type can be introduced `TypedMetadataEntry` that extends `MetadataEntry` by adding the `type: Null<Type>` field. Then `EMeta` can have `MetadataEntry` while `TMeta` would have the typed one.
 
 ### Usage
 
