@@ -5,19 +5,19 @@
 
 ## Introduction
 
-Add new metadata syntax `@>path.to.Type()` that allows using imported types as metadata.
+Add new metadata syntax `@.path.to.Type()` that allows using imported types as metadata.
 
 ```haxe
 import my.lib.MyMeta;
 import haxe.meta.Keep;
 import my.lib.Keep as MyKeep;
 
-@>MyMeta
+@.MyMeta
 class Foo {
-	@>Keep function foo() {}
-	@>MyKeep function boop() {} // Name collisions are not a problem
-	@>my.lib.MyKeep function mop() {} // Full paths also work
-	@>RandomMetaName function bar() {} // Error RandomMetaName is unknown
+	@.Keep function foo() {}
+	@.MyKeep function boop() {} // Name collisions are not a problem
+	@.my.lib.MyKeep function mop() {} // Full paths also work
+	@.RandomMetaName function bar() {} // Error RandomMetaName is unknown
 }
 ```
 
@@ -40,20 +40,20 @@ It would also provide a nice pathway to better completion support of library met
 
 ### Syntax
 
-The proposed syntax is the same as current compile-time metadata except `>` is now allowed after `@`.
+The proposed syntax is the same as current compile-time metadata except `'.'` is now allowed after `'@'`.
 
-Same as with compile-time metadata the parser would generate MetadataEntry with it's name field including the `>` character.
+Same as with compile-time metadata the parser would generate MetadataEntry with it's name field including the `'.'` character.
 
-For example `@>MyMeta(1)` would have MetadataEntry name `">MyMeta"`
+For example `@.MyMeta(1)` would have MetadataEntry name `".MyMeta"`
 
 ### Type checking
 
-During type checking the compiler will resolve the metadata entry names that start with `'>'` as if they were a type path.
+During type checking the compiler will resolve the metadata entry names that start with `'.'` as if they were a type path.
 
 Like so:
 ```haxe
 static function getMetadataType(metadata: MetadataEntry) : Null<Type> {
-	if ( metadata.name.charAt(0) == ">" ) {
+	if ( metadata.name.charAt(0) == "." ) {
 		return Context.getType(metadata.name.substring(1)).follow();
 	}
 	return null;
@@ -61,7 +61,7 @@ static function getMetadataType(metadata: MetadataEntry) : Null<Type> {
 ```
 
 Additionally at this stage the compiler could check for metadata in the resolved type. For example:
-* Check that the resolved type has `@>haxe.meta.MetadataType`. This would make metadata types an opt in feature for extra type safety.
+* Check that the resolved type has `@.haxe.meta.MetadataType`. This would make metadata types an opt in feature for extra type safety.
 * Issue a warning if the type is marked as deprecated.
 
 A `type: Null<Type>` field could be added to `MetadataEntry` that the compiler will fill with the resolved type.
@@ -70,12 +70,12 @@ Alternatively a new type can be introduced `TypedMetadataEntry` that extends `Me
 
 ### Usage
 
-You can declare that a type is a metadata type by annotating it with `@>haxe.meta.MetadataType`
+You can declare that a type is a metadata type by annotating it with `@.haxe.meta.MetadataType`
 
 ```haxe
 package my.lib;
 
-@>haxe.meta.MetadataType
+@.haxe.meta.MetadataType
 abstract MyMeta(Any) {}
 ```
 
@@ -128,7 +128,7 @@ Can't think of any.
 
 Metadata types could themselves have metadata that enable compiler features.
 
-For instance make `@>haxe.meta.BuildField` metadata that makes the augmented metadata type run a build macro on a single class field. The metadata type itself could have a `static macro function buildField(field:Field):Field` that gets called by the compiler.
+For instance make `@.haxe.meta.BuildField` metadata that makes the augmented metadata type run a build macro on a single class field. The metadata type itself could have a `static macro function buildField(field:Field):Field` that gets called by the compiler.
 
 ## Unresolved questions
 
