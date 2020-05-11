@@ -25,7 +25,7 @@ class Foo {
 
 Metadata in haxe is currently just a string. Most of the time this is needlessly dynamic.
 
-This has the following drawbacks:
+It has the following drawbacks:
 * Users are not notified if they make a typo or if the metadata they are using is deprecated.
 * When making a macro library one must take care to use metadata names that will not collide with other libraries.
 * Haxe can break existing code by adding new compiler metadata.
