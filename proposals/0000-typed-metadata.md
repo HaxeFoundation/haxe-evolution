@@ -70,7 +70,7 @@ Alternatively a new type can be introduced `TypedMetadataEntry` that extends `Me
 
 ### Usage
 
-You can define a metadata type by annotating another type with `@>haxe.meta.MetadataType`
+You can declare that a type is a metadata type by annotating it with `@>haxe.meta.MetadataType`
 
 ```haxe
 package my.lib;
@@ -78,6 +78,8 @@ package my.lib;
 @>haxe.meta.MetadataType
 abstract MyMeta(Any) {}
 ```
+
+You can then use this metadata type as shown in the introduction section.
 
 Macros wishing to use typed metadata would then need to first type the metadata entry and then match the type.
 
