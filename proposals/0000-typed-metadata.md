@@ -134,4 +134,4 @@ For instance make `@>haxe.meta.BuildField` metadata that makes the augmented met
 
 * Mechanisms for non compile time typed metadata. I haven't used RTTI metadata so I didn't dare to figure that part out. I think typed metadata can start of as compile time only and add the RTTI parts later on.
 
-* Perhaps instead of supporting any type as typed metadata, a new type specific for metadata could be introduced. Since I can't really think of a reason to ever use anything other than an abstract class as typed metadata.
+* Perhaps instead of supporting any type as typed metadata, a new type specific for metadata could be introduced. Since I can't really think of a reason to ever use anything other than an abstract as typed metadata.
