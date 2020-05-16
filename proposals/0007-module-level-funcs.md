@@ -2,7 +2,7 @@
 
 * Proposal: [HXP-0007](0007-module-level-funcs.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
-* Status: [implemented in Haxe 4.2](https://github.com/HaxeFoundation/haxe/pull/8460)
+* Status: [implemented in Haxe 4.2.0](https://github.com/HaxeFoundation/haxe/pull/8460)
 
 ## Introduction
 
