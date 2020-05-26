@@ -27,6 +27,15 @@ var @:meta foo:Bar;
 
 `haxe.macro.Type.TVar` returned from `haxe.macro.Context.getLocalTVars()` already has `meta` property that could be filled with this new syntax. Currently it's always empty, because normal syntax of `@:meta var foo:Bar;` adds the metadata on the expression, not the variable declaration.
 
+This syntax shall work regardless of whether the variable has an explicit type, and/or initialization, and shall work with the comma syntax. All those shall be therefore valid:
+
+```haxe
+var @:meta foo;
+var @:meta foo = 'bar';
+var @:meta foo:String;
+var @:meta foo, bar:Bool, @:meta c:Int = 0;
+```
+
 ## Impact on existing code
 
 It's a new syntax, so should be none.
