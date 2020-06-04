@@ -11,22 +11,35 @@ Provide syntax for defining static variables within the scope of a specific fiel
 
 Sometimes you want to reuse a static variable within a singular method -
 perhaps it is a [data structure](https://github.com/YellowAfterlife/sfgml/blob/b7f32f37126d9ab9197d2248693c5a333019b86b/Array.hx#L242)
-that you want to reuse to allocate an array/vector "just right",
+that you want to reuse an array/buffer so that you allocate the final returned structure "just right",
 or [a native function reference](https://github.com/HaxeFoundation/haxe/blob/c4c2d37f80c136e2259485c1d61b0bd8c38fecfe/std/neko/Lib.hx#L202)
 that you resolve once on startup
 or even just [depth for a recursive toString() call](https://github.com/HaxeFoundation/haxe/blob/c4c2d37f80c136e2259485c1d61b0bd8c38fecfe/std/cs/_std/Array.hx#L33).
 Rest assured, it has to be static. And private. Not to be touched by anything else.
 
 Currently most developers (and the standard library) take the approach of naming it something like `__<method>_<var>`,
-but there's a limited amount of convenience in doing so.
-
--- todo --
+but there's a limited amount of convenience in doing so, especially as functions grow longer and going back and forth between variable declarations/use location requires utilizing bookmarks to maintain efficiency.
 
 ## Detailed design
 
-Describe the proposed design in details the way language user can understand
-and compiler developer can implement. Show corner cases, provide usage examples,
-describe how this solution is better than current workarounds.
+Suppose we were to recreate HX-JS $bind function in Haxe code,
+```haxe
+public static function bind(o:Dynamic, m:Dynamic) {
+  if (m == null) return null;
+  static var closureID = 0;
+  if (m.__id__ == null) m.__id__ = closureID++;
+  // ... other code
+}
+```
+this would compile as if it were
+```haxe
+static var __bind_closureID = 0;
+public static function bind(o:Dynamic, m:Dynamic) {
+  if (m == null) return null;
+  if (m.__id__ == null) m.__id__ = __bind_closureID++;
+  // ... other code
+}
+```
 
 ## Impact on existing code
 
@@ -34,8 +47,14 @@ Currently `static` keyword is entirely forbidden inside method bodies so there s
 
 ## Drawbacks
 
-Describe the drawbacks of the proposed design worth consideration. This doesn't include
-breaking changes, since that's described in the previous section.
+Accessing local variables of containing method in initializer expression should be forbidden,
+```
+public static function some(i:Int) {
+  static var trouble = i; // <- illegal
+  static var trouble2 = function() return ++i; // <- also illegal
+}
+```
+Like with normal statics, either a value or an explicit type would be needed for the static variable.
 
 ## Alternatives
 
@@ -44,6 +63,8 @@ most syntactic omissions can be corrected with a macro, and this is no exception
 but it would be preferred to not have to iterate the expression tree build-time
 (as practice shows, this slowly adds up).
 
+Still, an example of such a macro (implementing `@:static var`) can be found [here](https://github.com/YellowAfterlife/sfhx/blob/master/sf/macro/LocalStatic.hx).
+
 ## Unresolved questions
 
-Which parts of the design in question is still to be determined?
+Similarly allowing local `static function` could be handy for platforms where there is a cost to creating/invoking closures.
