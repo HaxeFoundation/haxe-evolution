@@ -22,7 +22,7 @@ After the HXP has been discussed, a formal vote can take place to accept it. Onl
  - Nicolas Cannasse [@ncannasse](https://github.com/ncannasse) (Haxe creator)
  - Simon Krajewski [@Simn](https://github.com/Simn) (Compiler Maintainer)
  - Hugh Sanderson [@hughsando](https://github.com/hughsando) (Haxe C++ backend)
- - Aurel Bily [@aurel300](https://github.com/Aurel300) (Haxe contributor)
+ - Aurel Bílý [@aurel300](https://github.com/Aurel300) (Haxe contributor)
  - Andy Li [@andyli](https://github.com/andyli) (tools and infrastructure)
  - Dan Korostelev [@nadako](https://github.com/nadako) (compiler contributor)
  - Alexander Kuzmenko [@RealyUniqueName](https://github.com/RealyUniqueName) (Compiler Maintainer)
