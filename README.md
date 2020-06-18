@@ -22,10 +22,10 @@ After the HXP has been discussed, a formal vote can take place to accept it. Onl
  - Nicolas Cannasse [@ncannasse](https://github.com/ncannasse) (Haxe creator)
  - Simon Krajewski [@Simn](https://github.com/Simn) (Compiler Maintainer)
  - Hugh Sanderson [@hughsando](https://github.com/hughsando) (Haxe C++ backend)
- - Cauê Waneck [@waneck](https://github.com/waneck) (Haxe C# and Java backends)
+ - Aurel Bily [@aurel300](https://github.com/Aurel300) (Haxe contributor)
  - Andy Li [@andyli](https://github.com/andyli) (tools and infrastructure)
  - Dan Korostelev [@nadako](https://github.com/nadako) (compiler contributor)
- - Alexander Kuzmenko [@RealyUniqueName](https://github.com/RealyUniqueName) (Haxe PHP7 backend)
+ - Alexander Kuzmenko [@RealyUniqueName](https://github.com/RealyUniqueName) (Compiler Maintainer)
  - Justin Donaldson [@jdonaldson](https://github.com/jdonaldson) (Haxe Lua backend)
 
 To be accepted the HXP needs half + 1 votes in favor of it.
