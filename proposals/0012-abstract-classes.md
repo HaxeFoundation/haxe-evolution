@@ -1,7 +1,8 @@
 # Abstract Classes
 
-* Proposal: [HXP-NNNN](NNNN-abstract-classes.md)
+* Proposal: [HXP-0012](0012-abstract-classes.md)
 * Author: [Aleksandr Kuzmenko](https://github.com/RealyUniqueName)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/9619)
 
 ## Introduction
 

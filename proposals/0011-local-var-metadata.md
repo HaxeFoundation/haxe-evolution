@@ -1,7 +1,8 @@
 # Local Variable Metadata Syntax
 
-- Proposal: [HXP-NNNN](0000-local-var-metadata.md)
-- Author: [Peter Achberger](https://github.com/antriel)
+* Proposal: [HXP-0011](0011-local-var-metadata.md)
+* Author: [Peter Achberger](https://github.com/antriel)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/9618)
 
 ## Introduction
 
