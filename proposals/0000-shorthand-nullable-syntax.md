@@ -79,6 +79,8 @@ class MyClass {
 }
 ```
 
+---
+
 ### Whitespace
 
 Similar to other languages, there can be whitespace between the type and the `?`; however, no whitespace should be the standard:
@@ -92,6 +94,8 @@ var c: Int
     ? = null;
 ```
 
+---
+
 ### Type Parameter Placement
 
 When used with Types with type arguments, the `?` should be after the `<...>`.
@@ -99,7 +103,12 @@ When used with Types with type arguments, the `?` should be after the `<...>`.
 var a: Map<String, Int>? = null; // valid (Null<Map<String, Int>>)
 var b: Map?<String, Int> = null; // invalid
 var c: Map<String, Int?>? = null; // valid (Null<Map<String, Null<Int>>>)
+
+var d: Array<Array<Int>?> = []; // valid (Array<Null<Array<Int>>>)
+var e: Array<Array<Int?>?>? = null; // valid (Null<Array<Null<Array<Null<Int>>>>>)
 ```
+
+---
 
 ### Nullable Redundancy
 
@@ -113,6 +122,8 @@ var b: Int?? = null; // invalid
 var c: Null<Int>? = null; // invalid
 var d: Null<Int?> = null; // invalid
 ```
+
+---
 
 ### Potential Ternary Condition Conflict Resolution
 
