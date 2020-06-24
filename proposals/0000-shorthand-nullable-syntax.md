@@ -127,22 +127,34 @@ var d: Null<Int?> = null; // invalid
 
 ### Potential Ternary Condition Conflict Resolution
 
-The only hypothetical case there could be for operator confusion/conflict would be when a Type is used as a value (as an input for `Class<T>`) and its `?` may be confused with the ternary conditional: `A ? B : C`. Since `A` MUST be a `Bool`, I can't imagine there being a valid scenario where there would be `Type? ? B : C`, so it's probably safe to assume that every sequential `?` after a Type correlates to it.
+Hypothetically, there may be cases where a Type being used as an expression may conflict with the ternary conditional: `A ? B : C`. As a result, users will need to either explicitly surrond the `T?` nullable type with parentheses, or resort to using the original `Null<T>`.
 
-If something along the lines in the code shown below is a valid conflict, then `T?` should be disabled when using a Type as a value. Instead, users should be forced to use `Null<T>`. These are very rare occurrences, so it should not affect the overall convenience this feature would provide.
 ```haxe
-// Is this even valid Haxe code?
-var a: Class<T> = 32 == 32 ? Int? : Float?;
+// Made up syntax rules used to represent potential error
+var a: Int = Int? == Int? ? 10 : 20; // possible syntax error
+var b: Int = (Int? == Int?) ? 10 : 20; // valid - parentheses
+var c: Int = (Int?) == (Int?) ? 10 : 20; // valid - parentheses
+var d: Int = Null<Int> == Null<Int> ? 10 : 20; // valid - original nullable syntax
+```
 
-// Maybe something like this could cause issues?
-// Once again, not even sure if valid.
-var b: Class<T> = Int?;
-var c: Class<T> = b == Int? ? Int? : Float?;
-var d: Class<T> = b == Int ? Int? : Float?;
+---
 
-// Maybe there would be some issue with a cast?
-// Casting with a Type uses parentheses though...
-var e: Int = someInt == cast(someOtherInt, Int?) ? 1 : 2;
+### Nullable-Type Output Representation
+
+Text representations of the `Null<T>` Type should now follow the more readable `T?` syntax. 
+
+```haxe
+var a: Null<Int> = null;
+$type(a); // Int?
+
+var b: Int? = null;
+$type(b); // Int?
+
+var c: { ?a: Int, b: Int? } = { a: 10, b: 10 };
+$type(c); // { ?a : Int, b : Int? }
+
+// Note:
+// The above example, c, normally prints as { ?a : Null<Int>, b : Null<Int> }
 ```
 
 ## Impact on existing code
