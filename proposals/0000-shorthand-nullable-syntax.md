@@ -42,7 +42,7 @@ Long story short, due to the addition of null-safety in Haxe, there is an increa
 
 ---
 
-The second motivation is that this syntax mashes better with Haxe's design philosophy. From what I understand, Haxe is looking to be expressive, yet simple with how it is portrayed. It should be readable to those who have never programmed in Haxe before. While `Null<T>` follows a more common pattern for describing a type "wrapper", and type parameters are a common pattern in nearly all statically-typed languages, the `T?` pattern does an overwhelmingly better job at describing the intent of the code in a much simpler manner.
+The second motivation is that this syntax meshes better with Haxe's design philosophy. From what I understand, Haxe is looking to be expressive, yet simple with how it is portrayed. It should be readable to those who have never programmed in Haxe before. While `Null<T>` follows a more common pattern for describing a type "wrapper", and type parameters are a common pattern in nearly all statically-typed languages, the `T?` pattern does an overwhelmingly better job at describing the intent of the code in a much simpler manner.
 
 Unlike getters/setters or anonymous functions, the syntax for nullable types in other languages with null-safety is pretty much unanimous. Going down the [TIOBE Index](https://www.tiobe.com/tiobe-index/) list for June 2020, every language in the top 50 that has `null` and null-safety uses the `T?` syntax (ex: C#, Swift, Dart, Kotlin, etc.). Everything else either has nullability for all objects (ex: Java) or has `null` removed from the language (ex: Rust).
 
@@ -79,9 +79,7 @@ class MyClass {
 }
 ```
 
----
-
-*Whitespace*
+### Whitespace
 
 Similar to other languages, there can be whitespace between the type and the `?`; however, no whitespace should be the standard:
 ```haxe
@@ -94,9 +92,7 @@ var c: Int
     ? = null;
 ```
 
----
-
-*Type Parameter Placement*
+### Type Parameter Placement
 
 When used with Types with type arguments, the `?` should be after the `<...>`.
 ```haxe
@@ -105,9 +101,7 @@ var b: Map?<String, Int> = null; // invalid
 var c: Map<String, Int?>? = null; // valid (Null<Map<String, Null<Int>>>)
 ```
 
----
-
-*Nullable Redundancy*
+### Nullable Redundancy
 
 In the case of multiple `?` on the exact same Type (`Int???`), there are multiple solutions. It could throw an error (like C#), it could give a warning and default to the behavior of a single `?` (like Kotlin), or it could actually stack the `Null<T>` wrapper class like this: `Null<Null<Null<Int>>>` (like Swift). Based on the reactions of C# and Kotlin, it seems pretty safe to say there is no feasible reason to use multiple `Null<T>` wrappers, and in most cases this is probably user error.
 
@@ -120,9 +114,7 @@ var c: Null<Int>? = null; // invalid
 var d: Null<Int?> = null; // invalid
 ```
 
----
-
-*Potential Ternary Condition Conflict Resolution*
+### Potential Ternary Condition Conflict Resolution
 
 The only hypothetical case there could be for operator confusion/conflict would be when a Type is used as a value (as an input for `Class<T>`) and its `?` may be confused with the ternary conditional: `A ? B : C`. Since `A` MUST be a `Bool`, I can't imagine there being a valid scenario where there would be `Type? ? B : C`, so it's probably safe to assume that every sequential `?` after a Type correlates to it.
 
