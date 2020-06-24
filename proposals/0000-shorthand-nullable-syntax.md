@@ -154,7 +154,7 @@ var c: { ?a: Int, b: Int? } = { a: 10, b: 10 };
 $type(c); // { ?a : Int, b : Int? }
 
 // Note:
-// The above example, c, normally prints as { ?a : Null<Int>, b : Null<Int> }
+// The above example, c, currently prints as { ?a : Null<Int>, b : Null<Int> }
 ```
 
 ## Impact on existing code
