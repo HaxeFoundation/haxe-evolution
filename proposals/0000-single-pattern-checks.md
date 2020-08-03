@@ -24,39 +24,39 @@ switch ($value) {
 }
 ```
 
-### Pattern test with `is case`
+### Test a pattern with `is match`
 
 ```
-$value is case $pattern [where ($guard)]
+$value is match $pattern [where $guard]
 ```
 
 With `$ifBody` being `true` and `$elseBody` - `false`.
 
 ```haxe
 function isSome(option: Option<Int>): Bool {
-  return option is case Some(_);
+  return option is match Some(_);
 }
 
 function isDivisibleSome(option: Option<Int>, divisor: Int): Bool {
-  return option is case Some(int) where (int % divisor == 0);
+  return option is match Some(int) where (int % divisor == 0);
 }
 ```
 
-### Pattern condition with `if case`
+### Use a pattern as condition with `if match`
 
 ```
-if case ($value, $pattern[, $guard]) $ifBody [else $elseBody]
+if $value match $pattern [where $guard] $ifBody [else $elseBody]
 ```
 
 ```haxe
 function ifSome(option: Option<Int>, then: (int: Int) -> Void): Void {
-  if case (option, Some(int)) {
+  if option match Some(int) {
     then(int);
   }
 }
 
 function ifDivisibleSome(option: Option<Int>, divisor: Int, then: (int: Int) -> Void, or: () -> Void): Void {
-  if case (option, Some(int), int % divisor == 0) {
+  if option match Some(int) where (int % divisor == 0) {
     then(int);
   } else {
     or();
@@ -64,27 +64,27 @@ function ifDivisibleSome(option: Option<Int>, divisor: Int, then: (int: Int) -> 
 }
 ```
 
-### Pattern assertion with `cast case`
+### Extract pattern variables with `extract match`
 
 ```
-$value cast case $pattern [where ($guard)] [else $elseBody]
+$value extract match $pattern [where $guard] [else $elseBody]
 ```
 
 With `$elseBody` throwing an exception by default and `$ifBody` being everything that follows in a block.
 
 ```haxe
 function getSome(option: Option<Int>): Int {
-  option cast case Some(int);
+  option extract match Some(int);
   return int;
 }
 
 function getNullSome(option: Option<Int>): Null<Int> {
-  option cast case Some(int) else return null;
+  option extract match Some(int) else return null;
   return int;
 }
 
 function getDivisibleSome(option: Option<Int>, divisor: Int): Int {
-  option cast case Some(int) where (int % divisor == 0);
+  option extract match Some(int) where (int % divisor == 0);
   return int;
 }
 ```
