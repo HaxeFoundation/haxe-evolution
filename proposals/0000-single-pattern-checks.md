@@ -67,26 +67,25 @@ function ifDivisibleSome(option: Option<Int>, divisor: Int, then: (int: Int) -> 
 ### Extract pattern variables with `extract match`
 
 ```
-[$vars =] $value extract match $pattern [where $guard] [else $elseBody]
+$value extract match $pattern [where $guard] [else $elseBody]
 ```
 
-`$vars` acts as a whitelist for exposing pattern's captured variables.
-`$elseBody` throws an exception by default. 
-`$ifBody` being everything that follows in a block.
+`$elseBody` throws an exception by default and if provided must be `return`, `break`, `continue` or `throw`.
+`$ifBody` sets captured variables in current scope.
 
 ```haxe
 function getSome(option: Option<Int>): Int {
-  final int = option extract match Some(int);
+  option extract match Some(int);
   return int;
 }
 
 function getNullSome(option: Option<Int>): Null<Int> {
-  final int = option extract match Some(int) else return null;
+  option extract match Some(int) else return null;
   return int;
 }
 
 function getDivisibleSome(option: Option<Int>, divisor: Int): Int {
-  final int = option extract match Some(int) where (int % divisor == 0);
+  option extract match Some(int) where (int % divisor == 0);
   return int;
 }
 ```
