@@ -24,39 +24,39 @@ switch ($value) {
 }
 ```
 
-### Test a pattern with `is match`
+### Test a pattern with `case is`
 
 ```
-$value is match $pattern [where $guard]
+$value case is $pattern [if ($guard)]
 ```
 
 With `$ifBody` being `true` and `$elseBody` - `false`.
 
 ```haxe
 function isSome(option: Option<Int>): Bool {
-  return option is match Some(_);
+  return option case is Some(_);
 }
 
 function isDivisibleSome(option: Option<Int>, divisor: Int): Bool {
-  return option is match Some(int) where (int % divisor == 0);
+  return option case is Some(int) if (int % divisor == 0);
 }
 ```
 
-### Use a pattern as condition with `if match`
+### Use a pattern as condition with `case`
 
 ```
-if $value match $pattern [where $guard] $ifBody [else $elseBody]
+$value case $pattern [if ($guard)]: $ifBody [else $elseBody]
 ```
 
 ```haxe
 function ifSome(option: Option<Int>, then: (int: Int) -> Void): Void {
-  if option match Some(int) {
+  option case Some(int): {
     then(int);
   }
 }
 
 function ifDivisibleSome(option: Option<Int>, divisor: Int, then: (int: Int) -> Void, or: () -> Void): Void {
-  if option match Some(int) where (int % divisor == 0) {
+  option case Some(int) if (int % divisor == 0): {
     then(int);
   } else {
     or();
@@ -64,28 +64,28 @@ function ifDivisibleSome(option: Option<Int>, divisor: Int, then: (int: Int) -> 
 }
 ```
 
-### Capture pattern variables with `capture match`
+### Get pattern variables with `case vars`
 
 ```
-$value capture match $pattern [where $guard] [else $elseBody]
+$value case vars $pattern [if ($guard)] [else $elseBody]
 ```
 
-`$ifBody` returns a structure with captured variables.
+`$ifBody` returns a structure with captured variables. 
 `$elseBody` throws an exception by default.
 
 ```haxe
 function getSome(option: Option<Int>): Int {
-  var some = option capture match Some(int);
+  var some = option case vars Some(int);
   return some.int;
 }
 
 function getNullSome(option: Option<Int>): Null<Int> {
-  var some = option capture match Some(int) else {int: null};
+  var some = option case vars Some(int) else {int: null};
   return some.int;
 }
 
 function getDivisibleSome(option: Option<Int>, divisor: Int): Int {
-  var some = option capture match Some(int) where (int % divisor == 0);
+  var some = option case vars Some(int) if (int % divisor == 0);
   return some.int;
 }
 ```
