@@ -27,36 +27,36 @@ switch ($value) {
 ### Test a pattern
 
 ```
-case($value, $pattern[, $guard])
+is case $value => $pattern [if ($guard)]
 ```
 
 With `$ifBody` being `true` and `$elseBody` - `false`.
 
 ```haxe
 function isSome(option: Option<Int>): Bool {
-  return case(option, Some(_));
+  return is case option => Some(_);
 }
 
 function isDivisibleSome(option: Option<Int>, divisor: Int): Bool {
-  return case(option, Some(int), int % divisor == 0);
+  return is case option => Some(int) if (int % divisor == 0);
 }
 ```
 
 ### Use a pattern as condition
 
 ```
-if case($value, $pattern[, $guard]) $ifBody [else $elseBody]
+in case $value => $pattern [if ($guard)]: $ifBody [else $elseBody]
 ```
 
 ```haxe
 function ifSome(option: Option<Int>, then: (int: Int) -> Void): Void {
-  if case(option, Some(int)) {
+  in case option => Some(int): {
     then(int);
   }
 }
 
 function ifDivisibleSome(option: Option<Int>, divisor: Int, then: (int: Int) -> Void, or: () -> Void): Void {
-  if case(option, Some(int), int % divisor == 0) {
+  in case option => Some(int) if (int % divisor == 0): {
     then(int);
   } else {
     or();
