@@ -41,20 +41,30 @@ public static function bind(o:Dynamic, m:Dynamic) {
 }
 ```
 
-## Impact on existing code
-
-Currently `static` keyword is entirely forbidden inside method bodies so there should be no impact.
-
-## Drawbacks
-
-Accessing local variables of containing method in initializer expression should be forbidden,
-```
+Accessing local variables of containing method in initializer expression should be forbidden,  
+```haxe
 public static function some(i:Int) {
   static var trouble = i; // <- illegal
   static var trouble2 = function() return ++i; // <- also illegal
 }
 ```
 Like with normal statics, either a value or an explicit type would be needed for the static variable.
+
+Simulating block scoping
+```haxe
+public static function some() {
+  // ...
+  if (condition) {
+    static var one = 1;
+  }
+  return one; // <- ilegal
+}
+```
+would be consistent with local variables and preferred for situations where a variable is only really needed within a specific branch.
+
+## Impact on existing code
+
+Currently `static` keyword is entirely forbidden inside method bodies so there should be no impact.
 
 ## Alternatives
 
@@ -68,3 +78,4 @@ Still, an example of such a macro (implementing `@:static var`) can be found [he
 ## Unresolved questions
 
 Similarly allowing local `static function` could be handy for platforms where there is a cost to creating/invoking closures.
+
