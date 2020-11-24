@@ -92,7 +92,7 @@ class Game {
         switch player.person { 
           case John: 
             'Our ${player.person.name} wins a lot, even though he is ${player.person.age} years old!';
-          case Jane | Jane: 
+          case Jane | Elisa: 
             'One of the women won, it was ${player.person.name}!';
           case other: 
             'An interesting round, but ${other.person.name} has won this time!';
@@ -108,8 +108,8 @@ class Game {
 enum abstract Person({ final name: String; final age:Int }) {
   final John = { name: "John Bon", age: 65 };
   final Jane = { name: "Jane Dane", age: 18 };
-	final Mark = { name: "Mark Hark", age: 36 };
-	final Elisa = { name: "Elisa Disa", age: 42 };
+  final Mark = { name: "Mark Hark", age: 36 };
+  final Elisa = { name: "Elisa Disa", age: 42 };
 }
 
 // Allow anonymous structure named as type.
