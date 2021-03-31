@@ -71,7 +71,7 @@ To start simple, we should only allow declaring an alias to the underlying enum 
     }
     ```
 
-This may be handled in conjunction with other evolution proposals such as https://github.com/HaxeFoundation/haxe-evolution/pull/86
+    This may be handled in conjunction with other evolution proposals such as https://github.com/HaxeFoundation/haxe-evolution/pull/86
 
 ## Impact on existing code
 
