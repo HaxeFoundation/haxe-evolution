@@ -49,6 +49,10 @@ enum abstract Status<T>(Option<T>) to Option<T> {
 
 Since at runtime `Status` does not exist and it will be represented by `Option`. We saved the code size for it.
 
+3. Enable enum instance/static fields
+
+We get https://github.com/HaxeFoundation/haxe-evolution/issues/10 for free
+
 
 ## Detailed design
 
