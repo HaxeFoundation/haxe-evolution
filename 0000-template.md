@@ -8,7 +8,7 @@
 `enum abstract` is basically a mechansim to define a subset from a superset.
 For example, when used over `Int`, it creates a finite subset from a infinite superset which consists of all integers. (Well, techinically it is not really infinite because it is limited by computer memory)
 
-Therefore in theory, it should also be used over ordinary `enum`, to create a subset of its constructors.
+Therefore in theory, it could also be used over ordinary `enum`, to create a subset of its constructors.
 
 ## Motivation
 
@@ -47,7 +47,7 @@ enum abstract Status<T>(Option<T>) to Option<T> {
 }
 ```
 
-Since at runtime `Status` does not exists and it will be represented by `Option`. We saved the code size for it.
+Since at runtime `Status` does not exist and it will be represented by `Option`. We saved the code size for it.
 
 
 ## Detailed design
@@ -59,9 +59,11 @@ To start simple, we should only allow declaring an alias to the underlying enum 
 - Partial/full application of enum constructors:
 
 ```haxe
-enum abstract Status<T>(Option<T>) to Option<T> {
-	final Continue = Some(1);
-	final End = None;
+enum abstract MaybeValue<T>(Option<T>) to Option<T> {
+	final One = Some(1);
+	final Two = Some(2);
+	final Other = Some;
+	final Nothing = None;
 }
 ```
 
