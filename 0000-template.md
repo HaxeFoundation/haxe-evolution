@@ -1,4 +1,4 @@
-# `enum abstract` over `enum
+# `enum abstract` over `enum`
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
 * Author: [Kevin Leung](https://github.com/kevinresol)
