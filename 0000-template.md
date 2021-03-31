@@ -1,4 +1,4 @@
-# Feature name
+# `enum abstract` over `enum
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
 * Author: [Kevin Leung](https://github.com/kevinresol)
@@ -84,7 +84,7 @@ To be discussed.
 
 ## Alternatives
 
-One can always declare a separate ordinary enum as a subset of another enum, but that would require manual traslation to its superset. Also it incurs extra generated code size.
+One can always declare a separate ordinary enum as a subset of another enum, but that would require manual translation to its superset. Also it incurs extra generated code size.
 
 ## Unresolved questions
 
