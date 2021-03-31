@@ -14,44 +14,44 @@ Therefore in theory, it could also be used over ordinary `enum`, to create a sub
 
 1. Expose `enum` partially
 
-```haxe
-enum CRUD {
-	Create(id:String, data:Any);
-	Read(id:String);
-	Update(id:String, data:Any);
-	Delete(id:String);
-}
+    ```haxe
+    enum CRUD {
+    	Create(id:String, data:Any);
+    	Read(id:String);
+    	Update(id:String, data:Any);
+    	Delete(id:String);
+    }
+    
+    enum abstract ReadAndUpdate(CRUD) to CRUD {
+    	final ReadData = Read;
+    	final UpdateData = Update;
+    }
+    
+    function doAdminTask(task:CRUD):Void {
+    	// perform the task
+    }
+    
+    function doEditorTask(task:ReadAndUpdate):Void {
+    	return doAdminTask(task);
+    }
+    ```
 
-enum abstract ReadAndUpdate(CRUD) to CRUD {
-	final ReadData = Read;
-	final UpdateData = Update;
-}
-
-function doAdminTask(task:CRUD):Void {
-	// perform the task
-}
-
-function doEditorTask(task:ReadAndUpdate):Void {
-	return doAdminTask(task);
-}
-```
-
-In the above example, we can expose a limited set of operations to restricted users via the `doEditorTask`
+    In the above example, we can expose a limited set of operations to restricted users via the `doEditorTask`
 
 2. Reuse existing `enum` to reduce code size
 
-```haxe
-enum abstract Status<T>(Option<T>) to Option<T> {
-	final Continue = Some;
-	final End = None;
-}
-```
+    ```haxe
+    enum abstract Status<T>(Option<T>) to Option<T> {
+    	final Continue = Some;
+    	final End = None;
+    }
+    ```
 
-Since at runtime `Status` does not exist and it will be represented by `Option`. We saved the code size for it.
+    Since at runtime `Status` does not exist and it will be represented by `Option`. We saved the code size for it.
 
 3. Enable enum instance/static fields
 
-We get https://github.com/HaxeFoundation/haxe-evolution/issues/10 for free
+    We get https://github.com/HaxeFoundation/haxe-evolution/issues/10 for free
 
 
 ## Detailed design
@@ -62,14 +62,14 @@ To start simple, we should only allow declaring an alias to the underlying enum 
 
 - Partial/full application of enum constructors:
 
-```haxe
-enum abstract MaybeValue<T>(Option<T>) to Option<T> {
-	final One = Some(1);
-	final Two = Some(2);
-	final Other = Some;
-	final Nothing = None;
-}
-```
+    ```haxe
+    enum abstract MaybeValue<T>(Option<T>) to Option<T> {
+    	final One = Some(1);
+    	final Two = Some(2);
+    	final Other = Some;
+    	final Nothing = None;
+    }
+    ```
 
 This may be handled in conjunction with other evolution proposals such as https://github.com/HaxeFoundation/haxe-evolution/pull/86
 
