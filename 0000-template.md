@@ -1,41 +1,85 @@
 # Feature name
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
-* Author: [Haxe Developer](https://github.com/haxedev)
+* Author: [Kevin Leung](https://github.com/kevinresol)
 
 ## Introduction
 
-Short description of the proposed feature. Keep it short, so the reader
-can quickly get what's it all about.
+`enum abstract` is basically a mechansim to define a subset from a superset.
+For example, when used over `Int`, it creates a finite subset from a infinite superset which consists of all integers. (Well, techinically it is not really infinite because it is limited by computer memory)
+
+Therefore in theory, it should also be used over ordinary `enum`, to create a subset of its constructors.
 
 ## Motivation
 
-Describe the problems adressed by this feature. If a similar effect
-can be achieved without it with some workarounds, describe the drawbacks
-of the workaround. If it's something completely new, show how it will
-help developers write better Haxe code or how it will improve the generation
-of target code by the compiler.
+1. Expose `enum` partially
+
+```haxe
+enum CRUD {
+	Create(id:String, data:Any);
+	Read(id:String);
+	Update(id:String, data:Any);
+	Delete(id:String);
+}
+
+enum abstract ReadAndUpdate(CRUD) to CRUD {
+	final ReadData = Read;
+	final UpdateData = Update;
+}
+
+function doAdminTask(task:CRUD):Void {
+	// perform the task
+}
+
+function doEditorTask(task:ReadAndUpdate):Void {
+	return doAdminTask(task);
+}
+```
+
+In the above example, we can expose a limited set of operations to restricted users via the `doEditorTask`
+
+2. Reuse existing `enum` to reduce code size
+
+```haxe
+enum abstract Status<T>(Option<T>) to Option<T> {
+	final Continue = Some;
+	final End = None;
+}
+```
+
+Since at runtime `Status` does not exists and it will be represented by `Option`. We saved the code size for it.
+
 
 ## Detailed design
 
-Describe the proposed design in details the way language user can understand
-and compiler developer can implement. Show corner cases, provide usage examples,
-describe how this solution is better than current workarounds.
+To start simple, we should only allow declaring an alias to the underlying enum constructor. Since the type of the abstract fields is just the same as the underlying aliased enum constructor, pattern matching should just work with minimal work.
+
+#### Futher developments:
+
+- Partial/full application of enum constructors:
+
+```haxe
+enum abstract Status<T>(Option<T>) to Option<T> {
+	final Continue = Some(1);
+	final End = None;
+}
+```
+
+This may be handled in conjunction with other evolution proposals such as https://github.com/HaxeFoundation/haxe-evolution/pull/86
 
 ## Impact on existing code
 
-What impact this change will have on existing code? Will it break compilation?
-Will it compile, but break in run-time? How easy it is to migrate existing Haxe code?
+Since the abstract fields are no longer a primitive value, it may affect macro code that tries to obtain the literal value at compile time.
+But since the feature is new, such breakage will only happen when a abstract-enum-over-enum is passed to such macros.
 
 ## Drawbacks
 
-Describe the drawbacks of the proposed design worth consideration. This doesn't include
-breaking changes, since that's described in the previous section.
+To be discussed.
 
 ## Alternatives
 
-What alternatives have you considered to address the same problem, why the proposed solution is better?
+One can always declare a separate ordinary enum as a subset of another enum, but that would require manual traslation to its superset. Also it incurs extra generated code size.
 
 ## Unresolved questions
 
-Which parts of the design in question is still to be determined?
+To be discussed.
