@@ -82,6 +82,10 @@ Some Haxe developers have searched or requested this feature:
 
 ## Detailed design
 
+### Disclaimer
+
+This proposal is about enabling the compiler to write an equivalent destructor code in the target platform language that support it. This is **not intended to be part of the native code**. 
+
 ### Example of implementation
 
 Taking our log file example, this is how we would implement it using the constructor method:
@@ -110,49 +114,7 @@ It takes no arguments, and must return nothing. It should only perform tear down
 ### Behavior rules
 
 - There can be only one destructor per class. 
-- The destructor method cannot be static. 
-- The destructor must be called whenever the instanciated object is freed from its current scope.
-
-Consider this example:
-
-```haxe
-final class Main {
-
-  public static function main() {
-    Main.displayContent();
-  }
-
-  public static function displayContent() {
-    final logFile = new LogFile();
-
-    trace(logFile.getContent());
-
-    // At this moment, logFile goes out of scope, it will be freed and its destructor must be called.
-  }
-}
-```
-
-Versus this example:
-
-```haxe
-final class Main {
-
-  public static function main() {
-    final logFile = new LogFile();
-
-    Main.displayContent(logFile);
-
-    // The scope of the logFile variable is finishes here, call its destructor now.
-  }
-
-  public static function displayContent(logFile: LogFile) {
-    trace(logFile.getContent());
-
-    // Not calling its destructor yet, since its scope is not finished here.
-  }
-}
-```
-
+- The destructor method cannot be static.
 - A child class can call its parent destructor using `super()` only if its parent have declared a `destructor()` method. If not, the compiler must raise a compilation error (in the same fashion we cannot construct an object from a class that do not implement a constructor).
 - If the target do not support destructors, the compiler must raise an error.
 
