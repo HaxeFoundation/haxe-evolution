@@ -19,7 +19,7 @@ This proposal is about adding support for class destructor.
 
 ### The goal of a destructor
 
-Destructors are primarily used to free open or mobilized resources during a object instanciation or runtime. Trying to achieve this currently is not possible because we do not have access to a hook for knowing when an object is going "out of scope" (understand: the object within its scope is terminated and will be garbage collected). Other languages do not provide this kind of hook but expose a destructor developers can override to perform their own logic.
+Destructors are primarily used to free open or mobilized resources during a object instanciation or runtime. Trying to achieve this currently is not possible because we do not have access to a hook for knowing when an object is going "out of scope" (understand: the object within its scope is terminated and will be garbage collected). Other languages might provide this kind of hook, and some expose a destructor method developers can override to perform their own logic.
 
 ### Example of usage
 
@@ -153,7 +153,7 @@ final class Main {
 }
 ```
 
-- A child class can call its parent destructor using `super()` only if its parent have declared a `super()` method. If not, the compiler must raise a compilation error (in the same fashion we cannot construct an object from a class that do not implement a constructor).
+- A child class can call its parent destructor using `super()` only if its parent have declared a `destructor()` method. If not, the compiler must raise a compilation error (in the same fashion we cannot construct an object from a class that do not implement a constructor).
 - If the target do not support destructors, the compiler must raise an error.
 
 ### Destructor support in Haxe targets
@@ -183,7 +183,7 @@ This proposal is a breaking change, and should be introduced in the next major r
 
 ### Migration
 
-The migration will not be tedious, but not hard, since it is just a matter of searching for all classes containing a method named "destructor", and refactoring it to rename it for something else. This could be even automatizable, but developers might want to do this refactor manually to provide a new meaningful method name.
+The migration can be tedious, but not hard, since it is just a matter of searching for all classes containing a method named "destructor", and refactoring it to rename it for something else. This could even be automatizable, but developers might want to do this refactor manually to provide a new meaningful method name.
 
 ## Drawbacks
 
@@ -191,7 +191,7 @@ The migration will not be tedious, but not hard, since it is just a matter of se
 
 ### Parent-child
 
-A first alternative would be to extends from a parent class that defines a destructor, so that child classes can re-implement it for their own purpose. This alternative have a drawback: not forgetting to call the parent class "destructor" in the code. As it relies on human capability to be consistant over refactor to not forget it, this is not an ideal solution.
+A first alternative would be to extend from a parent class that defines a destructor, so that child classes can re-implement it for their own purpose. This alternative have a drawback: not forgetting to call the parent class "destructor" in the code. As it relies on human capability to be consistant over refactor to not forget it, this is not an ideal solution.
 
 ### Manual call
 
@@ -199,7 +199,7 @@ Another alternative would be to just use the destructor method by hand. As the f
 
 ### Plateform-specific hooks
 
-The last alternative is to rely on plateform-specific termination hooks, like PHP's [`register_shutdown_function()`](https://www.php.net/manual/en/function.register-shutdown-function.php). The big show stopper here is that we loose the versatility of Haxe language over compiler-time flags. This introduce boilerplate code, and is not testable.
+The last alternative is to rely on plateform-specific termination hooks, like PHP's [`register_shutdown_function()`](https://www.php.net/manual/en/function.register-shutdown-function.php). The big show stopper here is that we loose the versatility of Haxe language over conditional compilation flags. It introduces boilerplate code, and is not testable.
 
 ```haxe
 final class Main {
