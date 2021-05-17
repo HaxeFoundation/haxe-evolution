@@ -1,4 +1,5 @@
 
+
 # Safe Navigation Operator
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
@@ -16,12 +17,12 @@ iAmNull?.length; // null
 iAmString?.length; // 6
 
 // convoluted method of checking first character
-if(iAmNull?.toUpperCase()?.split("")?[0] != null) {
+if(iAmNull?.toUpperCase()?.split("")?.[0] != null) {
 	trace("iAmNull is not null and len > 0");
 }
 
 final imAlsoNull: Null<(Int) -> Void> = null;
-imAlsoNull?(123); // won't be called
+imAlsoNull?.(123); // won't be called
 ```
 
 ## Motivation
@@ -43,7 +44,7 @@ final info = if(myObject != null && myObject.data != null && myObject.data.resul
 // alternatively...
 final info = myObject != null ? (myObject.data != null ? (myObject.data.result != null ? myObject.data.result.confirm() : null) : null) : null;
 ```
-The safe navigation operator drastically improves the size and readability of code in these situations. It turns what could be multiple lines or an over-extended line into a smaller expression. Moreover, it works well with `@:nullSafety(Strict)`, encouraging syntax that checks the value at the moment it's used, preventing issues stemming from modification after the `if` check.
+The safe navigation operator drastically improves the size and readability of code in these situations. It turns what could be multiple lines or an over-extended line into a smaller expression.
 ```haxe
 // calling function on nullable variable
 myObject?.runMethod();
@@ -51,6 +52,20 @@ myObject?.runMethod();
 // accessing member in chain of possibly null values
 final info = myObject?.data?.result?.confirm();
 ```
+Moreover, it works well with `@:nullSafety(Strict)`, encouraging syntax that checks the value at the moment it's used, preventing issues stemming from modification after the `if` check.
+```haxe
+@:nullSafety(Strict) {
+	var myArray: Null<Array<Int>> = [1, 2, 3];
+	if(myArray != null) {
+		myArray.push(4); // valid
+		if(Math.random() < 0.5) {
+			myArray = null;
+		}
+		myArray?.pop(); // valid
+	}
+}
+```
+
 ---
 While the feature itself does not provide new functionality, it provides a **single**, concise syntax for multi-nullable chains (as opposed to `if/else`, `?:`, `?(?:):`, etc). As such, I believe it fits perfectly with Haxe's design philosophy.
 
@@ -62,7 +77,11 @@ Finally, it should also be noted the feature is popular within the Haxe communit
 
 ## Detailed design
 
-As demonstrated above, `?.` will act as an alternative to `.` for nullable types. There should never be space between the two characters of the operator. The resulting type will always be `Null<T>`.
+As demonstrated above, `?.` will act as an alternative to `.` for nullable types. The resulting type will always be `Null<T>`.
+
+Adding this feature will require modification of the `ExprDef` enum to include the safe alternatives to `EField`, `ECall`, and `EArray` through either additional enum values or fields in the enum values.
+
+In terms of specific syntax, there should never be space between the two characters of the operator.
 ```haxe
 final nullString: Null<String> = null;
 nullString?.length; // safely returns null (Null<Int>)
@@ -70,13 +89,18 @@ nullString? .length; // error
 nullString  ?.length; // ok (based on current . behavior)
 ```
 
-`?[]` and `?()` can also be used for array-access or function calls on nullable values as well. There should be no whitespace between the question mark and square bracket (`?[`).
+`?.[]` and `?.()` can also be used for array-access or function calls on nullable values as well. The full `?.` is used to prevent conflict with ternary conditions: `a?(b):c` or `a?[b]:c`.
+
+There can be white space between the `?.` and `[` or `(`, but like before, the `?.` operator should remain intact.
 ```haxe
 final nullArray: Null<Array<Int>> = null;
 final nullFunc: Null<() -> Void> = null;
 
-nullArray?[2]; // safely returns null
-nullFunc?(); // safely returns null
+nullArray?.[2]; // safely returns null
+nullFunc?.(); // safely returns null without calling
+
+nullArray ?. [2]; // valid
+nullArray ? . [2]; // invalid
 ```
 
 If `@:nullSafety` is enabled, the operator should throw an error (or at least a warning) on all types that are not `Null<T>`.
@@ -98,11 +122,13 @@ On the other hand, if `@:nullSafety` is enabled, the safe navigation operator wi
 
 ## Impact on existing code
 
-Adding this feature will probably require additional values to be added to the `ExprDef` enum or modification of other AST stuff. So it may break macro code using switch statements over every current `ExprDef` value, etc. 
+As mentioned in Detailed Design, this feature would require modification of AST; therefore, it may break compatibility with some macros using switch against all `ExprDef` cases.
 
 However, beyond that, adding this feature doesn't invalidate any existing syntax, so there should be no problems.
 
 ## Drawbacks
+
+The parsing of the `?.` operator may conflict with float literals (`cond?.1:.2`), so additional logic may need to be incorporated into the parsing of the operator.
 
 With how prevalent null-checks are, it might be a little tedious for developers who choose to optionally "update" their codebase with the new feature. This would not be required and, if anything, would help those trying to make their project fully compatible with `@:nullSafety`.
 
@@ -116,14 +142,6 @@ In addition, macro-created safe array-access and function calls require even wei
 
 The syntax will be the biggest question for this feature. The use of `?.` for access is pretty consistent across almost all languages with the feature (JavaScript, C#, Python ([proposal](https://www.python.org/dev/peps/pep-0505/)), Kotlin, Swift, TypeScript, CoffeeScript, Groovy, Dart).
 
-However, things begin to diverge when it comes to the safe array-access and function call. The currently proposed style for safe array-access is used by C#, Groovy, and Swift. While the currently proposed safe function call is used by CoffeeScript, Visual Basic .NET, and Swift (again). Overall, the proposed syntax is the most consistent amongst major programming languages. However, if it's not viable or desired for whatever reason, here are some alternatives based on other languages:
+However, things begin to diverge when it comes to the safe array-access and function call. JavaScript is the only language that uses `jsFunction?.()` or `jsArray?.[0]`. Since Haxe follows the same syntax, it makes sense to follow its lead, but it is one of the more obscure styles compared to other programming languages. An alternative option would be to provide function-alternatives to all std classes' array-access and function calls (`arr?.get(0)` or `arr?.set(0, 1)`). This would be a similar approach to C# and Kotlin's `myFunction?.Invoke(arg1, arg2)`.
 
-JavaScript keeps the `?.` in all instances of safe navigation. For example: `jsFunction?.()` or `jsArray?.[0]`. While it looks weirder, it's much more consistent and associates the concept with a consistent operator. With how similar Haxe's syntax is to JavaScript's, and based on JavaScript's overwhelming popularity, an argument could be made to use this syntax instead. Though, please note this syntax is not used by any other major programming languages.
-
-Ruby and Crystal use a `&.` operator. This is presumably due to the fact methods and variables can end in `?` in those languages, so it's not something Haxe would need to worry about. It's still an interesting alternative in case `?.` can't work for whatever reason.
-
-When it comes to safe function calls, C# and Kotlin function objects have an `Invoke` member that calls the function. So safe function calls work like: `myFunction?.Invoke(arg1, arg2)`. Haxe does not have an equivalent, so this syntax is not likely viable.
-
-Raku (Perl 6) uses the `.?` operator.
-
-Scala uses the `.?.` operator.
+The format of the changes to `ExprDef` are also yet to be determined. 
