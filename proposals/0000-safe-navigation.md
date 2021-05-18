@@ -1,5 +1,4 @@
 
-
 # Safe Navigation Operator
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
@@ -116,7 +115,7 @@ On the other hand, if `@:nullSafety` is enabled, the safe navigation operator wi
 @:nullSafety(Strict) {
 	final nullArray: Null<Array<Int>> = null;
 	nullArray?.length; // valid
-	nullArray?[0]; // valid
+	nullArray?.[0]; // valid
 }
 ```
 
