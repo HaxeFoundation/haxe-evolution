@@ -35,19 +35,24 @@ There are a couple of other numeric types (`Single`, `UInt`) which are also unde
 
 Below is a table of possible suffix for intergers and floats and the potential types they would match to.
 
-|suffix|integer size|
+|suffix|signed integer size|
 |--|--|
 |i8|1 byte|
 |i16|2 bytes|
 |i32|4 bytes|
 |i64|8 bytes|
 
+|suffix|unsigned integer size|
+|--|--|
+|u8|1 byte|
+|u16|2 bytes|
+|u32|4 bytes|
+|u64|8 bytes|
+
 |suffix|float size|
 |--|--|
 |f32|4 bytes|
 |f64|8 bytes|
-
-As an addition `u` could be prefixed to the integer suffixes to create unsigned versions (e.g. `ui64`, `ui8`).
 
 ## Unresolved questions
 
