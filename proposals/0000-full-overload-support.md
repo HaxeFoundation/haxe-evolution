@@ -37,13 +37,22 @@ overload function new(r:Int, g:Int, b:Int)
 ```
 would become
 ```hx
-function new (r:Int, g:Int, b:Int)
+function new (r:Int, g:Int, b:Int, a:Int)
 static function new_int_int_int(r:Int, g:Int, b:Int):Color
 ```
 
 For all type signatures, it's calculated by lowercasing the types for each in the args and the return type, then placing them in order with underscores, with return type at the end.
 The signature stringification can be changed a bit (especially considering type parameters) but it doesn't matter that much as long as it's unique. Generic Classes also apply like this, but using the given name. 
- 
+
+Interfaces must not be allowed to have overloads, and this precludes the class implementing the function from overloading the function. When using reflection, getProperty must be used. Return types being changed does not count as a different type signature, and will emit an error. 
+
+How do function calls know what to call? 
+
+Haxe already knows how to look through overloads when it comes to monomorphs; But for clarity, Haxe will look through the overloads in order.
+It first removes any that can't be the same length as the amount of args given, taking optional arguments into consideration. 
+Then, it tries to find one where the first arg unifies with the overload's first type, and then second arg, and so on. 
+Monomorphs are calculated exactly like they are for overloads already. 
+
 ## Impact on existing code
 
 This shouldn't affect any existing code except for making it more cross platform.
