@@ -96,12 +96,12 @@ For all type signatures, it's calculated by stringing the argument types togethe
 The signature stringification can be changed a bit (especially considering type parameters) but it doesn't matter that much as long as it's unique. Generic Classes also apply like this, but using the given name. 
 If two classes have the same name but are in different packages, they become fully qualified if the function names would overlap.
 
-```
+```hx
 overload function fromVector3(v3:bulby.Vector3)
 overload function fromVector3(v3:peote.Vector3)
 ```
 becomes
-```
+```hx
 function hx__fromVector3_bulby_Vector3(v3:bulby.Vector3)
 function hx__fromVector3_peote_Vector3(v3:peote.Vector3)
 function fromVector3(u0:Dynamic) {
