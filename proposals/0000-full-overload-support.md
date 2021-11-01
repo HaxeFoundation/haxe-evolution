@@ -15,34 +15,105 @@ functions and function calls for different function signatures.
 ## Detailed design
 
 If the target already supports overloading, that implementation is used. 
-If not, then any overloaded function will be renamed.
-Normal functions are renamed by their type signature.
+If not, then any overloaded function will be renamed, and an adapter function will be created to support dynamic dispatch. 
+Normal functions are renamed by their type signature, and prefixed with "hx__"
 For example: 
 ```hx
-overload static function fromArray(arr:Array<Float>):Color
-overload static function fromArray(arr:Array<Int>):Color
+overload function fromArray(arr:Array<Float>):Color
+overload function fromArray(arr:Array<Int>):Color
 ```
 would become
 ```hx
-static function fromArray_array_float_color(arr:Array<Float>):Color
-static function fromArray_array_int_color(arr:Array<Int>):Color
+function fromArray(arr:Dynamic) {
+    switch (Type.typeof(arr)) {
+        case TClass(Array<Float>): 
+            hx__fromArray_Array_Float(arr);
+        case TClass(Array<Int>):
+            hx__fromArray_Array_Int(arr);
+    }
+}
+function hx__fromArray_Array_Float(arr:Array<Float>):Color
+function hx__fromArray_Array_Int(arr:Array<Int>):Color
 ```
 This applies to function calls as well.
 
-For constructors, one must be selected as the "true" constructor, and others are transformed into static functions.
-The true constructor is the one that otherwise would end up with the longest function name. For example: 
+For constructors, all are transformed into static functions and the original constructor is transformed into an adapter function. In the overloads, any super calls are redirected to their proper overload. Parent constructors that are not covered by their child are not exposed (can't be called from child). In the overloads, the first argument becomes "inst", meaning instance. It replaces any usage of self and is used for any assignment of member vars.
 ```hx
-overload function new(r:Int, g:Int, b:Int, a:Int) 
-overload function new(r:Int, g:Int, b:Int) 
+class Parent {
+    overload function new(r:Int, g:Int, b:Int)
+    overload function new(arr:Array<Int>)
+}
+class Child extends Parent {
+  overload function new(r:Int, g:Int, b:Int, a:Int) {
+    // unrelated code
+    super([r, g, b, a]);
+    // blah blah
+  }
+  overload function new(r:Int, g:Int, b:Int) 
+}
+
 ```
 would become
 ```hx
-function new (r:Int, g:Int, b:Int, a:Int)
-static function new_int_int_int(r:Int, g:Int, b:Int):Color
+class Parent {
+
+  static function hx__new_Int_Int_Int(inst:Parent, r:Int, g:Int, b:Int):Void
+  static function hx__new_Array_Float(inst:Parent, arr:Array<Int>):Void
+  // Types aren't compatible thus dynamic
+  function new(...rest:Dynamic) {
+      switch (rest.length) {
+          case 1: 
+              hx__new_Array_Float(this, rest[0]);
+          case 3: 
+              hx__new_Int_Int_Int(this, rest[0], rest[1], rest[2]);
+      }    
+  }
+  
+}
+
+class Child extends Parent{
+    static function hx__new_Int_Int_Int_Int(inst:Child, r:Int, g:Int, b:Int, a:Int):Void {
+        // dynamic dispatch isn't required here as we know our parent
+        Parent.new_Array_Float(inst, [r, g, b, a]);
+    }
+    static function hx__new_Int_Int_Int(inst:Child, r:Int, g:Int, b:Int):Void
+    // all args are int thus we don't need to make it dynamic
+    function new(...rest:Int) {
+        switch (rest.length) {
+            case 3: 
+                hx__new_Int_Int_Int(this, rest[0], rest[1], rest[2]);
+            case 4: 
+                hx__new_Int_Int_Int_Int(this, rest[0], rest[1], rest[2], rest[3]);
+        }
+    }
+    
+}
 ```
 
-For all type signatures, it's calculated by lowercasing the types for each in the args and the return type, then placing them in order with underscores, with return type at the end.
+When overriding a function that has overloads, the child function must be overloaded. Any parent functions not covered by the child is exposed.
+
+For all type signatures, it's calculated by stringing the argument types together with underscores.
 The signature stringification can be changed a bit (especially considering type parameters) but it doesn't matter that much as long as it's unique. Generic Classes also apply like this, but using the given name. 
+If two classes have the same name but are in different packages, they become fully qualified if the function names would overlap.
+
+```
+overload function fromVector3(v3:bulby.Vector3)
+overload function fromVector3(v3:peote.Vector3)
+```
+becomes
+```
+function hx__fromVector3_bulby_Vector3(v3:bulby.Vector3)
+function hx__fromVector3_peote_Vector3(v3:peote.Vector3)
+function fromVector3(u0:Dynamic) {
+    switch (Type.typeof(u0)) {
+        case TClass(bulby.Vector3): 
+            hx__fromVector3_bulby_Vector3(u0);
+        case TClass(peote.Vector3): 
+            hx__fromVector3_peote_Vector3(u0);
+    }
+}
+```
+
 
 Interfaces must not be allowed to have overloads, and this precludes the class implementing the function from overloading the function. When using reflection, getProperty must be used. Return types being changed does not count as a different type signature, and will emit an error. 
 
