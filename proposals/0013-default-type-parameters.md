@@ -1,7 +1,8 @@
 # Default type parameters
 
-* Proposal: [HXP-NNNN](NNNN-filename.md)
+* Proposal: [HXP-0013](0013-default-type-parameters.md)
 * Author: [Ben Merckx](https://github.com/benmerckx)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10483)
 
 ## Introduction
 

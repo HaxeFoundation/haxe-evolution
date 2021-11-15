@@ -1,7 +1,8 @@
 # Self access for abstracts
 
-* Proposal: [HXP-NNNN](NNNN-abstract-self-ident.md)
+* Proposal: [HXP-0014](0014-self-access-for-abstracts.md)
 * Author: [Mark Knol](https://github.com/markknol)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10482)
 
 ## Introduction
 

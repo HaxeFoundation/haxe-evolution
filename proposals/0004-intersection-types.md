@@ -1,4 +1,4 @@
-# Intersection Types
+# Intersection types
 
 * Proposal: [HXP-0004](0004-intersection-types.md)
 * Author: [Simn](https://github.com/simn)

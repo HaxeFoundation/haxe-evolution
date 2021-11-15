@@ -1,4 +1,4 @@
-# Inline Markup
+# Inline markup
 
 * Proposal: [HXP-0006](0006-inline-markup.md)
 * Author: [Juraj Kirchheim](https://github.com/back2dos)

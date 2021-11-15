@@ -1,7 +1,8 @@
 # Null coalescing operator
 
-* Proposal: [HXP-0000](0000-null-coalescing.md)
+* Proposal: [HXP-0016](0016-null-coalescing-operator.md)
 * Author: [RblSb](https://github.com/RblSb)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10478)
 
 ## Introduction
 

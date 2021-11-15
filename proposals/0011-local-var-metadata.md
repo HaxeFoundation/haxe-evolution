@@ -1,4 +1,4 @@
-# Local Variable Metadata Syntax
+# Local bariable metadata syntax
 
 * Proposal: [HXP-0011](0011-local-var-metadata.md)
 * Author: [Peter Achberger](https://github.com/antriel)

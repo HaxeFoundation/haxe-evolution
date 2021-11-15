@@ -1,7 +1,8 @@
 # Local static variables
 
-* Proposal: [HXP-0000](0000-local-static.md)
+* Proposal: [HXP-0015](0015-local-static-variables.md)
 * Author: [YellowAfterlife](https://github.com/yellowafterlife)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10477)
 
 ## Introduction
 

@@ -1,8 +1,8 @@
+# Null-safe navigation operator
 
-# Safe Navigation Operator
-
-* Proposal: [HXP-NNNN](NNNN-filename.md)
+* Proposal: [HXP-0017](0017-null-safe-navigation-operator.md)
 * Author: [Robert Borghese](https://github.com/RobertBorghese)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10479)
 
 ## Introduction
 

@@ -1,7 +1,8 @@
-# Number Separators
+# Number separators
 
-* Proposal: [0013-number-separator](0013-number-separator.md)
+* Proposal: [HXP-0018](0018-number-separators.md)
 * Author: [Hipreme|Marcelo Silva Nascimento Mancini](https://github.com/MrcSnm)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10480)
 
 ## Introduction
 

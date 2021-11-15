@@ -1,7 +1,8 @@
-# haxe.Int64 Numeric Literal Suffix
+# Numeric literal suffixes
 
-* Proposal: [HXP-0000](0000-int64-iteral-suffix.md)
+* Proposal: [HXP-0019](0019-numeric-literal-suffixes.md)
 * Author: [Aidan Lee](https://github.com/aidan63)
+* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10481)
 
 ## Introduction
 

@@ -2,6 +2,30 @@
 
 This project is for maintaining formal change proposals for Haxe language.
 
+## List of accepted proposals
+
+| # | Name | Author | Status |
+| --- | --- | --- | --- |
+| `0001` | [Any type](proposals/0001-any.md) | [Dan Korostelev](https://github.com/nadako) | implemented in 3.3.0 |
+| `0002` | [Arrow functions](proposals/0002-arrow-functions.md) | [Alexander Kuzmenko](https://github.com/RealyUniqueName) | implemented in 4.0.0 |
+| `0003` | [New function type syntax](proposals/0003-new-function-type.md) | [Dan Korostelev](https://github.com/nadako) | implemented in 4.0.0 |
+| `0004` | [Intersection types](proposals/0004-intersection-types.md) | [Simn](https://github.com/simn) | implemented in 4.0.0 |
+| `0005` | [key => value iteration syntax](proposals/0005-key-value-iter.md) | [Dan Korostelev](https://github.com/nadako) | implemented in 4.0.0 |
+| `0006` | [Inline markup](proposals/0006-inline-markup.md) | [Juraj Kirchheim](https://github.com/back2dos) | implemented in 4.0.0 |
+| `0007` | [Module-level functions and variables](proposals/0007-module-level-funcs.md) | [Dan Korostelev](https://github.com/nadako) | [implemented in Haxe 4.2.0](https://github.com/HaxeFoundation/haxe/pull/8460) |
+| `0008` | [Expression macro method forwarding](proposals/0008-macro-forward.md) | [Dan Korostelev](https://github.com/nadako) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/7453) |
+| `0009` | [Inlining functions at call location](proposals/0009-inline-calls.md) | [YellowAfterlife](https://github.com/yellowafterlife) | implemented in 4.0.0 |
+| `0010` | [New `asys` APIs](proposals/0010-asys.md) | [Aurel Bílý](https://github.com/Aurel300) | [to be implemented](https://github.com/Aurel300/haxe-sys) |
+| `0011` | [Local bariable metadata syntax](proposals/0011-local-var-metadata.md) | [Peter Achberger](https://github.com/antriel) | [implemented in 4.2.0](https://github.com/HaxeFoundation/haxe/issues/9618) |
+| `0012` | [Abstract classes](proposals/0012-abstract-classes.md) | [Aleksandr Kuzmenko](https://github.com/RealyUniqueName) | [implemented in 4.2.0](https://github.com/HaxeFoundation/haxe/pull/9716) |
+| `0013` | [Default type parameters](proposals/0013-default-type-parameters.md) | [Ben Merckx](https://github.com/benmerckx) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10483) |
+| `0014` | [Self access for abstracts](proposals/0014-self-access-for-abstracts.md) | [Mark Knol](https://github.com/markknol) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10482) |
+| `0015` | [Local static variables](proposals/0015-local-static-variables.md) | [YellowAfterlife](https://github.com/yellowafterlife) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10477) |
+| `0016` | [Null coalescing operator](proposals/0016-null-coalescing-operator.md) | [RblSb](https://github.com/RblSb) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10478) |
+| `0017` | [Null-safe navigation operator](proposals/0017-null-safe-navigation-operator.md) | [Robert Borghese](https://github.com/RobertBorghese) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10479) |
+| `0018` | [Number separators](proposals/0018-number-separators.md) | [Marcelo Silva Nascimento Mancini](https://github.com/MrcSnm) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10480) |
+| `0019` | [Numeric literal suffixes](proposals/0019-numeric-iteral-suffixes.md) | [Aidan Lee](https://github.com/aidan63) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10481) |
+
 ## About proposals
 
 Haxe Proposals (HXP) can be submitted by any Haxe team developer or community member, as long as it's complete and well explained (please see the "How to submit an HXP" section below).

@@ -1,4 +1,4 @@
-# Abstract Classes
+# Abstract classes
 
 * Proposal: [HXP-0012](0012-abstract-classes.md)
 * Author: [Aleksandr Kuzmenko](https://github.com/RealyUniqueName)
