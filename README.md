@@ -18,13 +18,13 @@ This project is for maintaining formal change proposals for Haxe language.
 | `0010` | [New `asys` APIs](proposals/0010-asys.md) | [Aurel Bílý](https://github.com/Aurel300) | [to be implemented](https://github.com/Aurel300/haxe-sys) |
 | `0011` | [Local bariable metadata syntax](proposals/0011-local-var-metadata.md) | [Peter Achberger](https://github.com/antriel) | [implemented in 4.2.0](https://github.com/HaxeFoundation/haxe/issues/9618) |
 | `0012` | [Abstract classes](proposals/0012-abstract-classes.md) | [Aleksandr Kuzmenko](https://github.com/RealyUniqueName) | [implemented in 4.2.0](https://github.com/HaxeFoundation/haxe/pull/9716) |
-| `0013` | [Default type parameters](proposals/0013-default-type-parameters.md) | [Ben Merckx](https://github.com/benmerckx) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10483) |
-| `0014` | [Self access for abstracts](proposals/0014-self-access-for-abstracts.md) | [Mark Knol](https://github.com/markknol) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10482) |
-| `0015` | [Local static variables](proposals/0015-local-static-variables.md) | [YellowAfterlife](https://github.com/yellowafterlife) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10477) |
-| `0016` | [Null coalescing operator](proposals/0016-null-coalescing-operator.md) | [RblSb](https://github.com/RblSb) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10478) |
-| `0017` | [Null-safe navigation operator](proposals/0017-null-safe-navigation-operator.md) | [Robert Borghese](https://github.com/RobertBorghese) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10479) |
-| `0018` | [Number separators](proposals/0018-number-separators.md) | [Marcelo Silva Nascimento Mancini](https://github.com/MrcSnm) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10480) |
-| `0019` | [Numeric literal suffixes](proposals/0019-numeric-iteral-suffixes.md) | [Aidan Lee](https://github.com/aidan63) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/10481) |
+| `0013` | [Default type parameters](proposals/0013-default-type-parameters.md) | [Ben Merckx](https://github.com/benmerckx) | [implemented in 4.3.0](https://github.com/HaxeFoundation/haxe/pull/10518) |
+| `0014` | [Self access for abstracts](proposals/0014-self-access-for-abstracts.md) | [Mark Knol](https://github.com/markknol) | [implemented in 4.3.0](https://github.com/HaxeFoundation/haxe/pull/10513) |
+| `0015` | [Local static variables](proposals/0015-local-static-variables.md) | [YellowAfterlife](https://github.com/yellowafterlife) | [implemented in 4.3.0](https://github.com/HaxeFoundation/haxe/pull/10555) |
+| `0016` | [Null coalescing operator](proposals/0016-null-coalescing-operator.md) | [RblSb](https://github.com/RblSb) | [implemented in 4.3.0](https://github.com/HaxeFoundation/haxe/pull/10428) |
+| `0017` | [Null-safe navigation operator](proposals/0017-null-safe-navigation-operator.md) | [Robert Borghese](https://github.com/RobertBorghese) | [implemented in 4.3.0](https://github.com/HaxeFoundation/haxe/pull/10561) |
+| `0018` | [Number separators](proposals/0018-number-separators.md) | [Marcelo Silva Nascimento Mancini](https://github.com/MrcSnm) | [implemented in 4.3.0](https://github.com/HaxeFoundation/haxe/pull/10514) |
+| `0019` | [Numeric literal suffixes](proposals/0019-numeric-iteral-suffixes.md) | [Aidan Lee](https://github.com/aidan63) | [implemented in 4.3.0](https://github.com/HaxeFoundation/haxe/pull/10493) |
 
 ## About proposals
 
