@@ -95,7 +95,7 @@ function set_name(value:Type) return _name = value;
 
 ### Behaviour
 
-* A property will always create functions for getters and setters because every setter and getter can be overriden.
+* A property will always create internally functions for getters and setters because every setter and getter can be overridden.
     ```haxe
     class A
     {
