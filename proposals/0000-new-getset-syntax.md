@@ -294,3 +294,39 @@ We remove the parenthesis and get a syntax similar to the C# property syntax but
     }
     ```
     Does the `property` backing field disappear in the `B` class?
+
+* Should we allow only setters without getters like now? (The current property syntax allows making a property with only a setter)
+    ```haxe
+    class A
+    {
+        public var property:Int { set; } // Error here?
+    }
+
+    function main()
+    {
+        var a = new A();
+        a.property = 20;
+
+        // trace(a.property); // or Error here?
+    }
+    ```
+    ```haxe
+    // The current property syntax allows making only a setter without a getter
+
+    class A
+    {
+        @:isVar
+        public var currentProperty(never, set):Int;
+
+        function set_currentProperty(value:Int):Int return currentProperty = value;
+    }
+
+    function main()
+    {
+        var a = new A();
+        a.currentProperty = 20;
+
+        // trace(a.currentProperty); // Error
+    }
+    ```
+
