@@ -220,10 +220,16 @@ function set_name(value:Type) return _name = value;
     }
     ```
 * A getter or setter without a function implementation and with the `final` modifier in a property should behave like a normal field access, also, it cannot be overridden (like a final function)
+    - But it'll still create a function to access it from the parent class
     ```haxe
-    class A
+    class X
     {
-        public var property:Int { final get; final set; }
+        public var property:Int { get; set; }
+    }
+
+    class A extends X
+    {
+        public var property:Int { override final get; override final set; }
     }
 
     /*
@@ -235,9 +241,12 @@ function set_name(value:Type) return _name = value;
     function main()
     {
         var a = new A();
-        a.property = 20; // Normal field access because of the final modifier without function implementation
+        var x:X = a;
 
-        trace(a.property); // Output: 20
+        a.property = 20; // Normal field access because of the final modifier without function implementation
+        x.property = 30; // Function call. Maybe the compiler could optimize it sometimes, but it should call the getter instead of direct field access
+
+        trace(a.property); // Output: 30
     }
     ```
 * A property can be declared in an `interface`, but it cannot have any implementation, classes that extend that interface must implement the property (As an Autoproperty or as a raw property)
