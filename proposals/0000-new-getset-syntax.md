@@ -219,34 +219,30 @@ function set_name(value:Type) return _name = value;
         trace(A.property); // Output: 20
     }
     ```
-* A getter or setter without a function implementation and with the `final` modifier in a property should behave like a normal field access, also, it cannot be overridden (like a final function)
-    - But it'll still create a function to access it from the parent class
+* A getter or setter without a function implementation and with the `final` modifier in a property should behave like a normal field access.
     ```haxe
-    class X
+    class A
     {
-        public var property:Int { get; set; }
+        public var property:Int { final get; set; }
     }
 
-    class A extends X
-    {
-        public var property:Int { override final get; override final set; }
-    }
-
-    /*
     class B extends A
     {
-        public var property:Int { override get -> {}; override set -> {} } // Error, A final getter/setter with the final modifier cannot be overridden.
+        @:isVar
+        public var property:Int { override set -> property = value; } // Pointless, but we're just showing what can be done or not
     }
-    */
+    
     function main()
     {
         var a = new A();
-        var x:X = a;
+        var b:B = a;
 
-        a.property = 20; // Normal field access because of the final modifier without function implementation
-        x.property = 30; // Function call. Maybe the compiler could optimize it sometimes, but it should call the getter instead of direct field access
+        a.property = 20;
 
-        trace(a.property); // Output: 30
+        trace(a.property); // Normal field access because of the final modifier without function implementation
+        b.property = 30; // This would call the function of the B class
+
+        trace(b.property); // Still normal field access
     }
     ```
 * A property can be declared in an `interface`, but it cannot have any implementation, classes that extend that interface must implement the property (As an Autoproperty or as a raw property)
