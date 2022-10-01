@@ -5,7 +5,7 @@
 
 ## Introduction
 
-`@:trackCaller` metadata + `haxe.Magic.callLocation()` as a replacement for `?pos:haxe.PosInfos`.
+`@:trackCaller` metadata + `haxe.Magic.callerLocation()` as a replacement for `?pos:haxe.PosInfos`.
 
 ## Motivation
 
@@ -16,7 +16,7 @@ The magic `?pos:haxe.PosInfos` argument does not work with rest arguments.
 ```hx
 @:trackCaller
 function foo() {
-	trace(haxe.Magic.callLocation());
+	trace(haxe.Magic.callerLocation());
 }
 
 foo();
@@ -33,7 +33,7 @@ When rest arguments are involved, the exact implementation depends on how rest a
 
 `var closureOfTrackCallerFun = foo` turns into `var closureOfTrackCallerFun = foo.bind(haxe.Magic.currentLocation())`.
 
-`haxe.Magic.callLocation()` returns the position of the last call of a `@:trackCaller` function in a non-trackcaller functions.
+`haxe.Magic.callerLocation()` returns the position of the last call of a `@:trackCaller` function in a non-trackcaller functions.
 
 For example:
 ```hx
@@ -44,7 +44,7 @@ function bar() {
 
 @:trackCaller
 function foo() {
-	trace(haxe.Magic.callLocation());
+	trace(haxe.Magic.callerLocation());
 }
 
 // turns into
@@ -70,11 +70,11 @@ None.
 
 The magic `?pos:haxe.PosInfos` argument could be made even more magic by being allowed after Rest arguments.
 
-Walking up the stack in `callLocation` is also a possibility, but would break when inlining is involved.
+Walking up the stack in `callerLocation` is also a possibility, but would break when inlining is involved.
 It also requires generation of some kind of debug info.
 
-Make the compiler allow `callLocation` in default arguments eg `pos:haxe.PosInfos = callLocation()`.
-Would break in the case `(pos:haxe.PosInfos = callLocation(), ...rest:haxe.PosInfos)`.
+Make the compiler allow `callerLocation` in default arguments eg `pos:haxe.PosInfos = callerLocation()`.
+Would break in the case `(pos:haxe.PosInfos = callerLocation(), ...rest:haxe.PosInfos)`.
 
 Make `@:callerLocation` meta on default argument eg `@:callerLocation pos:haxe.PosInfos = cast null`.
 Would break in the case `(@:callerLocation pos:haxe.PosInfos = cast null, ...rest:haxe.PosInfos)` unless magic semantics are given to the default argument when annotated with `@:callerLocation`.
@@ -83,6 +83,6 @@ Would break in the case `(@:callerLocation pos:haxe.PosInfos = cast null, ...res
 
 ## Unresolved questions
 
-Where to put the `callLocation` function.
+`haxe.Magic` is a bit too magic. Where should the `callerLocation` function live?
 
 How this would work with interfaces and abstract/overriden methods.
