@@ -73,6 +73,15 @@ None.
 
 The magic `?pos:haxe.PosInfos` argument could be made even more magic by being allowed after Rest arguments.
 
+Walking up the stack in `callLocation` is also a possibility, but would break when inlining is involved.
+It also requires generation of some kind of debug info.
+
+Make the compiler allow `callLocation` in default arguments eg `pos:haxe.PosInfos = callLocation()`.
+Would break in the case `(pos:haxe.PosInfos = callLocation(), ...rest:haxe.PosInfos)`.
+
+Make `@:callerLocation` meta on default argument eg `@:callerLocation pos:haxe.PosInfos = cast null`.
+Would break in the case `(@:callerLocation pos:haxe.PosInfos = cast null, ...rest:haxe.PosInfos)` unless magic semantics are given to the default argument when annoated with `@:callerLocation`.
+
 ## Opening possibilities
 
 ## Unresolved questions
