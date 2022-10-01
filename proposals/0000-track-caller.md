@@ -27,11 +27,11 @@ function foo(caller:haxe.PosInfos) {
 	trace(caller);
 }
 
-foo(haxe.Magic.currentLocation());
+foo($currentLocation);
 ```
-When rest arguments are involved, the exact implementation depends on how rest arguments are implemented.
+When rest arguments are involved, the exact implementation may be different (possibly depending on how they are implemented on the target).
 
-`var closureOfTrackCallerFun = foo` turns into `var closureOfTrackCallerFun = foo.bind(haxe.Magic.currentLocation())`.
+`var closureOfTrackCallerFun = foo` turns into `var closureOfTrackCallerFun = foo.bind($currentLocation)`.
 
 `haxe.Magic.callerLocation()` returns the position of the last call of a `@:trackCaller` function in a non-trackcaller functions.
 
