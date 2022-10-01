@@ -34,6 +34,7 @@ When rest arguments are involved, the exact implementation may be different (pos
 `var closureOfTrackCallerFun = foo` turns into `var closureOfTrackCallerFun = foo.bind($currentLocation)`.
 
 `haxe.Magic.callerLocation()` returns the position of the last call of a `@:trackCaller` function in a non-trackcaller functions.
+This behaviour could be then be turned off by using `@:trackCaller(noPropagate)`.
 
 For example:
 ```hx
@@ -81,7 +82,7 @@ Would break in the case `(@:callerLocation pos:haxe.PosInfos = cast null, ...res
 
 ## Opening possibilities
 
-Turn `trace` into `@:trackCaller function trace(...args:Dynamic)`.
+Turn `trace` into `@:trackCaller(noPropagate) function trace(...args:Dynamic)`.
 Then the only magic left would be auto-importing it everywhere.
 
 ## Unresolved questions
