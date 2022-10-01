@@ -77,7 +77,7 @@ Make the compiler allow `callLocation` in default arguments eg `pos:haxe.PosInfo
 Would break in the case `(pos:haxe.PosInfos = callLocation(), ...rest:haxe.PosInfos)`.
 
 Make `@:callerLocation` meta on default argument eg `@:callerLocation pos:haxe.PosInfos = cast null`.
-Would break in the case `(@:callerLocation pos:haxe.PosInfos = cast null, ...rest:haxe.PosInfos)` unless magic semantics are given to the default argument when annoated with `@:callerLocation`.
+Would break in the case `(@:callerLocation pos:haxe.PosInfos = cast null, ...rest:haxe.PosInfos)` unless magic semantics are given to the default argument when annotated with `@:callerLocation`.
 
 ## Opening possibilities
 
