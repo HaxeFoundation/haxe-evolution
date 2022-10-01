@@ -81,6 +81,9 @@ Would break in the case `(@:callerLocation pos:haxe.PosInfos = cast null, ...res
 
 ## Opening possibilities
 
+Turn `trace` into `@:trackCaller function trace(...args:Dynamic)`.
+Then the only magic left would be auto-importing it everywhere.
+
 ## Unresolved questions
 
 `haxe.Magic` is a bit too magic. Where should the `callerLocation` function live?
