@@ -31,9 +31,6 @@ foo(haxe.Magic.currentLocation());
 ```
 When rest arguments are involved, the exact implementation depends on how rest arguments are implemented.
 
-When `@:trackCaller` is applied to interface methods, abstract methods or methods that will be overriden,
-the implementors/overriders inherit the attribute.
-
 `var closureOfTrackCallerFun = foo` turns into `var closureOfTrackCallerFun = foo.bind(haxe.Magic.currentLocation())`.
 
 `haxe.Magic.callLocation()` returns the position of the last call of a `@:trackCaller` function in a non-trackcaller functions.
@@ -87,3 +84,5 @@ Would break in the case `(@:callerLocation pos:haxe.PosInfos = cast null, ...res
 ## Unresolved questions
 
 Where to put the `callLocation` function.
+
+How this would work with interfaces and abstract/overriden methods.
