@@ -87,6 +87,6 @@ Then the only magic left would be auto-importing it everywhere.
 
 ## Unresolved questions
 
-`haxe.Magic` is a bit too magic. Where should the `callerLocation` function live?
+`haxe.Magic` is a bit too magic. Where should the `callerLocation` function live? A module-level function in `haxe.PosInfos`?
 
 How this would work with interfaces and abstract/overriden methods.
