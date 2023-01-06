@@ -147,6 +147,16 @@ See Motivation.
 
 ## Unresolved questions
 
-Perhaps instead of using `TrailingExpr`, the trailing block can be used on any macro with an `Expr` as the final argument?
+### Abstract vs Typedef
 
-Maybe the trailing expression can be used in normal functions, but when passing a function for the last argument similar to Kotlin?
+Instead of a typedef, `TrailingExpr` could be an abstract? That way some helpful functions can be provided:
+```haxe
+abstract TrailingExpr(Expr) to Expr {
+    // TrailingExpr is always an EBlock, so unwrap and return its contents
+    public function contents(): Array<Expr> { ... }
+}
+```
+
+### Trailing Lambdas
+
+Perhaps trailing blocks should function as last argument lambdas for normal functions, similar to how Kotlin works?
