@@ -160,3 +160,44 @@ Alternatives will be using Int64 literal suffix and number separator
 
 
 ## Unresolved questions
+
+### **1) How to convert from one integer type to another?**
+
+There are at least two possible options:
+- **Using а prefix** - Some of the lanuages use this as a solution. For example , C/C++ use  long long,  Java/C# uses  long . Sot it is possible to introduce new prefix in Haxe, like  (i64) , (i64_t) , (long) 
+Example:
+```
+var one:Int = 1;
+var  mask:Int64 = (i64)one<<32; //using prefix (i64)
+```
+- **Implicit conversion based on the declared type**
+For example:
+```
+var one:Int = 1;
+var  mask:Int64 = one<<32; // will return 0x100000000
+```
+As the ```mask``` expects Int64, the above code will convert ```one``` to Int64 and the result will be  4294967296 (0x100000000) .
+But if we have:
+```
+var one:Int = 1;
+var mask = one<<32; //result is 1, as mask is Int
+```
+The var ```mask``` will be converted to Int ( since we didn't specify the type and the other two operands are Int) and the result will be 1.
+This solution is much clearer and replaces the need for a prefix with a declaration of the type of the result variable.
+### **2) Int vs Int32**
+For C,C++,Java,C# the Int type hас  expected overflow behavior. For others, like  Javascript, Php, Python  , the numeric type defaults to 64-bit (or no limit), which leads to wrong results when the user expects an overflow.
+So this will for example return 1 (or 0 if the static analyzer is on) for C/C++,Java,C#,Javascript, but 4294967296 in php (for 64bit system),Python.
+```haxe
+ var mask:Int = 1 <<32;
+```
+Note: javascript returns a correct value for bitwise operations
+
+Another example will return a different value for a javascript :
+```haxe
+var m:Int = 2147483647*2; 
+```
+It will return 4294967294 for Javascript , Python, Php  and  -2 for C,C++,Java and C#
+This inconsistency between targets could lead to unexpected results. Possible solutions could be:
+- Keeping things as they are now - separate Int and Int32 classes
+- Set Int to have the same behavior as Int32.
+This can lead to a performance loss (in javascript and possibly in python and php) for heavy arithmetic operations, but such operations will probably expect proper overflow behavior and use Int32 anyway.
