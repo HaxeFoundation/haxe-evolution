@@ -1,4 +1,5 @@
 
+  
 # Integer data types
 
 * Proposal: [HXP-NNNN](NNNN-filename.md)
@@ -184,7 +185,24 @@ var mask = one<<32; //result is 1, as mask is Int
 ```
 The var ```mask``` will be converted to Int ( since we didn't specify the type and the other two operands are Int) and the result will be 1.
 This solution is much clearer and replaces the need for a prefix with a declaration of the type of the result variable.
-### **2) Int vs Int32**
+### **2) Conversion from Float to Int**
+The division operation of two integers would return a Float .
+In Haxe that is true for the Int type, but division of Int64 will return Int64
+To convert to int the result of two int operands we should use ``Math.floor()`` as we not have a prefix ```(int)```,```(long)``` or implicit conversion between types.
+ One solution could be to use type promotion similiar to C , where if operand on the right hand side is of lower rank type then it becomes the type of left hand side operand  as it have  higher rank.
+A hierarchy of this type can be: ```Int < UInt < Int64 < UInt64 < Float```
+For example , if we have:
+```haxe
+    var operand1 = 57;
+    var operand2 = 6;
+    var result:Int = operand1/operand2; // it will return 9
+    
+    // Same for Int64 
+    var operand1:Int64 = 57_i64;
+    var operand2:Int64 = 6_i64;
+    var result:Int64 = operand1/operand2; // 9 
+```
+### **3) Int vs Int32**
 For C,C++,Java,C# the Int type hас  expected overflow behavior. For others, like  Javascript, Php, Python  , the numeric type defaults to 64-bit (or no limit), which leads to wrong results when the user expects an overflow.
 So this will for example return 1 (or 0 if the static analyzer is on) for C/C++,Java,C#,Javascript, but 4294967296 in php (for 64bit system),Python.
 ```haxe
