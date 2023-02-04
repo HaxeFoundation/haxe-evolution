@@ -187,10 +187,12 @@ The var ```mask``` will be converted to Int ( since we didn't specify the type a
 This solution is much clearer and replaces the need for a prefix with a declaration of the type of the result variable.
 ### **2) Conversion from Float to Int**
 The division operation of two integers would return a Float .
-In Haxe that is true for the Int type, but division of Int64 will return Int64
+In Haxe that is true for the Int type, but division of Int64 will return Int64 .
 To convert to int the result of two int operands we should use ``Math.floor()`` as we not have a prefix ```(int)```,```(long)``` or implicit conversion between types.
  One solution could be to use type promotion similiar to C , where if operand on the right hand side is of lower rank type then it becomes the type of left hand side operand  as it have  higher rank.
+ 
 A hierarchy of this type can be: ```Int < UInt < Int64 < UInt64 < Float```
+
 For example , if we have:
 ```haxe
     var operand1 = 57;
@@ -202,7 +204,17 @@ For example , if we have:
     var operand2:Int64 = 6_i64;
     var result:Int64 = operand1/operand2; // 9 
 ```
-### **3) Int vs Int32**
+### **3) How to convert from signed to unsigned type and vice versa?**
+At the current moment conversion from Int to Int64 ( using ```Int64.ofInt()```) is sign-extended , so if you want to keep Int64 without sign we should use ```Int64.make(0x0, <my_int_number>) ``` or a mask ```Int64.and(<my_int_number>,Int64.make(0x0,0xFFFFFFFF))``` . The other way will be to convert Int to UInt and after that to Int64 . 
+
+Maybe a new prefix could be introduce for converting Int to Int64 ( no sign-extended), which will be similiar to UInt to Int64 conversion.
+
+Example , if have variable n = -6, we should have :
+| Let n=-6 | Int | UInt      | Int64 <br> (sign-extended) | Int64 <br> (no sign-extended) | UInt64 | Float |
+|----------|-----|-----------|---------------------|------------------------|--------|-------|
+|Int       | -6  | 4294967290|   -6                  |     4294967290                   |   4294967290     |   -6.0    |
+
+### **4) Int vs Int32**
 For C,C++,Java,C# the Int type hас  expected overflow behavior. For others, like  Javascript, Php, Python  , the numeric type defaults to 64-bit (or no limit), which leads to wrong results when the user expects an overflow.
 So this will for example return 1 (or 0 if the static analyzer is on) for C/C++,Java,C#,Javascript, but 4294967296 in php (for 64bit system),Python.
 ```haxe
