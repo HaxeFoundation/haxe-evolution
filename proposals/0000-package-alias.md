@@ -17,10 +17,6 @@ instead of a lexical reference can be useful for giving an idea of what a refere
 
 ## Detailed design
 
-Describe the proposed design in details the way language user can understand
-and compiler developer can implement. Show corner cases, provide usage examples,
-describe how this solution is better than current workarounds.
-
 Allow a `.*` sequence to appear in an aliasing `import` pragma before the `in` or `as` reserved word. Here is an example:
 
 ```haxe
