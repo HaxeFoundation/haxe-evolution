@@ -1,20 +1,81 @@
-# ::enter feature name here::
+# ::The `throws` keyword::
 
-* Proposal: [HXP-NNNN](NNNN-filename.md)
-* Author: [Haxe Developer](https://github.com/haxedev)
+* Proposal: [HXP-0000](0000-throws-keyword.md)
+* Author: [atpx8](https://github.com/SomeoneSom)
 
 ## Introduction
 
-Short description of the proposed feature. Keep it short, so the reader
-can quickly get what's it all about.
+Introduce typed and explicit error throwing via the `throws` keyword.
+
+Based off of [this TypeScript suggestion.](https://github.com/microsoft/TypeScript/issues/13219)
 
 ## Motivation
 
-Describe the problems addressed by this feature. If a similar effect
-can be achieved without it with some workarounds, describe the drawbacks
-of the workaround. If it's something completely new, show how it will
-help developers write better Haxe code or how it will improve the generation
-of target code by the compiler.
+Currently, when writing a function that can error, or dealing with functions
+that can error, theres no easy way to signify or check that a function can error
+and the type of the error it can throw.
+
+While this effect can be achieved through doc comments, most libraries are not
+extensively documented, and those that are are not documented in a standardized
+matter, potentially leading to confusion. Comments also dont force the developer
+to stay true to what the function should throw as an error, if it even throws an
+error at all.
+
+Let's take this piece of code as an example.
+
+Option 1. "Hidden" catch
+```haxe
+public static function maxOfArray<T>(arr:Array<T>):T {
+    if (arr.length == 0) {
+        throw "Array must have an element in it!";
+    }
+    // ...
+}
+```
+As you can see, its not obvious that this function can error from a first glance.
+This can lead to unexpected panics down the line when an unsuspecting programmer
+accidentally passes an empty array to this function.
+
+Option 2. Doc comments
+```haxe
+/**
+    This function finds the maximum element of an array.
+
+    @param arr The array in question.
+    @return The maximum element of the array.
+    @throws A `String` if the array is empty.
+**/
+public static function maxOfArray<T>(arr:Array<T>):T {
+    if (arr.length == 0) {
+        throw "Array must have an element in it!";
+    }
+    // ...
+}
+```
+While this is definitely better, and a valid solution, its also still not great.
+For one, while it would be great for every library to have nice and detailed doc
+comments, that simply isnt the case for most libraries. The bigger downside though
+is that a comment is not an actual type check. It could be the case that this function
+throws something different and the comment was never updated, or that the function
+doesn't throw anything at all.
+
+Option 3. The `throws` keyword
+```haxe
+public static function maxOfArray<T>(arr:Array<T>):T throws String {
+    if (arr.length == 0) {
+        throw "Array must have an element in it!";
+    }
+    // ...
+}
+```
+This is what I am proposing. The main two differences between this approach and a doc
+comment is that:
+1. The `throws` keyword is much easier to code, therefore having easier adoption.
+2. The `throws` keyword is more standard than a doc comment.
+3. The `throws` keyword forces developers to stay true to their word via a type check.
+
+The `throws` keyword can also error if there is no reachable `throw` statement in the function
+itself, in order to keep the keyword meaningful.
 
 ## Detailed design
 
@@ -24,23 +85,18 @@ describe how this solution is better than current workarounds.
 
 ## Impact on existing code
 
-What impact this change will have on existing code? Will it break compilation?
-Will it compile, but break in run-time? How easy it is to migrate existing Haxe code?
+If the `throws` keyword is made mandatory, then it would break any older code that
+uses `throw`. However, migration would be easy, as it's essentially just a
+return type but for errors.
 
 ## Drawbacks
 
-Describe the drawbacks of the proposed design worth consideration. This doesn't include
-breaking changes, since that's described in the previous section.
+This syntax is somewhat unconventional, and may take some time getting used to.
 
 ## Alternatives
 
-What alternatives have you considered to address the same problem, why the proposed solution is better?
-
-## Opening possibilities
-
-Does this change make other future changes possible or easier? Leave this section out if the proposed change
-is completely self-contained.
-
-## Unresolved questions
-
-Which parts of the design in question is still to be determined?
+An alternative would be implementing something similar to Rust's `Result` enum.
+However, since Haxe already has `catch` and `throw`, implementing this would
+make it so there are to seperate ways to do the same thing, and it would confuse
+a lot of the users of the language, while this takes the existing method
+for error throwing and improves on it.
