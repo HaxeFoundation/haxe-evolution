@@ -1,4 +1,4 @@
-# ::The `throws` keyword::
+# The `throws` keyword
 
 * Proposal: [HXP-0000](0000-throws-keyword.md)
 * Author: [atpx8](https://github.com/SomeoneSom)
