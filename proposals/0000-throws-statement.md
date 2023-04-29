@@ -150,7 +150,7 @@ as it is somewhat unconventional.
 
 An alternative would be implementing something similar to Rust's `Result` enum.
 However, since Haxe already has `catch` and `throw`, implementing this would
-make it so there are to seperate ways to do the same thing, and it would confuse
+make it so there are two seperate ways to do the same thing, and it would confuse
 a lot of the users of the language, while this takes the existing method
 for error throwing and improves on it.
 
