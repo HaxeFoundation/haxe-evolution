@@ -1,13 +1,13 @@
-# The `throws` keyword
+# The `throws` statement
 
-* Proposal: [HXP-0000](0000-throws-keyword.md)
+* Proposal: [HXP-0000](0000-throws-statement.md)
 * Author: [atpx8](https://github.com/SomeoneSom)
 
 ## Introduction
 
-Introduce typed and explicit error throwing via the `throws` keyword.
+Introduce typed and explicit error throwing via the `throws` statement.
 
-Based off of the Java keyword of the same name.
+Based off of the Java keyword and statement of the same name.
 
 ## Motivation
 
@@ -22,6 +22,15 @@ to stay true to what the function should throw as an error, if it even throws an
 error at all.
 
 Let's take this piece of code as an example.
+```haxe
+public static function maxOfArray<T>(arr:Array<T>):T {
+    // ...
+}
+```
+
+For the sake of example, we'll add an error to this function, that will throw
+an exception when `arr` has a length of 0, and try to communicate this to the
+end user.
 
 Option 1. "Hidden" catch
 ```haxe
@@ -59,7 +68,7 @@ is that a comment is not an actual type check. It could be the case that this fu
 throws something different and the comment was never updated, or that the function
 does not throw anything at all.
 
-Option 3. The `throws` keyword
+Option 3. The `throws` statement
 ```haxe
 public static function maxOfArray<T>(arr:Array<T>):T throws haxe.ValueException {
     if (arr.length == 0) {
@@ -68,8 +77,8 @@ public static function maxOfArray<T>(arr:Array<T>):T throws haxe.ValueException 
     // ...
 }
 ```
-This is what I am proposing. The `throws` keyword (and by extension, the `throws` statement)
-has quite a few advantages over a doc comment.
+This is what I am proposing. Having a new keyword and statement for this has quite
+a few advantages over a doc comment.
 
 - Using this new statement comes with much less baggage, as this is essentially just adding
 a second return type, versus having to write detailed documentation. This can lead to easier adoption.
@@ -84,6 +93,11 @@ such safeguards in place.
 The `throws` statement should come after the return type and before the opening bracket
 of the function code. For arrow functions, it should come after the arguments and before
 the arrow.
+
+```haxe
+function example() throws haxe.Exception {/* ... */}
+() throws haxe.Exception => {/* ... */}
+```
 
 Implementing this would require adding another optional field to `haxe.macro.Expr.Function`.
 
@@ -123,13 +137,14 @@ function example() throws haxe.ValueException {throw new haxe.Exception("")} // 
 
 ## Impact on existing code
 
-Since the `throws` keyword is not mandatory for function that error, this should have
+Since the `throws` statement is not mandatory for function that error, this should have
 no impact on existing code. However, if it eventually becomes mandatory, it would
 be a major breaking change.
 
 ## Drawbacks
 
-For Haxe coders not familiar with Java, this syntax may take some time getting used to.
+For Haxe coders not familiar with Java, this syntax may take some time getting used to,
+as it is somewhat unconventional.
 
 ## Alternatives
 
@@ -141,6 +156,6 @@ for error throwing and improves on it.
 
 ## Unresolved questions
 
-It is unclear whether this new keyword should allow for multiple error types, like it does
+It is unclear whether this new statement should allow for multiple error types, like it does
 in Java. However, this might require an overhaul of the type system, as to my knowledge, it
 is currently not equipped to handle a possibility of one of multiple types at the moment.
