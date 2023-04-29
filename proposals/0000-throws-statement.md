@@ -99,8 +99,6 @@ function example() throws haxe.Exception {/* ... */}
 () throws haxe.Exception => {/* ... */}
 ```
 
-Implementing this would require adding another optional field to `haxe.macro.Expr.Function`.
-
 The `throws` statement can be implemented without any type hint. In this case, it defaults
 to `haxe.Exception`.
 ```haxe
@@ -134,6 +132,8 @@ a type error should be thrown.
 ```haxe
 function example() throws haxe.ValueException {throw new haxe.Exception("")} // error: haxe.Exception should be haxe.ValueException
 ```
+
+Implementing this would require adding another optional field to `haxe.macro.Expr.Function`.
 
 ## Impact on existing code
 
