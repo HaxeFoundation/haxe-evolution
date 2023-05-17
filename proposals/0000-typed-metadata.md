@@ -8,8 +8,7 @@
 
 # Introduction
 
-A typing system for Haxe metadata to validate a its arguments
-and optionally provide compile-time transformations.
+A typing system for Haxe metadata that can validate its arguments and optionally provide compile-time transformations.
 
 ```haxe
 // -----------------------
@@ -57,18 +56,23 @@ class MyClass {
 
 # Motivation
 
-Metadata can be a little tedious to work with sometimes.
+Sometimes metadata can be a little tedious to work with.
 
-When making a program involving Haxe metadata, it's simple to check for
-a specific meta's existance; however, things become way more complicated
-when working with its arguments. A good amount of boilerplate needs
-to be written to check if an argument exists, if it's the desired type,
-and then to convert the `Expr` object into the desired format.
+<ins>Making</ins><br/>
+When writing code using Haxe metadata, it's simple to check for
+a specific metadata's name; however, the arguments are a nightmare.
+A lot of boilerplate needs to be written to:
+ * check if an argument exists
+ * check if it's the desired type
+ * convert from `Expr` to a usable data type
 
-On the other hand using a Haxe library or framework that processes
-metadata can become troublesome, as there is no guarentee the metadata
-is documented properly. Not to mention there is no scoping control with
-metadata, so there may be naming conflicts.
+<ins>Using</ins><br/>
+On the other hand, using someone's Haxe code that processes
+metadata can become troublesome. There is no guarentee the metadata
+is documented properly, and there is no scoping control to prevent
+naming conflicts.
+
+- - -
 
 Typing metadata using function declarations provides a better format
 for finding, documenting, and error checking Haxe metadata.
@@ -86,15 +90,17 @@ There's a lot to cover here. A table has been provided for your convenience:
 | [Haxe API Changes](0000-typed-metadata.md#haxe-api-changes)             | The changes to the Haxe API required. |
 | [New Metadata ](0000-typed-metadata.md#new-metadata)                    | List of new metadata used to configure metadata functions. |
 | [Allowed Argument Types](0000-typed-metadata.md#allowed-argument-types) | List of argument types allowed for a typed metadata. |
-| [Allowed Return Types](0000-typed-metadata.m#allowed-return-types)      | List of return types allowed for a typed metadata. |
-| [Decorators](0000-typed-metadata.md#decorators)                         | The design of metadata that runs code from its function to modify its subject. |
+| [Allowed Return Types](0000-typed-metadata.md#allowed-return-types)      | List of return types allowed for a typed metadata. |
+| [Decorators](0000-typed-metadata.md#decorators)                         | The design of metadata that runs code from its function body. |
+
+&nbsp;
+&nbsp;
 
 ## Basic Rules
 
 A metadata can be declared using a function declaration with the `@:metadata` meta.
 
-Metadata functions are allowed to have no function body, though they can use one
-if desired. This will be covered later (see [Decorators](0000-typed-metadata.md#decorators)).
+Metadata functions are permitted to lack an implementation (similar to `extern` functions). Typed metadata with function code is still allowed and will be covered later (see [Decorators](0000-typed-metadata.md#decorators)).
 ```haxe
 @:metadata function myMeta(): Any;
 ```
@@ -123,33 +129,35 @@ Type parameters are not allowed on metadata functions.
 
 ### Metadata Scoping/Importing
 
-This metadata can be used on anything that allows metadata on it currently.
+Typed metadata can be used on anything that allows metadata on it currently.
 However, it follows the same scoping rules as Haxe functions. Meaning it must
-either be used with its full path (packages.Module.funcName) or be imported:
+use its full path or be imported:
 ```haxe
-@mypack.MyModule.myMeta function doThing() { ... }
-```
-```haxe
-import mypack.MyModule;
-@myMeta function doThing() { ... }
+@mypack.MyModule.myMeta
+function doThing() { ... }
+
+// OR
+
+import mypack.MyModule; 
+
+// static function: @MyModule.myMeta
+// module level:    @myMeta 
+
+@myMeta
+function doThing() { ... }
 ```
 
 ### Untyped Metadata
 
-If the Haxe compiler encounters a metadata entry it cannot type, how it is
-handled is an "Unresolved Question". 
+If the Haxe compiler encounters a metadata entry it cannot type, its behavior is currently an [Unresolved Question](0000-typed-metadata.md#unresolved-question). 
 
-For the time being, this proposal suggests throwing an error unless the
-define `-D allow-untyped-meta` is defined.
+For the time being, this proposal suggests throwing an error _unless_ `-D allow-untyped-meta` is defined.
 
 ### Metadata Target
 
-The return type of the metadata function declaration dictates where this metadata
-can be used. The `Any` type denotes a metadata can be used anywhere. Another example
-is `haxe.macro.Expr` restricts a metadata's usage to expressions.
+The return type of the metadata function declaration dictates where it's allowed to be used.
 
-A full list of allowed return types can be found at [Allowed Return Types](0000-typed-metadata.md#allowed-return-types).
-Any return type besides the ones listed there are not allowed and should result in an error.
+The `Any` type denotes a metadata can be used anywhere. The `haxe.macro.Expr` restricts a metadata's usage to expressions. A full list of allowed return types can be found at [Allowed Return Types](0000-typed-metadata.md#allowed-return-types). Any return type besides those are not allowed and should result in an error.
 
 ```haxe
 // use this anywhere
@@ -160,38 +168,32 @@ Any return type besides the ones listed there are not allowed and should result 
 
 // error: Type `Int` is not valid type for metadata function.
 @:metadata function intMeta(): Int;
-``` 
+```
+
 ### Basic Meta Arguments
 
-Arguments can be added to the metadata functions. Like with return types, there are only
-certain types allowed. A full list can be found at [Allowed Argument Types](0000-typed-metadata.md#allowed-argument-types).
+Arguments can be added to the metadata functions. Like with return types, there are only certain types allowed. A full list can be found at [Allowed Argument Types](0000-typed-metadata.md#allowed-argument-types).
 
-Besides the argument type restriction, there are no other restrictions for arguments.
-Optional arguments, default arguments, and rest arguments should work as normal.
+Outside the restriction of certain types, arguments should work exactly the same as they do on normal functions. This includes support for: optional arguments, default arguments, and rest arguments.
 ```haxe
 @:metadata function oneNum(num: Int): Any;
 @oneNum(123) function doThing() { ... }
 
-// ---
-
+// default args
 @:metadata function maybeNum(num: Int = 0): Any;
 @maybeNum function doThing() { ... }
 @maybeNum(123) function doThing2() { ... }
 
-// ---
-
+// optional args
 @:metadata function numAndStr(?num: Int, str: String): Any;
 @numAndStr(123, "test") function doThing() { ... }
 @numAndStr("test") function doThing2() { ... }
 
-// ---
-
+// rest args
 @:metadata function numRest(...num: Int): Any;
 @numRest function doThing() { ... }
 @numRest(1) function doThing2() { ... }
 @numRest(1, 2, 3) function doThing3() { ... }
-
-// ---
 
 // error: Type `haxe.Exception` is not valid argument type for metadata function.
 @:metadata function invalidType(o: haxe.Exception): Any;
@@ -204,22 +206,18 @@ Optional arguments, default arguments, and rest arguments should work as normal.
 
 A new optional field should be added to `haxe.macro.Expr.MetadataEntry`.
 
-If this metadata entry is typed, then this field `field` will be filled with a
-reference to the `ClassField` of the metadata function.
+If this metadata entry is typed, then `field` will contain a reference to the `ClassField` of the metadata function.
 ```haxe
-// Unresolved question: would it be possible to have this typed?
-// Maybe this should be haxe.macro.Expr.Field instead?
-var ?field:Ref<haxe.macro.Type.ClassField>;
+// Unresolved question
+// Would it be possible to use Ref<Type.ClassField> instead?
+var ?field: Expr.Field;
 ```
 
 ### Reading Arguments
 
-There needs to be a mechanism for reading the arguments of a metadata.
-To provide this, new class should be added: `haxe.macro.MetadataEntryTools`.
+There needs to be a mechanism for reading metadata arguments. To provide this, new class should be added: `haxe.macro.MetadataEntryTools`.
 
-This class provides static extension functions for `MetadataEntry` that read
-a specific argument type. For example, for the `Int` argument type, there should
-be a `getInt(index: Int)` function that looks like this:
+This class provides static extension functions for `MetadataEntry` for reading arguments. Each function attempts to read an argument for a specific type. For example, for the `Int` argument type, there should be a `getInt(index: Int)` function that looks like this:
 
 ```haxe
 static function getInt(entry: MetadataEntry, index: Int): Null<Int> {
@@ -236,9 +234,7 @@ static function getInt(entry: MetadataEntry, index: Int): Null<Int> {
 
 There should be one function for every possible argument type.
 
-These functions should not throw any errors, as that is the job of the Haxe compiler
-on typed metadata. Instead `null` is returned if the argument doesn't exist or match
-the desired type. Technically, these could also be used on untyped metadata.
+These functions should not throw any errors; that is the job of the Haxe compiler on typed metadata. Instead `null` is returned if the argument doesn't exist or doesn't match the desired type. Technically, these could also be used on untyped metadata.
 
 ### Function Type Struct
 
@@ -250,11 +246,9 @@ typedef FunctionPath = {
 };
 ```
 
-This is an untyped structure for storing type paths to functions. It is used as an
-argument type for metadata. Long story short, it allows for type paths that end with
-a lowercase identifier (`myFunc`, `Module.Sub.myFunc`).
+This is a structure for storing type paths to functions. It is used as an argument type for metadata. Long story short, it allows for type paths that end with a lowercase identifier (`myFunc`, `Module.Sub.myFunc`).
 
-Technically, function paths could be stored in `TypePath`, but they shouldn't. 
+Technically, function path data _could_ be stored in `TypePath`, but that's not preferable.
 
 &nbsp;
 &nbsp;
@@ -262,20 +256,20 @@ Technically, function paths could be stored in `TypePath`, but they shouldn't.
 ## New Metadata
 
 There needs to be a way for metadata functions to configure a couple options:
- * Whether the metadata can be used multiple times on the same subject.
- * Whether the metadata is compile-time only, or if its data should persist as rtti.
- * Whether the metadata is restricted to a specific platform (or list of platforms).
- * Whether the metadata requires another metadata to function.
+ * Can it be used multiple times on the same subject?
+ * Is it compile-time only? Or should it exist as rtti.
+ * Is it restricted to one or more platforms?
+ * Does it require another metadata to function?
 
-While subject to change, this proposal recommends adding additional metadata to be used
-in combination with `@:metadata` to configure these options:
+While likely not set in stone, this proposal recommends adding the following metadata to be used in combination with `@:metadata` to configure these options:
 ```haxe
 /**
 	Use on a metadata function. That meta will only exist at
 	compile-time (will not generate any rtti data).
 
 	Unresolved question: Should this force this meta to
-	be prefixed with a colon? 
+	be prefixed with a colon? There needs to be a way to signify
+	that when typing built-in Haxe metadata in the future.
 **/
 @:metadata
 @metadataCompileOnly
@@ -286,9 +280,9 @@ function metadataCompileOnly(): haxe.macro.Expr.Function;
 	Use on a metadata function.
 
 	Generates an error if the metadata function is
-	used on a subject without a meta with the name `other`.
+	used on a subject without the `other` metadata
 
-	For example: `@:metadataRequire(Meta.metadata)` only allows
+	For example: `@:metadataRequire(@:metadata _)` only allows
 	this meta to be used in combination with `@:metadata`.
 **/
 @:metadata
@@ -297,10 +291,11 @@ function metadataCompileOnly(): haxe.macro.Expr.Function;
 function metadataRequire(...other: haxe.macro.Expr.MetadataEntry): haxe.macro.Expr.Function;
 
 /**
-	Register a function as a typed meta.
+	Use on a metadata function.
 
-	`allowMultiple` defines whether this metadata can be 
-	used multiple times on the same subject.
+	Allows this metadata to be used multiple times on the
+	same subject. Otherwise, an error is thrown if the same
+	metadata is used multiple times.
 **/
 @:metadata
 @metadataCompileOnly
@@ -312,9 +307,10 @@ function metadataAllowMulti(): haxe.macro.Expr.Function;
 
 	Restricts the meta to only be used on specific platforms.
 
-	If untyped metadata throw an error, this is unnecessary, as one can
-	use conditional compilation to only define this metadata if a target's
-	define is defined.
+	NOTE:
+	If untyped metadata throw an error, this is unnecessary! Instead
+	conditional compilation can be used to only define a metadata
+	if a target's "define" is defined. (i.e. `#if js ... #end`)
 **/
 @:metadata
 @metadataCompileOnly
@@ -363,13 +359,11 @@ The following is the full list of allowed return types for metadata.
 
 ## Decorators
 
-A typed metadata that has code in its function body is called a Decorator.
-The code of a decorator is run for every entry of the typed metadata.
+A typed metadata that has code in its function body is called a "decorator". A decorator's code is run for every entry of the typed metadata.
 
 ### Context.getDecoratorSubject()
 
-To retrieve information about the subject of the decorator, `Context.getDecoratorSubject` is
-a new `Context` function that may be used.
+To retrieve information about the subject of the decorator, `Context.getDecoratorSubject` is a new `Context` function that may be used.
 
 ```haxe
 class Context {
@@ -378,19 +372,19 @@ class Context {
 }
 ```
 
-`DecoratorSubject` is a new typedef from the `Context` module containing the entry that triggered
-the metadata function call and the "target" it's being used on.
-
-`DecoratorSubjectTarget` is a new enum from the `Context` module containing all the possible
-metadata targets and their equivalent untyped data structure.
+`DecoratorSubject` is a new typedef from the `Context` module containing the `MetadataEntry` that triggered the call and the target.
 
 ```haxe
-import haxe.macro.Expr;
-
 typedef DecoratorSubject = {
 	entry: MetadataEntry,
 	type: DecoratorSubjectTarget
 }
+```
+
+`DecoratorSubjectTarget` is a new enum containing all the possible metadata targets and their "Expr" data structure.
+
+```haxe
+import haxe.macro.Expr;
 
 // Prefix with "D" to prevent conflicts with `haxe.macro.` classes?
 enum DecoratorSubjectTarget {
@@ -403,23 +397,20 @@ enum DecoratorSubjectTarget {
 
 ### Custom Decorator Validator
 
-Decorators do not need to return a value. If `null` is returned, the decorator will not affect
-its subject. However, this can be helpful as this allows developers to write their own logic
-for whether a metadata is being used correctly.
+Decorators do not need to return a value. If `null` is returned, the decorator will not affect its subject. Developers can use this to write their own logic for ensuring their metadata is used correctly.
 
-If one's metadata should only be used on a SPECIFIC type of expression or a SPECIFIC type of field,
-this is where that can be enforced.
-
-Note: when a throw statement is used in a metadata function, it should generate a compiler error
-at the position of the metadata entry that triggered the function.
+If one's metadata should only be used on a SPECIFIC type of expression or a SPECIFIC type of field, this is where that can be enforced.
 ```haxe
 // Only works on property fields
 @:metadata function propMeta(): haxe.macro.Expr.Field {
 	switch(Context.getDecoratorSubject().type) {
 		case DField(f): {
 			switch(f.kind) {
-				case FProp(_, _, _, _): { /* don't do anything */ }
-				case _: throw "This metadata should only be used on properties.";
+				// Do something with property
+				case FProp(_, _, _, _): {  }
+				
+				// Let the user know the metadata was used incorrectly!
+				case _: Context.error("This metadata should only be used on properties.", Context.getDecoratorSubject().entry.pos);
 			}
 		}
 		case _: throw "Impossible";
@@ -431,10 +422,7 @@ at the position of the metadata entry that triggered the function.
 
 ### Subject-Modifying Decorator
 
-If a decorator's function returns an instance of the "target" subject, that instance
-will replace the decorator's subject in the compiler.
-
-For example, this decorator replaces its expression subject with a `0`.
+If a decorator's function returns an non-null instance of its return type, that instance will replace the decorator's subject at compile-time.
 
 ```haxe
 @:metadata function makeZero(): haxe.macro.Expr {
@@ -469,15 +457,14 @@ function main() {
 }
 ```
 
-A metadata that works on any subject can be smart and perform different actions based
-on the subject type.
+A metadata that works on any subject can be smart and perform different actions based on the type of subject it was used on.
 ```haxe
 /**
 	Adds a meta to any subject.
 **/
 @:metadata function markWithMeta(name: String): Any {
 	return switch(Context.getDecoratorSubject().type) {
-		case DExpression(e) {
+		case DExpression(e): {
 			{
 				expr: TMeta({ name: name, pos: e.pos }, e),
 				pos: e.pos
@@ -507,18 +494,16 @@ on the subject type.
 
 # Impact on existing code
 
-There will only be an impact on existing code if untyped metadata are decided to generate
-errors.
+There will only be an impact on existing code if untyped metadata generate errors.
 
-Otherwise, the API additions should not cause any breaking changes and there should be
-no impact on existing code.
+Otherwise, the API additions do not cause any breaking changes, and there should be no impact on existing code.
 
 &nbsp;
 &nbsp;
 
 # Drawbacks
 
-There might be of a performance penalty since all metadata must be type checked.
+There might be of a performance penalty since all metadata have to look up if they're typed?
 
 &nbsp;
 &nbsp;
@@ -527,8 +512,7 @@ There might be of a performance penalty since all metadata must be type checked.
 
 Metadata can be typed checked manually, but requires a lot of unnecessary boilerplate. See [Motivation](0000-typed-metadata.md#motivation). 
 
-Decorators on expressions, fields, and variables can be replicated using global `@:build` macros,
-which are significantly slower and require writing boilerplate for checking all expressions/fields.
+Decorators on expressions, fields, and variables can be replicated using `@:build` macros, which are significantly slower and require writing boilerplate for checking all expressions/fields.
 
 There is currently no alternatives for decorators on type definitions.
 
@@ -537,12 +521,8 @@ There is currently no alternatives for decorators on type definitions.
 
 # Unresolved questions
 
-Should untyped metadata throw an error? Maybe a warning? Maybe errors can be enabled/disabled with
-a define?
+Should untyped metadata throw an error? While it would be a major breaking change, it would be nice restrict metadata usage using conditional compilation (wrap with `#if js` for example) instead of using something like `@:metadataPlatform`. Maybe it could be a warning? Maybe errors can default to on, but turn off with a define (or vise versa)?
 
-How should colons be handled? If the current built-in Haxe metadata is going to be typed, there should
-probably be a way to set a metadata to use a colon to ensure compatibility. However, it might be prefered
-to encourage/enforce that users are only make typed metadata without a colon? For the time being,
-`@metadataCompileOnly` answers this question by requiring a colon but not generating rtti.
+How should colons be handled? If the current built-in Haxe metadata is going to be typed, there should probably be a way to set a metadata to use a colon to ensure compatibility. However, it might be prefered to encourage/enforce that users are only make typed metadata without a colon? For the time being, `@metadataCompileOnly` answers this question by requiring a colon but not generating rtti.
 
-Should `MetadataEntry`s `field` field be `Ref<haxe.macro.Type.ClassField>` or `haxe.macro.Expr.Field`?
+Should `MetadataEntry`s `field` field be `Ref<haxe.macro.Type.ClassField>` or `haxe.macro.Expr.Field`? Would it be possible to type the field that early?
