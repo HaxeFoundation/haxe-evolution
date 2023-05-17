@@ -43,7 +43,7 @@ import mypack.Meta;
 
 @author("Anonymous")
 class MyClass {
-	public function printPlus3(a: Null<Int>): Int {
+	public function printPlus3(a: Null<Int>) {
 		@ifSome(a) {
 			trace(a + 3);
 		}
