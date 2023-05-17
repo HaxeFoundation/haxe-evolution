@@ -1,9 +1,12 @@
-# ::enter feature name here::
+# Typed Metadata
 
 * Proposal: [HXP-0000](0000-typed-metadata.md)
 * Author: [Robert Borghese](https://github.com/RobertBorghese)
 
-## Introduction
+&nbsp;
+&nbsp;
+
+# Introduction
 
 A typing system for Haxe metadata to validate a its arguments
 and optionally provide compile-time transformations.
@@ -49,7 +52,10 @@ class MyClass {
 }
 ```
 
-## Motivation
+&nbsp;
+&nbsp;
+
+# Motivation
 
 Metadata can be a little tedious to work with sometimes.
 
@@ -67,7 +73,10 @@ metadata, so there may be naming conflicts.
 Typing metadata using function declarations provides a better format
 for finding, documenting, and error checking Haxe metadata.
 
-## Detailed design
+&nbsp;
+&nbsp;
+
+# Detailed design
 
 There's a lot to cover here. A table has been provided for your convenience: 
 
@@ -80,7 +89,7 @@ There's a lot to cover here. A table has been provided for your convenience:
 | Allowed Return Types   | List of return types allowed for a typed metadata. |
 | Decorators             | The design of metadata that runs code from its function to modify its subject. |
 
-### Basic Rules
+## Basic Rules
 
 A metadata can be declared using a function declaration with the `@:metadata` meta.
 
@@ -90,7 +99,7 @@ if desired. This will be covered later (see "Decorators").
 @:metadata function myMeta(): Any;
 ```
 
-#### Metadata Function Restrictions
+### Metadata Function Restrictions
 
 The `@:metadata` meta may only be used on module-level or static functions.
 Furthermore, the `macro`, `dynamic`, `extern`, and `inline` flags cannot be used with a metadata function.
@@ -112,7 +121,7 @@ Type parameters are not allowed on metadata functions.
 @:metadata function myMeta<T>(); // error: Type parameters disalloweed on metadata functions.
 ```
 
-#### Metadata Scoping/Importing
+### Metadata Scoping/Importing
 
 This metadata can be used on anything that allows metadata on it currently.
 However, it follows the same scoping rules as Haxe functions. Meaning it must
@@ -125,7 +134,7 @@ import mypack.MyModule;
 @myMeta function doThing() { ... }
 ```
 
-#### Untyped Metadata
+### Untyped Metadata
 
 If the Haxe compiler encounters a metadata entry it cannot type, how it is
 handled is an "Unresolved Question". 
@@ -133,7 +142,7 @@ handled is an "Unresolved Question".
 For the time being, this proposal suggests throwing an error unless the
 define `-D allow-untyped-meta` is defined.
 
-#### Setting Where the Meta can be Used
+### Metadata Target
 
 The return type of the metadata function declaration dictates where this metadata
 can be used. The `Any` type denotes a metadata can be used anywhere. Another example
@@ -152,7 +161,7 @@ Any return type besides the ones listed there are not allowed and should result 
 // error: Type `Int` is not valid type for metadata function.
 @:metadata function intMeta(): Int;
 ``` 
-#### Basic Meta Arguments
+### Basic Meta Arguments
 
 Arguments can be added to the metadata functions. Like with return types, there are only
 certain types allowed. A full list can be found at "Allowed Argument Types".
@@ -188,7 +197,10 @@ Optional arguments, default arguments, and rest arguments should work as normal.
 @:metadata function invalidType(o: haxe.Exception): Any;
 ```
 
-### Haxe API Changes
+&nbsp;
+&nbsp;
+
+## Haxe API Changes
 
 A new optional field should be added to `haxe.macro.Expr.MetadataEntry`.
 
@@ -200,7 +212,7 @@ reference to the `ClassField` of the metadata function.
 var ?field:Ref<haxe.macro.Type.ClassField>;
 ```
 
-#### Reading Arguments
+### Reading Arguments
 
 There needs to be a mechanism for reading the arguments of a metadata.
 To provide this, new class should be added: `haxe.macro.MetadataEntryTools`.
@@ -228,7 +240,7 @@ These functions should not throw any errors, as that is the job of the Haxe comp
 on typed metadata. Instead `null` is returned if the argument doesn't exist or match
 the desired type. Technically, these could also be used on untyped metadata.
 
-#### Function Type Struct
+### Function Type Struct
 
 The following anonymous structure should be added to the `haxe/macro/Expr.hx` module:
 ```haxe
@@ -244,7 +256,10 @@ a lowercase identifier (`myFunc`, `Module.Sub.myFunc`).
 
 Technically, function paths could be stored in `TypePath`, but they shouldn't. 
 
-### New Metadata
+&nbsp;
+&nbsp;
+
+## New Metadata
 
 There needs to be a way for metadata functions to configure a couple options:
  * Whether the metadata can be used multiple times on the same subject.
@@ -307,7 +322,10 @@ function metadataAllowMulti(): haxe.macro.Expr.Function;
 function metadataPlatforms(...platformName: String): haxe.macro.Expr.Function;
 ```
 
-### Allowed Argument Types
+&nbsp;
+&nbsp;
+
+## Allowed Argument Types
 
 The following is the full list of allowed argument types for metadata.
 
@@ -359,7 +377,10 @@ Allows any type. Argument must match: `ECheckType({ expr: EConst(EIdent("\_")) }
 Allows for any metadata. Argument must match: `EMeta(metaEntry, { expr: EConst(EIdent("\_")) })`
 `metaEntry` is what's passed to the decorator function.
 
-### Allowed Return Types
+&nbsp;
+&nbsp;
+
+## Allowed Return Types
 
 The following is the full list of allowed return types for metadata.
 
@@ -379,12 +400,15 @@ The metadata can only be used on class fields.
 * `haxe.macro.Expr.TypeParamDecl`
 The metadata can only be used on type parameters.
 
-### Decorators
+&nbsp;
+&nbsp;
+
+## Decorators
 
 A typed metadata that has code in its function body is called a Decorator.
 The code of a decorator is run for every entry of the typed metadata.
 
-#### Context.getDecoratorSubject()
+### Context.getDecoratorSubject()
 
 To retrieve information about the subject of the decorator, `Context.getDecoratorSubject` is
 a new `Context` function that may be used.
@@ -419,7 +443,7 @@ enum DecoratorSubjectTarget {
 }
 ```
 
-#### Custom Decorator Validator
+### Custom Decorator Validator
 
 Decorators do not need to return a value. If `null` is returned, the decorator will not affect
 its subject. However, this can be helpful as this allows developers to write their own logic
@@ -447,7 +471,7 @@ at the position of the metadata entry that triggered the function.
 }
 ```
 
-#### Subject-Modifying Decorator
+### Subject-Modifying Decorator
 
 If a decorator's function returns an instance of the "target" subject, that instance
 will replace the decorator's subject in the compiler.
@@ -520,7 +544,10 @@ on the subject type.
 }
 ```
 
-## Impact on existing code
+&nbsp;
+&nbsp;
+
+# Impact on existing code
 
 There will only be an impact on existing code if untyped metadata are decided to generate
 errors.
@@ -528,11 +555,17 @@ errors.
 Otherwise, the API additions should not cause any breaking changes and there should be
 no impact on existing code.
 
-## Drawbacks
+&nbsp;
+&nbsp;
+
+# Drawbacks
 
 There might be of a performance penalty since all metadata must be type checked.
 
-## Alternatives
+&nbsp;
+&nbsp;
+
+# Alternatives
 
 Metadata can be typed checked manually, but requires a lot of unnecessary boilerplate. See "Motivation". 
 
@@ -541,7 +574,10 @@ which are significantly slower and require writing boilerplate for checking all 
 
 There is currently no alternatives for decorators on type definitions.
 
-## Unresolved questions
+&nbsp;
+&nbsp;
+
+# Unresolved questions
 
 Should untyped metadata throw an error? Maybe a warning? Maybe errors can be enabled/disabled with
 a define?
