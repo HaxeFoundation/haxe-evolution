@@ -82,19 +82,19 @@ There's a lot to cover here. A table has been provided for your convenience:
 
 | Topic | Description |
 | --- | --- |
-| [Basic Rules](0000-typed-metadata.md#basic-rules)           | The basic syntax and rules for a metadata "function" declaration. |
-| Haxe API Changes       | The changes to the Haxe API required. |
-| New Metadata           | List of new metadata used to configure metadata functions. |
-| Allowed Argument Types | List of argument types allowed for a typed metadata. |
-| Allowed Return Types   | List of return types allowed for a typed metadata. |
-| Decorators             | The design of metadata that runs code from its function to modify its subject. |
+| [Basic Rules](0000-typed-metadata.md#basic-rules)                       | The basic syntax and rules for a metadata "function" declaration. |
+| [Haxe API Changes](0000-typed-metadata.md#haxe-api-changes)             | The changes to the Haxe API required. |
+| [New Metadata ](0000-typed-metadata.md#new-metadata)                    | List of new metadata used to configure metadata functions. |
+| [Allowed Argument Types](0000-typed-metadata.md#allowed-argument-types) | List of argument types allowed for a typed metadata. |
+| [Allowed Return Types](0000-typed-metadata.m#allowed-return-types)      | List of return types allowed for a typed metadata. |
+| [Decorators](0000-typed-metadata.md#decorators)                         | The design of metadata that runs code from its function to modify its subject. |
 
 ## Basic Rules
 
 A metadata can be declared using a function declaration with the `@:metadata` meta.
 
 Metadata functions are allowed to have no function body, though they can use one
-if desired. This will be covered later (see "Decorators").
+if desired. This will be covered later (see [Decorators](0000-typed-metadata.md#decorators)).
 ```haxe
 @:metadata function myMeta(): Any;
 ```
@@ -148,7 +148,7 @@ The return type of the metadata function declaration dictates where this metadat
 can be used. The `Any` type denotes a metadata can be used anywhere. Another example
 is `haxe.macro.Expr` restricts a metadata's usage to expressions.
 
-A full list of allowed return types can be found at "Allowed Return Types".
+A full list of allowed return types can be found at [Allowed Return Types](0000-typed-metadata.md#allowed-return-types).
 Any return type besides the ones listed there are not allowed and should result in an error.
 
 ```haxe
@@ -164,7 +164,7 @@ Any return type besides the ones listed there are not allowed and should result 
 ### Basic Meta Arguments
 
 Arguments can be added to the metadata functions. Like with return types, there are only
-certain types allowed. A full list can be found at "Allowed Argument Types".
+certain types allowed. A full list can be found at [Allowed Argument Types](0000-typed-metadata.md#allowed-argument-types).
 
 Besides the argument type restriction, there are no other restrictions for arguments.
 Optional arguments, default arguments, and rest arguments should work as normal.
@@ -525,7 +525,7 @@ There might be of a performance penalty since all metadata must be type checked.
 
 # Alternatives
 
-Metadata can be typed checked manually, but requires a lot of unnecessary boilerplate. See "Motivation". 
+Metadata can be typed checked manually, but requires a lot of unnecessary boilerplate. See [Motivation](0000-typed-metadata.md#motivation). 
 
 Decorators on expressions, fields, and variables can be replicated using global `@:build` macros,
 which are significantly slower and require writing boilerplate for checking all expressions/fields.
