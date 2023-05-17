@@ -82,7 +82,7 @@ There's a lot to cover here. A table has been provided for your convenience:
 
 | Topic | Description |
 | --- | --- |
-| Basic Rules            | The basic syntax and rules for a metadata "function" declaration. |
+| [Basic Rules](/0000-typed-metadata.md#basic-rules)           | The basic syntax and rules for a metadata "function" declaration. |
 | Haxe API Changes       | The changes to the Haxe API required. |
 | New Metadata           | List of new metadata used to configure metadata functions. |
 | Allowed Argument Types | List of argument types allowed for a typed metadata. |
