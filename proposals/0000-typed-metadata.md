@@ -329,53 +329,19 @@ function metadataPlatforms(...platformName: String): haxe.macro.Expr.Function;
 
 The following is the full list of allowed argument types for metadata.
 
-* `Bool`
-Allows either `true` or `false`. Argument must match: `EConst(CIdent("true" | "false"))`.
-The identifier is "true", `true` is passed to the decorator function. Otherwise, `false` is passed.
-
-* `Int`
-Allows an integer literal. Argument must match: `EConst(CInt(v))`.
-`v` is what's passed to the decorator function.
-
-* `Float`
-Allows a float literal. Argument must match: `EConst(CFloat(v))` or `EConst(CInt(v))`.
-`v` is what's passed to the decorator function.
-
-* `String`
-Allows a string literal. Argument must match: `EConst(CString(v, DoubleQuotes))`.
-Let there be unique error message if `SingleQuotes` is used.
-`v` is what's passed to the decorator function.
-
-* `EReg`
-Allows a regular expression literal. Argument must match: `EConst(CRegexp(s, opt))`.
-`new EReg(s, opt)` is what's passed to the decorator function.
-
-* `haxe.macro.Expr.Var`
-Allows variable declaration expression. Argument must match: `EVars([v])`.
-`v` is what's passed to the decorator function.
-
-* `haxe.macro.Expr`
-Allows any expression. Argument can be any valid Haxe expression.
-The expression object is passed directly.
-
-* `haxe.macro.Expr.TypePath`
-Allows a type path. Argument must match: `EConst(CIdent(_))` or `EField(_, _)`.
-Needs to be a valid expression, so type parameters cannot be used.
-The expression will be converted to a `TypePath` manually by the Haxe compiler.
-Furthermore, it's only valid if the type path follows Haxe package/module naming
-rules (packages must be lowercase, module and sub names must start with uppercase).
-
-* `haxe.macro.Expr.FunctionPath`
-Same as `TypePath`, but when converting/validating from an expression, this allows
-the final identifier to start with a lowercase letter.
-
-* `haxe.macro.Expr.ComplexType`
-Allows any type. Argument must match: `ECheckType({ expr: EConst(EIdent("\_")) }, complexType)`
-`complexType` is what's passed to the decorator function.
-
-* `haxe.macro.Expr.MetadataEntry`
-Allows for any metadata. Argument must match: `EMeta(metaEntry, { expr: EConst(EIdent("\_")) })`
-`metaEntry` is what's passed to the decorator function.
+| Type | Expression Must Match | Decorator Argument Value | MetadataEntryTools Getter | Description |
+| --- | --- | --- | --- | --- |
+| `Bool` | `EConst(CIdent("true" \| "false"))` | `v == "true"` | `getBool` | Allows either `true` or `false`. |
+| `Int` | `EConst(CInt(v))` | `Std.parseInt(v)` | `getInt` | Allows an integer literal. |
+| `Float` | `EConst(CFloat(v))` or `EConst(CInt(v))` | `Std.parseFloat(v)` | `getFloat` | Allows an float literal. |
+| `String` | `EConst(CString(v, DoubleQuotes))` | `v` | `getString` | Allows a string literal. Let there be unique error message if `SingleQuotes` is used. |
+| `EReg` | `EConst(CRegexp(s, opt))` | `new EReg(s, opt)` | `getRegex` | Allows a regular expression literal. |
+| `haxe.macro.Expr.Var` | `EVars([v])` | `v` | `getVarDecl` | Allows variable declaration expression. |
+| `haxe.macro.Expr` | `e` | `e` | `getExpr` | Allows any expression. The expression object is passed directly. |
+| `haxe.macro.Expr.TypePath` | `EConst(CIdent(_))` or `EField(_, _)` | ??? | `getTypePath` | Allows a type path. The expression will be converted to a `TypePath` manually by the Haxe compiler. Furthermore, it's only valid if the type path follows Haxe package/module naming rules (packages must be lowercase, module and sub names must start with uppercase). |
+| `haxe.macro.Expr.FunctionPath` | `EConst(CIdent(_))` or `EField(_, _)` | ??? | `getFunctionPath` | Same as `TypePath`, but when converting/validating from an expression, this allows the final identifier to start with a lowercase letter. |
+| `haxe.macro.Expr.ComplexType` | `ECheckType({ expr: EConst(EIdent("\_")) }, complexType)` | `complexType` | `getComplexType` | Allows any type. Must format as `_ : Type` to comply with expression parsing. |
+| `haxe.macro.Expr.MetadataEntry` | `EMeta(metaEntry, { expr: EConst(EIdent("\_")) })` | `metaEntry` | `getMetadataEntry` | Allows any metadata. Must format as `@:meta _` to comply with expression parsing. |
 
 &nbsp;
 &nbsp;
@@ -384,21 +350,13 @@ Allows for any metadata. Argument must match: `EMeta(metaEntry, { expr: EConst(E
 
 The following is the full list of allowed return types for metadata.
 
-* `Any`
-The metadata can be used anywhere.
-
-* `haxe.macro.Expr`
-The metadata can only be used on an expression.
-
-* `haxe.macro.Expr.TypeDefinition`
-The metadata can only be used on type definitions.
-`@:metadataAllowedDefinitions` can restrict the type of type definition allowed.
-
-* `haxe.macro.Expr.Field`
-The metadata can only be used on class fields.
-
-* `haxe.macro.Expr.TypeParamDecl`
-The metadata can only be used on type parameters.
+| Type | DecoratorSubjectType Case | Description |
+| --- | --- | --- |
+| `Any` | N/A | The metadata can be used anywhere. |
+| `haxe.macro.Expr` | `DExpression(e: Expr)` | The metadata can only be used on an expression. |
+| `haxe.macro.Expr.TypeDefinition` | `DTypeDefinition(td: TypeDefinition)` | The metadata can only be used on type definitions. |
+| `haxe.macro.Expr.Field` | `DField(f: Field)` | The metadata can only be used on class fields. |
+| `haxe.macro.Expr.TypeParamDecl` | `DTypeParam(tp: TypeParamDecl)` | The metadata can only be used on type parameters. |
 
 &nbsp;
 &nbsp;
