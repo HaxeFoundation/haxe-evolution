@@ -342,13 +342,13 @@ This is a function that will generate an object like the `typedMeta: StringMap<D
 
 &nbsp;
 
-### Function Type Struct
+### Field Type Struct
 
 The following anonymous structure should be added to the `haxe/macro/Expr.hx` module:
 ```haxe
-typedef FunctionPath = {
+typedef FieldPath = {
 	> TypePath,
-	functionName: String;
+	field: String;
 };
 ```
 
@@ -375,7 +375,7 @@ The following is the full list of allowed argument types for metadata.
 | `Array<TYPE>` | `EArrayDecl(_)` | ??? | Allows array declarations. `TYPE` should be a from this list. Requires some internal logic to convert `Array<Expr>` into the `TYPE`. |
 | `{ name: TYPE, ... }` | `EObjectDecl(_)` | ??? | Allows object declarations. All types used should be from this list. Requires some internal logic to convert `Array<ObjectField>` into a `Dynamic` with the fields. |
 | `haxe.macro.Expr.TypePath` | `EConst(CIdent(_))` or `EField(_, _)` | ??? | Allows a type path. The expression will be converted to a `TypePath` manually by the Haxe compiler. Furthermore, it's only valid if the type path follows Haxe package/module naming rules (packages must be lowercase, module and sub names must start with uppercase). |
-| `haxe.macro.Expr.FunctionPath` | `EConst(CIdent(_))` or `EField(_, _)` | ??? | Same as `TypePath`, but when converting/validating from an expression, this allows the final identifier to start with a lowercase letter. |
+| `haxe.macro.Expr.Field` | `EConst(CIdent(_))` or `EField(_, _)` | ??? | Same as `TypePath`, but when converting/validating from an expression, this allows the final identifier to start with a lowercase letter. |
 | `haxe.macro.Expr.ComplexType` | `ECheckType({ expr: EConst(EIdent("\_")) }, complexType)` | `complexType` | Allows any type. Must format as `_ : Type` to comply with expression parsing. |
 | `haxe.macro.Expr.MetadataEntry` | `EMeta(metaEntry, { expr: EConst(EIdent("\_")) })` | `metaEntry` | Allows any metadata. Must format as `@:meta _` to comply with expression parsing. |
 
