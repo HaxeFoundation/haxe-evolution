@@ -17,7 +17,8 @@ A typing system for Haxe metadata that can validate its arguments and optionally
 /**
 	Define an author for a type definition.
 **/
-@:metadata function author(name: String): haxe.macro.Expr.TypeDefinition;
+@:metadata({ rtti: true })
+function author(name: String): haxe.macro.Expr.TypeDefinition;
 
 /**
 	Transform an `Expr` to execute only if the `input`
@@ -44,7 +45,7 @@ import mypack.Meta;
 @author("Anonymous")
 class MyClass {
 	public function printPlus3(a: Null<Int>) {
-		@ifSome(a) {
+		@:ifSome(a) {
 			trace(a + 3);
 		}
 	}
@@ -137,7 +138,7 @@ Typed metadata can be used on anything that allows metadata on it currently.
 However, it follows the same scoping rules as Haxe functions. Meaning it must
 use its full path or be imported:
 ```haxe
-@mypack.MyModule.myMeta
+@:mypack.MyModule.myMeta
 function doThing() { ... }
 
 // OR
@@ -147,7 +148,7 @@ import mypack.MyModule;
 // static function: @MyModule.myMeta
 // module level:    @myMeta 
 
-@myMeta
+@:myMeta
 function doThing() { ... }
 ```
 
@@ -200,23 +201,23 @@ Arguments can be added to the metadata functions. Like with return types, there 
 Outside the restriction of certain types, arguments should work exactly the same as they do on normal functions. This includes support for: optional arguments, default arguments, and rest arguments.
 ```haxe
 @:metadata function oneNum(num: Int): Any;
-@oneNum(123) function doThing() { ... }
+@:oneNum(123) function doThing() { ... }
 
 // default args
 @:metadata function maybeNum(num: Int = 0): Any;
-@maybeNum function doThing() { ... }
-@maybeNum(123) function doThing2() { ... }
+@:maybeNum function doThing() { ... }
+@:maybeNum(123) function doThing2() { ... }
 
 // optional args
 @:metadata function numAndStr(?num: Int, str: String): Any;
-@numAndStr(123, "test") function doThing() { ... }
-@numAndStr("test") function doThing2() { ... }
+@:numAndStr(123, "test") function doThing() { ... }
+@:numAndStr("test") function doThing2() { ... }
 
 // rest args
 @:metadata function numRest(...num: Int): Any;
-@numRest function doThing() { ... }
-@numRest(1) function doThing2() { ... }
-@numRest(1, 2, 3) function doThing3() { ... }
+@:numRest function doThing() { ... }
+@:numRest(1) function doThing2() { ... }
+@:numRest(1, 2, 3) function doThing3() { ... }
 
 // error: Type `haxe.Exception` is not valid argument type for metadata function.
 @:metadata function invalidType(o: haxe.Exception): Any;
@@ -237,7 +238,7 @@ To resolve these, the `@:metadata` metadata provides a couple options that can b
 ```haxe
 @:metadata function metadata(?options: {
     ?allowMultiple: Bool,
-    ?compileTime: Bool,
+    ?rtti: Bool,
     ?platforms: Array<String>
 }): haxe.macro.Expr.Function;
 ```
@@ -245,16 +246,16 @@ To resolve these, the `@:metadata` metadata provides a couple options that can b
 | Argument Name | Default Value | Description |
 | --- | --- | --- |
 | allowMultiple | `false` | If `true`, this metadata can be used on the same subject multiple times. |
-| compileTime | `false` | If `true`, this metadata must be prefixed with a colon and does not generate rtti. |
+| rtti | `false` | If `true`, this metadata should not use a colon and will generate [rtti information](https://haxe.org/manual/cr-rtti.html). |
 | platforms | `[]` | If this Array contains at least one entry, this metadata can only be used on the platforms named. |
 
 These options are optional, but they can be overriden if needed:
 ```haxe
-@:metadata({ allowMultiple: true })
+@:metadata({ rtti: true })
 function author(name: String): Any;
 
-@:metadata({ compileTime: true })
-function tempData(): Any;
+@:metadata({ allowMultiple: true })
+function tempData(e: Expr): Any;
 
 @:metadata({ allowMultiple: true, platforms: ["java", "cs"] })
 function nativeMeta(m: Expr): Any;
@@ -262,8 +263,8 @@ function nativeMeta(m: Expr): Any;
 // ---
 
 @author("Me")
-@author("You")
-@:tempData
+@:tempData(123)
+@:tempData("Hello")
 function myFunc() {
 }
 ```
@@ -300,7 +301,7 @@ If the metadata has `allowMultiple` enabled, the `Dynamic` value will ALWAYS be 
 // MyModule.hx
 package mypack;
 
-@:metadata({ allowMultiple: true })
+@:metadata({ allowMultiple: true, rtti: true })
 function author(name: String): TypeDefinition;
 
 class Meta {
@@ -313,8 +314,8 @@ class AnotherMeta {
 }
 
 @author("Something")
-@Meta.date(11, 15)
-@AnotherMeta.date("November 15, 2004")
+@:Meta.date(11, 15)
+@:AnotherMeta.date("November 15, 2004")
 class MyClass {}
 ```
 
@@ -471,7 +472,7 @@ If one's metadata should only be used on a SPECIFIC type of expression or a SPEC
 If a decorator's function returns an non-null instance of its return type, that instance will replace the decorator's subject at compile-time.
 
 ```haxe
-@:metadata({ compileTime: true })
+@:metadata
 function makeZero(): haxe.macro.Expr {
 	return macro 0;
 }
@@ -494,7 +495,7 @@ trace(@:makeZero "Hello!"); // Main.hx:1: 0
 
 // ---
 
-@changeName("YourClass")
+@:changeName("YourClass")
 class MyClass {
 	public function new() {}
 }
