@@ -87,10 +87,10 @@ There's a lot to cover here. A table has been provided for your convenience:
 | Topic | Description |
 | --- | --- |
 | [Basic Rules](0000-typed-metadata.md#basic-rules)                       | The basic syntax and rules for a metadata "function" declaration. |
+| [@:metadata Arguments](0000-typed-metadata.md#metadata-arguments)       | The properies to configure @:metadata. |
 | [Haxe API Changes](0000-typed-metadata.md#haxe-api-changes)             | The changes to the Haxe API required. |
-| [New Metadata ](0000-typed-metadata.md#new-metadata)                    | List of new metadata used to configure metadata functions. |
 | [Allowed Argument Types](0000-typed-metadata.md#allowed-argument-types) | List of argument types allowed for a typed metadata. |
-| [Allowed Return Types](0000-typed-metadata.md#allowed-return-types)      | List of return types allowed for a typed metadata. |
+| [Allowed Return Types](0000-typed-metadata.md#allowed-return-types)     | List of return types allowed for a typed metadata. |
 | [Decorators](0000-typed-metadata.md#decorators)                         | The design of metadata that runs code from its function body. |
 
 &nbsp;
@@ -104,6 +104,8 @@ Metadata functions are permitted to lack an implementation (similar to `extern` 
 ```haxe
 @:metadata function myMeta(): Any;
 ```
+
+&nbsp;
 
 ### Metadata Function Restrictions
 
@@ -127,6 +129,8 @@ Type parameters are not allowed on metadata functions.
 @:metadata function myMeta<T>(); // error: Type parameters disalloweed on metadata functions.
 ```
 
+&nbsp;
+
 ### Metadata Scoping/Importing
 
 Typed metadata can be used on anything that allows metadata on it currently.
@@ -147,11 +151,28 @@ import mypack.MyModule;
 function doThing() { ... }
 ```
 
+&nbsp;
+
 ### Untyped Metadata
 
 If the Haxe compiler encounters a metadata entry it cannot type, its behavior is currently an [Unresolved Question](0000-typed-metadata.md#unresolved-question). 
 
-For the time being, this proposal suggests throwing an error _unless_ `-D allow-untyped-meta` is defined.
+For the time being, this proposal suggests printing an error for each metadata entry that could not be typed (no metadata function could be found for its name/path) ONLY IF within a module that meets the following conditions:
+ * A `@:metadata` function is declared in that module.
+ * A `@:metadata` function is imported.
+ * A module with a `@:metadata` function is imported (including wildcard imports).
+ * At least one metadata in the module has been successfully typed (this counts even if its arguments do not pass typing).
+
+This ensures any user that intends to use typed metadata will receive proper typing. A define can be used to enforce metadata typing on all code used in a Haxe project: `-D strict-meta-typing`
+
+To use an untyped metadata in a "typed metadata" context, the `@:untypedMeta` metadata should be used:
+```haxe
+@:untypedMeta(something)
+@:untypedMeta(another(1, "test"))
+class MyClass {}
+```
+
+&nbsp;
 
 ### Metadata Target
 
@@ -169,6 +190,8 @@ The `Any` type denotes a metadata can be used anywhere. The `haxe.macro.Expr` re
 // error: Type `Int` is not valid type for metadata function.
 @:metadata function intMeta(): Int;
 ```
+
+&nbsp;
 
 ### Basic Meta Arguments
 
@@ -202,6 +225,52 @@ Outside the restriction of certain types, arguments should work exactly the same
 &nbsp;
 &nbsp;
 
+## @:metadata Arguments
+
+There needs to be a way for metadata functions to configure a couple options:
+ * Can it be used multiple times on the same subject?
+ * Is it compile-time only (uses `@:`)? Or should it exist as rtti.
+ * Is it restricted to one or more platforms?
+ * Does it require another metadata to function?
+
+To resolve these, the `@:metadata` metadata provides a couple options that can be configured. The declaration for the `@:metadata` metadata would look something like this:
+```haxe
+@:metadata function metadata(?options: {
+    ?allowMultiple: Bool,
+    ?compileTime: Bool,
+    ?platforms: Array<String>
+}): haxe.macro.Expr.Function;
+```
+
+| Argument Name | Default Value | Description |
+| --- | --- | --- |
+| allowMultiple | `false` | If `true`, this metadata can be used on the same subject multiple times. |
+| compileTime | `false` | If `true`, this metadata must be prefixed with a colon and does not generate rtti. |
+| platforms | `[]` | If this Array contains at least one entry, this metadata can only be used on the platforms named. |
+
+These options are optional, but they can be overriden if needed:
+```haxe
+@:metadata({ allowMultiple: true })
+function author(name: String): Any;
+
+@:metadata({ compileTime: true })
+function tempData(): Any;
+
+@:metadata({ allowMultiple: true, platforms: ["java", "cs"] })
+function nativeMeta(m: Expr): Any;
+
+// ---
+
+@author("Me")
+@author("You")
+@:tempData
+function myFunc() {
+}
+```
+
+&nbsp;
+&nbsp;
+
 ## Haxe API Changes
 
 A new optional field should be added to `haxe.macro.Expr.MetadataEntry`.
@@ -213,28 +282,65 @@ If this metadata entry is typed, then `field` will contain a reference to the `C
 var ?field: Expr.Field;
 ```
 
+&nbsp;
+
 ### Reading Arguments
 
-There needs to be a mechanism for reading metadata arguments. To provide this, new class should be added: `haxe.macro.MetadataEntryTools`.
+There needs to be a mechanism for reading metadata arguments. To provide this, a new field `typedMeta: StringMap<Dynamic>` should be added to:
+ * `haxe.macro.Expr.TypeDefinition`
+ * `haxe.macro.Expr.Field`
+ * `haxe.macro.Expr.TypeParamDecl`
 
-This class provides static extension functions for `MetadataEntry` for reading arguments. Each function attempts to read an argument for a specific type. For example, for the `Int` argument type, there should be a `getInt(index: Int)` function that looks like this:
+The entires correlate directly to the full path of the metadata used on the subject. So to access the content of an `@Meta.date` metadata, `_.typedMeta.get("mypack.Meta.date")` must be used. This is to prevent naming conflicts. There may be multiple metadata of the same name in different modules.
 
+The `Dynamic` value contains fields with the same name as the arguments of the typed metadata. These fields store the values passed to the metadata entry. How these values are converted can be viewed in [Allowed Argument Types](0000-typed-metadata.md#allowed-argument-types).
+
+If the metadata has `allowMultiple` enabled, the `Dynamic` value will ALWAYS be an Array, even if only one instance of the metadata is used.
 ```haxe
-static function getInt(entry: MetadataEntry, index: Int): Null<Int> {
-	return if(entry.params != null && index < entry.params.length) {
-		switch(entry.params[index].expr) {
-			case EConst(CInt(v)): Std.parseInt(v);
-			case _: null;
-		}
-	} else {
-		null;
-	}
+// MyModule.hx
+package mypack;
+
+@:metadata({ allowMultiple: true })
+function author(name: String): TypeDefinition;
+
+class Meta {
+   @:metadata
+   public static function date(month: Int, day: Int): TypeDefinition;
 }
+class AnotherMeta {
+   @:metadata
+   public static function date(dateString: String): TypeDefinition;
+}
+
+@author("Something")
+@Meta.date(11, 15)
+@AnotherMeta.date("November 15, 2004")
+class MyClass {}
 ```
 
-There should be one function for every possible argument type.
+```haxe
+// ---
+// in some compile-time function
+// var td: TypeDefinition;
+final authorNames: Null<Array<String>> = td.typedMeta.get("mypack.MyModule.author")?.map(meta -> meta.name);
 
-These functions should not throw any errors; that is the job of the Haxe compiler on typed metadata. Instead `null` is returned if the argument doesn't exist or doesn't match the desired type. Technically, these could also be used on untyped metadata.
+final dateMonth: Int = td.typedMeta.get("mypack.MyModule.Meta.date")?.month;
+```
+
+&nbsp;
+
+### Context.typeMetadata
+
+A new static function should be added to `haxe.macro.Context`:
+```haxe
+class Context {
+    // ...
+    public static function typeMetadata(meta: haxe.macro.Expr.Metadata): StringMap<Dynamic> { ... }
+```
+
+This is a function that will generate an object like the `typedMeta: StringMap<Dynamic>` field described in the previous section. This would be helpful for extracting typed metadata data found in untyped `EMeta` expressions.
+
+&nbsp;
 
 ### Function Type Struct
 
@@ -253,91 +359,25 @@ Technically, function path data _could_ be stored in `TypePath`, but that's not 
 &nbsp;
 &nbsp;
 
-## New Metadata
-
-There needs to be a way for metadata functions to configure a couple options:
- * Can it be used multiple times on the same subject?
- * Is it compile-time only? Or should it exist as rtti.
- * Is it restricted to one or more platforms?
- * Does it require another metadata to function?
-
-While likely not set in stone, this proposal recommends adding the following metadata to be used in combination with `@:metadata` to configure these options:
-```haxe
-/**
-	Use on a metadata function. That meta will only exist at
-	compile-time (will not generate any rtti data).
-
-	Unresolved question: Should this force this meta to
-	be prefixed with a colon? There needs to be a way to signify
-	that when typing built-in Haxe metadata in the future.
-**/
-@:metadata
-@metadataCompileOnly
-@metadataRequire(@:metadata _)
-function metadataCompileOnly(): haxe.macro.Expr.Function;
-
-/**
-	Use on a metadata function.
-
-	Generates an error if the metadata function is
-	used on a subject without the `other` metadata
-
-	For example: `@:metadataRequire(@:metadata _)` only allows
-	this meta to be used in combination with `@:metadata`.
-**/
-@:metadata
-@metadataCompileOnly
-@metadataRequire(@:metadata _)
-function metadataRequire(...other: haxe.macro.Expr.MetadataEntry): haxe.macro.Expr.Function;
-
-/**
-	Use on a metadata function.
-
-	Allows this metadata to be used multiple times on the
-	same subject. Otherwise, an error is thrown if the same
-	metadata is used multiple times.
-**/
-@:metadata
-@metadataCompileOnly
-@metadataRequire(@:metadata _)
-function metadataAllowMulti(): haxe.macro.Expr.Function;
-
-/**
-	Use on a metadata function.
-
-	Restricts the meta to only be used on specific platforms.
-
-	NOTE:
-	If untyped metadata throw an error, this is unnecessary! Instead
-	conditional compilation can be used to only define a metadata
-	if a target's "define" is defined. (i.e. `#if js ... #end`)
-**/
-@:metadata
-@metadataCompileOnly
-@metadataRequire(@:metadata _)
-function metadataPlatforms(...platformName: String): haxe.macro.Expr.Function;
-```
-
-&nbsp;
-&nbsp;
-
 ## Allowed Argument Types
 
 The following is the full list of allowed argument types for metadata.
 
-| Type | Expression Must Match | Decorator Argument Value | MetadataEntryTools Getter | Description |
-| --- | --- | --- | --- | --- |
-| `Bool` | `EConst(CIdent("true" \| "false"))` | `v == "true"` | `getBool` | Allows either `true` or `false`. |
-| `Int` | `EConst(CInt(v))` | `Std.parseInt(v)` | `getInt` | Allows an integer literal. |
-| `Float` | `EConst(CFloat(v))` or `EConst(CInt(v))` | `Std.parseFloat(v)` | `getFloat` | Allows an float literal. |
-| `String` | `EConst(CString(v, DoubleQuotes))` | `v` | `getString` | Allows a string literal. Let there be unique error message if `SingleQuotes` is used. |
-| `EReg` | `EConst(CRegexp(s, opt))` | `new EReg(s, opt)` | `getRegex` | Allows a regular expression literal. |
-| `haxe.macro.Expr.Var` | `EVars([v])` | `v` | `getVarDecl` | Allows variable declaration expression. |
-| `haxe.macro.Expr` | `e` | `e` | `getExpr` | Allows any expression. The expression object is passed directly. |
-| `haxe.macro.Expr.TypePath` | `EConst(CIdent(_))` or `EField(_, _)` | ??? | `getTypePath` | Allows a type path. The expression will be converted to a `TypePath` manually by the Haxe compiler. Furthermore, it's only valid if the type path follows Haxe package/module naming rules (packages must be lowercase, module and sub names must start with uppercase). |
-| `haxe.macro.Expr.FunctionPath` | `EConst(CIdent(_))` or `EField(_, _)` | ??? | `getFunctionPath` | Same as `TypePath`, but when converting/validating from an expression, this allows the final identifier to start with a lowercase letter. |
-| `haxe.macro.Expr.ComplexType` | `ECheckType({ expr: EConst(EIdent("\_")) }, complexType)` | `complexType` | `getComplexType` | Allows any type. Must format as `_ : Type` to comply with expression parsing. |
-| `haxe.macro.Expr.MetadataEntry` | `EMeta(metaEntry, { expr: EConst(EIdent("\_")) })` | `metaEntry` | `getMetadataEntry` | Allows any metadata. Must format as `@:meta _` to comply with expression parsing. |
+| Type | Expression Must Match | Decorator Argument Value | Description |
+| --- | --- | --- | --- |
+| `Bool` | `EConst(CIdent("true" \| "false"))` | `v == "true"` | Allows either `true` or `false`. |
+| `Int` | `EConst(CInt(v))` | `Std.parseInt(v)` | Allows an integer literal. |
+| `Float` | `EConst(CFloat(v))` or `EConst(CInt(v))` | `Std.parseFloat(v)` | Allows an float literal. |
+| `String` | `EConst(CString(v, DoubleQuotes))` | `v` | Allows a string literal. Let there be unique error message if `SingleQuotes` is used. |
+| `EReg` | `EConst(CRegexp(s, opt))` | `new EReg(s, opt)` | Allows a regular expression literal. |
+| `haxe.macro.Expr.Var` | `EVars([v])` | `v` | Allows variable declaration expression. |
+| `haxe.macro.Expr` | `e` | `e` | Allows any expression. The expression object is passed directly. |
+| `Array<TYPE>` | `EArrayDecl(_)` | ??? | Allows array declarations. `TYPE` should be a from this list. Requires some internal logic to convert `Array<Expr>` into the `TYPE`. |
+| `{ name: TYPE, ... }` | `EObjectDecl(_)` | ??? | Allows object declarations. All types used should be from this list. Requires some internal logic to convert `Array<ObjectField>` into a `Dynamic` with the fields. |
+| `haxe.macro.Expr.TypePath` | `EConst(CIdent(_))` or `EField(_, _)` | ??? | Allows a type path. The expression will be converted to a `TypePath` manually by the Haxe compiler. Furthermore, it's only valid if the type path follows Haxe package/module naming rules (packages must be lowercase, module and sub names must start with uppercase). |
+| `haxe.macro.Expr.FunctionPath` | `EConst(CIdent(_))` or `EField(_, _)` | ??? | Same as `TypePath`, but when converting/validating from an expression, this allows the final identifier to start with a lowercase letter. |
+| `haxe.macro.Expr.ComplexType` | `ECheckType({ expr: EConst(EIdent("\_")) }, complexType)` | `complexType` | Allows any type. Must format as `_ : Type` to comply with expression parsing. |
+| `haxe.macro.Expr.MetadataEntry` | `EMeta(metaEntry, { expr: EConst(EIdent("\_")) })` | `metaEntry` | Allows any metadata. Must format as `@:meta _` to comply with expression parsing. |
 
 &nbsp;
 &nbsp;
@@ -360,6 +400,8 @@ The following is the full list of allowed return types for metadata.
 ## Decorators
 
 A typed metadata that has code in its function body is called a "decorator". A decorator's code is run for every entry of the typed metadata.
+
+&nbsp;
 
 ### Context.getDecoratorSubject()
 
@@ -395,6 +437,8 @@ enum DecoratorSubjectTarget {
 }
 ```
 
+&nbsp;
+
 ### Custom Decorator Validator
 
 Decorators do not need to return a value. If `null` is returned, the decorator will not affect its subject. Developers can use this to write their own logic for ensuring their metadata is used correctly.
@@ -420,18 +464,21 @@ If one's metadata should only be used on a SPECIFIC type of expression or a SPEC
 }
 ```
 
+&nbsp;
+
 ### Subject-Modifying Decorator
 
 If a decorator's function returns an non-null instance of its return type, that instance will replace the decorator's subject at compile-time.
 
 ```haxe
-@:metadata function makeZero(): haxe.macro.Expr {
+@:metadata({ compileTime: true })
+function makeZero(): haxe.macro.Expr {
 	return macro 0;
 }
 
 // ---
 
-trace(@makeZero "Hello!"); // Main.hx:1: 0
+trace(@:makeZero "Hello!"); // Main.hx:1: 0
 ```
 
 ```haxe
@@ -521,7 +568,9 @@ There is currently no alternatives for decorators on type definitions.
 
 # Unresolved questions
 
-Should untyped metadata throw an error? While it would be a major breaking change, it would be nice restrict metadata usage using conditional compilation (wrap with `#if js` for example) instead of using something like `@:metadataPlatform`. Maybe it could be a warning? Maybe errors can default to on, but turn off with a define (or vise versa)?
+Should a new metadata syntax be used: `@.myMeta`? This would ensure all new metadata could be typed properly.
+
+If no `@.` syntax, should untyped metadata throw an error? While it would be a major breaking change, it would be nice restrict metadata usage using conditional compilation (wrap with `#if js` for example) instead of using something like `@:metadataPlatform`. Maybe it could be a warning? Maybe errors can default to on, but turn off with a define (or vise versa)?
 
 How should colons be handled? If the current built-in Haxe metadata is going to be typed, there should probably be a way to set a metadata to use a colon to ensure compatibility. However, it might be prefered to encourage/enforce that users are only make typed metadata without a colon? For the time being, `@metadataCompileOnly` answers this question by requiring a colon but not generating rtti.
 
