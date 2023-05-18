@@ -127,7 +127,7 @@ function main() {
 
 Type parameters are not allowed on metadata functions.
 ```haxe
-@:metadata function myMeta<T>(); // error: Type parameters disalloweed on metadata functions.
+@:metadata function myMeta<T>(); // error: Type parameters disallowed on metadata functions.
 ```
 
 &nbsp;
