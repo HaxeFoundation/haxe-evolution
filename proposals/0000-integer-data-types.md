@@ -12,7 +12,8 @@ The current proposal have four goals:
 - Allows easy assignment for Int64, UInt and UInt64.
 - Introduce new UInt64 type for all Haxe targets and use native where possible..
 - Allows easy conversion between integer data types.
-
+- Adding Int8 (sbyte)(-127...128) , UInt8 (byte) (0...255) - for Bytes.get()
+- Adding Int16, UInt16
 
 ## Motivation
 
@@ -102,7 +103,13 @@ Example :
     var mask:Int64 = (i64)m*(i64)n;
     var mask:Int64 = m*(i64)n;
 ```
+### Adding Int8 (sbyte)(-127...128) , UInt8 (byte) (0...255) 
+Working with ```haxe.io.Bytes``` often require to manage a single byte. Bytes.get method return a Int , which is not very memory efficient. 
+A new class ```Int8``` ( or ```sbyte``` ) for values between -127...128 and  ```UInt8``` ( or ```byte```) for values 0..255, could be introduced.
+It's possible for simplicity to have only one new type - ```byte``` ( or ```UInt8```) for values from 0...255
 
+### Adding Int16, UInt16
+Signed and unsigned 16-bit integer also can be introduced for working with 2bytes.
 
 ## Detailed design
 
