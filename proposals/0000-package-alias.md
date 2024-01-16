@@ -15,6 +15,16 @@ In the present, an ambiguous reference can be resolved by using its package as a
 
 This feature allows the user to shorten a package qualifier and allows organizing imported items.
 
+This feature is similiar to `xmlns` prefixes in XML:
+
+```xml
+<?xml version="1.0"?>
+<mx:Application
+    xmlns:fx="https://ns.adobe.com/flex"
+    xmlns:mx="library://ns.adobe.com/flex/mx">
+</mx:Application>
+```
+
 ## Detailed design
 
 Allow a `.*` sequence to appear in an aliasing `import` pragma before the `in` or `as` reserved word. Here is an example:
