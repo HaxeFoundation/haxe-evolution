@@ -35,7 +35,9 @@ There would be a drawback if the aliased name could be re-exported just like `ty
 
 ## Alternatives
 
-The only alternative is to use the original package as qualifier. This proposal allows you to shorter a fully package qualified name.
+Regarding the current language, the only alternative to package aliases is to use the original package as qualifier. This proposal allows you to shorter a fully package qualified name.
+
+The rationale for the `.*` token sequence in the introduced `import` is for distinguising packages and package properties.
 
 ## Opening possibilities
 
