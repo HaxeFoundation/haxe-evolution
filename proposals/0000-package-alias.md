@@ -9,11 +9,11 @@ Allow an `import` pragma to lexically alias a package.
 
 ## Motivation
 
-This feature is intended for increasing readability when working with package qualified names.
-Currently an ambiguous reference can be resolved by fully-qualifying its package.
-This feature allows to shorter or lexically rename what you use to qualify a reference.
-Even if a lexical reference is not ambiguous, aliasing a package and using that alias as a qualifier
-instead of a lexical reference can be useful for giving an idea of what a reference is.
+This feature is intended for increasing readability when working with package names.
+
+In the present, an ambiguous reference can be resolved by using its package as a qualifier.
+
+This feature allows the user to shorten a package qualifier and allows organizing imported items.
 
 ## Detailed design
 
@@ -31,12 +31,11 @@ This does not break compatibility.
 
 ## Drawbacks
 
-There would be a drawback if the aliased name could be re-exported just like `typedef`, but it is just a "lexical" import;
-therefore it works on all targets.
+There would be a drawback if the aliased name could be re-exported just like `typedef`, but it is just a "lexical" import. Therefore, it works on all targets.
 
 ## Alternatives
 
-The only alternative is to use the original package as qualifier. This proposal allows you to shorter a fully-qualified package.
+The only alternative is to use the original package as qualifier. This proposal allows you to shorter a fully package qualified name.
 
 ## Opening possibilities
 
