@@ -20,9 +20,9 @@ instead of a lexical reference can be useful for giving an idea of what a refere
 Allow a `.*` sequence to appear in an aliasing `import` pragma before the `in` or `as` reserved word. Here is an example:
 
 ```haxe
-import ecma262.temporal.* as Temporal;
+import com.ea.n4s.* as n4s;
 
-var zdt = new Temporal.ZonedDateTime({});
+new n4s.Setup();
 ```
 
 ## Impact on existing code
