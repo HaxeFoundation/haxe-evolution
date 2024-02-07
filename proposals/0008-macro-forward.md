@@ -2,7 +2,7 @@
 
 * Proposal: [HXP-0008](0008-macro-forward.md)
 * Author: [Dan Korostelev](https://github.com/nadako)
-* Status: [to be implemented](https://github.com/HaxeFoundation/haxe/issues/7453)
+* Status: [superseded](https://github.com/HaxeFoundation/haxe/pull/11553)
 
 ## Introduction
 
