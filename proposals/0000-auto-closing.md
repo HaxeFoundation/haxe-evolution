@@ -43,7 +43,7 @@ function bar() {
 }
 ```
 
-You could change the above slightly to a single try catch but you then need to do null checks against each class with a close function to check that it was constructed, so neither option is great. I can't speak for everyone but I certaintly don't write code like this so I suspect there's a lot of potentially leaky haxe code out there for failure paths. 
+You could change the above slightly to a single try catch but you then need to do null checks against each class with a close function to check that it was constructed, so neither option is great.
 
 The `autoclose` keyword solves this problem for the user by ensuring constructed classes with a `close` function have it executed at the end of the code block or if an exception is thrown.
 
@@ -80,9 +80,15 @@ This auto closing hides the `close` call which can make debugging trickier if yo
 
 The try catch transformation can be done by a build macro and a `:autoclose` metadata quite easily (https://gist.github.com/Aidan63/3ff8baf8cdad659a3bd1750cd751825e), but having it part of the language means it will see greater use and lead to higher quality (less leaky) libraries due to the ease of resource management.
 
+## Opening possibilities
+
+Other languages have extra syntax for scoped resources outside of variable declaration, e.g. Python's `with` or C#'s `using` which can be applied to both variable declarations or used to create a scope for any existing defined variable.
+
 ## Unresolved questions
 
 I don't have any strong feelings about the `autoclose` name, so if anyone else has any suggestions for a better / less likely to cause conflicts name then please suggest.
+
+Some standard library times which would benefit from this, such as types in the threading package, don't have a `close` function so wouldn't be usable with this. We may want to allow other functions to be called (`autoclose(function_name)`?) or introduce something like a wrapper abstract with a `close` function.
 
 We may want to allow generators to opt out of the try catch transformation as the target may have a native equivilent. E.g. java 8+ has try resources, C# IDisposable / using, and C++ RAII. These assumably perform better than try catches so it may be useful to allow generators to implement using those.
 
