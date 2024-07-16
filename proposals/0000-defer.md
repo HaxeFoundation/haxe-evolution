@@ -17,11 +17,11 @@ As a sane limit to the `defer` mentioned here, we should presume that the deferr
 
 ## Detailed design
 
-The defer keyword would capture an expression inside a `()->Void` function and then delay the execution of the deferred expression up until the current function scope is exited either by return or error. This is analogous to the function a `finally` block has, however the `defer` keyword is more flexible, and it prevents nesting of try...catch blocks, which lead to overly indented and hard to read code.
+The defer keyword would capture an expression inside a `()->Void` function and then delay the execution of the deferred expression up until the current function scope is exited either by return or error. This is analogous to the function a `finally` block has, however the `defer` keyword is more flexible, and it prevents nesting of try...catch blocks, which lead to overly indented and hard to read code. If done using the proposed macro expansion strategy, code will also be able to be statically analyzed without changes to the downstream AST - meaning the implementation should have minimal impact on other parts of haxe.
 
 Additionally, `defer` should operate on any expression, requiring no special implementation annotations or interfaces. This is so that any library can take advantage of deferred statements out of the box. This also allows the possibility of deferring anonymous function calls, which can handle multiple operations in a single `defer` call.
 
-In the below examples, I will show a macro-alike implementation in pure haxe, which should be compatible with all targets. Target specific implementations are of course possible, however to maintain compatibility I have simply used the most widespread implementation possible.
+In the below examples, I will show a macro-alike implementation in pure haxe, which should be compatible with all targets. Target specific implementations are of course possible, however to maintain compatibility I have simply used the most generic implementation possible.
 
 Example code, as it stands in 4.3.X:
 
