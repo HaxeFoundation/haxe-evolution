@@ -21,7 +21,7 @@ The defer keyword would capture an expression inside a `()->Void` function and t
 
 Additionally, `defer` should operate on any expression, requiring no special implementation annotations or interfaces. This is so that any library can take advantage of deferred statements out of the box. This also allows the possibility of deferring anonymous function calls, which can handle multiple operations in a single `defer` call.
 
-In the below examples, I will show a macro-alike implementation in pure haxe, which should be compatible with all targets. Target specific implementations are of course possible, however to maintain compatibility I have simply used the most generic implementation possible.
+In the below examples, I will show a macro-alike implementation in pure haxe, which should be compatible with all targets. Target specific implementations are of course possible, however to maintain compatibility I have simply used the most generic implementation possible. This implementation is not optimal because it could obfuscate the original caller location - if done in the compiler, debugging information should obviously reflect the original pre-expansion code.
 
 Example code, as it stands in 4.3.X:
 
@@ -88,44 +88,16 @@ class SomeThreadsafeObject {
 }
 ```
 
-This change should also allow post-return cleanup:
-
-```haxe
-public function exampleOperation():Bool {
-    mut.acquire();
-    defer mut.release();
-    return true;
-}
-```
-
-Which would then anonymize into the following:
-
-```haxe
-public function exampleOperation():Bool {
-    mut.acquire();
-    var deferred0000:() -> Void = () -> { mut.release(); };
-    var deferredReturn0000:Bool;
-    try {
-        deferredReturn0000:()->Bool = () -> {
-            return true;
-        }
-    }
-    return true;
-}
-```
-
-This implementation using anonymized function bodies however is not optimal because it could obfuscate the original caller location - if done in the compiler, debugging information should obviously reflect the original pre-expansion code.
-
 To abstract away the implementation details, we can also view this as the abstract pseudo code template:
 
 ```haxe
 function functionName(...):ReturnType {
 
-    exprs();
+    exprs(); //any code preceding the defer
 
     defer exprToDefer(args...);
 
-    body();
+    body(); //any code after the defer, including a return
     return x;
 }
 ```
@@ -135,17 +107,22 @@ which would then be expanded to:
 ```haxe
 function functionName(...):ReturnType {
 
-    exprs();
+    exprs(); //preceding code is left alone.
 
     var deferredExpr:()->Void = ()->{ exprToDefer(args...); }
     var deferredReturnValue:ReturnType;
     try {
         deferredReturnValueFunc:()->ReturnType = ()->{
-            body();
+            body();  //code after the defer is captured in a function and
+                     //returns as it normally would. The value is then
+                     //captured in a temporary holding variable.
             return x;
         };
         deferredReturnValue = deferredreturnValueFunc();
     } catch (e) {
+        // deferred experssion could theoretically throw an error that
+        // shadows 'e'. A unification of these exceptions would likely
+        // be necessary.
         deferredExpr();
         throw e;
     }
