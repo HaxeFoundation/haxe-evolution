@@ -17,6 +17,12 @@ As a sane limit to the `defer` mentioned here, we should presume that the deferr
 
 ## Detailed design
 
+The defer keyword would capture an expression inside a `()->Void` function and then delay the execution of the deferred expression up until the current function scope is exited either by return or error. This is analogous to the function a `finally` block has, however the `defer` keyword is more flexible, and it prevents nesting of try...catch blocks, which lead to overly indented and hard to read code.
+
+Additionally, `defer` should operate on any expression, requiring no special implementation annotations or interfaces. This is so that any library can take advantage of deferred statements out of the box. This also allows the possibility of deferring anonymous function calls, which can handle multiple operations in a single `defer` call.
+
+In the below examples, I will show a macro-alike implementation in pure haxe, which should be compatible with all targets. Target specific implementations are of course possible, however to maintain compatibility I have simply used the most widespread implementation possible.
+
 Example code, as it stands in 4.3.X:
 
 ```haxe
@@ -172,18 +178,8 @@ This change is mostly self-contained, however it will make writing standard libr
 
 ## Unresolved questions
 
-* What stage of parsing the implementation would reside in.
+* What stage of parsing the implementation would reside in?
 
-* How the exact variables are captured during compilation.
+* How the exact variables are captured during compilation?
 
-* there are some caveats with defer statements erroring during defer. Likely the call should pass the error back unless the thrown error is explicitly ignored.
-  
-  * ```haxe
-    defer file.close();
-    ```
-    
-    Should probably show an error, but perhaps a macro-alike function could ignore the call:
-    
-    ```haxe
-    defer ignore(file.close());
-    ```
+* the `defer` statement could throw an exception. This is troublesome, as it could interrupt the control-flow. In GoLang, errors are not propagated as throws, so the implementation doesn't worry about such events. We could add an `ignore( x )`macro to wrap the defer in a try...catch
