@@ -16,7 +16,7 @@ This project is for maintaining formal change proposals for Haxe language.
 | `0008` | [Expression macro method forwarding](proposals/0008-macro-forward.md) | [Dan Korostelev](https://github.com/nadako) | [to be implemented](https://github.com/HaxeFoundation/haxe/issues/7453) |
 | `0009` | [Inlining functions at call location](proposals/0009-inline-calls.md) | [YellowAfterlife](https://github.com/yellowafterlife) | implemented in 4.0.0 |
 | `0010` | [New `asys` APIs](proposals/0010-asys.md) | [Aurel Bílý](https://github.com/Aurel300) | [to be implemented](https://github.com/Aurel300/haxe-sys) |
-| `0011` | [Local bariable metadata syntax](proposals/0011-local-var-metadata.md) | [Peter Achberger](https://github.com/antriel) | [implemented in 4.2.0](https://github.com/HaxeFoundation/haxe/issues/9618) |
+| `0011` | [Local variable metadata syntax](proposals/0011-local-var-metadata.md) | [Peter Achberger](https://github.com/antriel) | [implemented in 4.2.0](https://github.com/HaxeFoundation/haxe/issues/9618) |
 | `0012` | [Abstract classes](proposals/0012-abstract-classes.md) | [Aleksandr Kuzmenko](https://github.com/RealyUniqueName) | [implemented in 4.2.0](https://github.com/HaxeFoundation/haxe/pull/9716) |
 | `0013` | [Default type parameters](proposals/0013-default-type-parameters.md) | [Ben Merckx](https://github.com/benmerckx) | [implemented in 4.3.0](https://github.com/HaxeFoundation/haxe/pull/10518) |
 | `0014` | [Self access for abstracts](proposals/0014-self-access-for-abstracts.md) | [Mark Knol](https://github.com/markknol) | [implemented in 4.3.0](https://github.com/HaxeFoundation/haxe/pull/10513) |
