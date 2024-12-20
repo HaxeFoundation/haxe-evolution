@@ -1,4 +1,4 @@
-# ::enter feature name here::
+# Structured Constructors
 
 * Proposal: [HXP-0020](0020-structured-constructors.md)
 * Author: [0b1kn00b](https://github.com/ohmrun)
@@ -42,3 +42,5 @@ You can get around this with boilerplate and macros, but macros being one level 
 
 ## Opening possibilities
 ## Unresolved questions
+
+Do we overload new? a new keyword? a metadata annotation? I think it can be done in a backward compatible way. 
